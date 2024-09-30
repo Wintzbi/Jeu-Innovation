@@ -195,7 +195,6 @@ int main(void) {
 
         // Dessiner l'inventaire
         DrawInventory();
-        printf("fini");
         EndDrawing();
     }
 
