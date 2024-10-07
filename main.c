@@ -4,11 +4,7 @@
 #include "cell.h"
 #include "inventory.h"
 
-
-
-
-
-
+Cell grid[ROW][COL];
 
 int main(void) {
 

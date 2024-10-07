@@ -1,5 +1,5 @@
-#include "inventory.h"
 #include "cell.h"
+#include "inventory.h"
 
 bool itemFound = false;         // Définition de itemFound
 int selectedItem = 0;          // Définition de l'index de l'item sélectionné

@@ -1,11 +1,10 @@
 #include "cell.h"
 
-
 const int screenWidth = 1920*0.5;
 const int screenHeight = 1200*0.5;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
-int offsetY =0;
+int offsetY = 0;
 
 // Fonction pour dessiner une cellule
 void CellDraw(Cell cell) {
