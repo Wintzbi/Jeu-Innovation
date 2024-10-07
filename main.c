@@ -11,9 +11,9 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
 
     // Charger les textures des items
-    Texture2D copperTexture = LoadTexture("copper_item.png");
-    Texture2D ironTexture = LoadTexture("iron_item.png");
-    Texture2D coalTexture = LoadTexture("coal_item.png");
+    Texture2D copperTexture = LoadTexture("assets/copper_item.png");
+    Texture2D ironTexture = LoadTexture("assets/iron_item.png");
+    Texture2D coalTexture = LoadTexture("assets/coal_item.png");
 
     // Initialisation de la machine et des couleurs
     for (int i = 0; i < COL; i++) {
