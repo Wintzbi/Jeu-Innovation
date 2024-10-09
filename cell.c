@@ -20,3 +20,11 @@ void CellDraw(Cell cell) {
 bool IndexIsValid(int i, int j) {
     return (i >= 0 && i < COL && j >= 0 && j < ROW);
 }
+
+void GridDraw() {
+    for (int i = 0; i < COL; i++) {
+        for (int j = 0; j < ROW; j++) {
+            CellDraw(grid[i][j]);
+        }
+    }
+}

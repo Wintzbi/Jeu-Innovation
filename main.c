@@ -13,7 +13,6 @@ int main(void) {
     // Charger les textures des items
     InitTexture();
 
-    // Initialisation de la machine et des couleurs
     for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {
             grid[i][j] = (Cell) {
@@ -95,11 +94,7 @@ int main(void) {
         ClearBackground(RAYWHITE);
 
         // Dessiner la grille
-        for (int i = 0; i < COL; i++) {
-            for (int j = 0; j < ROW; j++) {
-                CellDraw(grid[i][j]);
-            }
-        }
+        GridDraw();
 
         DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
 

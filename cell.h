@@ -21,5 +21,6 @@ typedef struct Cell {
 extern Cell grid[ROW][COL];
 void CellDraw(Cell cell);
 bool IndexIsValid(int i, int j);
+void GridDraw();
 
 #endif
