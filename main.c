@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include "cell.h"
 #include "inventory.h"
-
-Cell grid[ROW][COL];
+#include "global.h"
 
 int main(void) {
 
@@ -71,7 +70,6 @@ int main(void) {
             }
         }
 
-
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             if (IndexIsValid(posX, posY) && grid[posX][posY].placed) {
                 Texture2D brokenTexture = grid[posX][posY].texture;  // Texture du bloc cassé
@@ -101,7 +99,6 @@ int main(void) {
                 grid[posX][posY].placed = false;
             }
         }
-
 
         // Début du dessin
         BeginDrawing();
