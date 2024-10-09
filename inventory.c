@@ -5,6 +5,18 @@ bool itemFound = false;         // Définition de itemFound
 int selectedItem = 0;          // Définition de l'index de l'item sélectionné
 Item inventory[INVENTORY_SIZE]; // Inventaire avec 10 types de blocs
 
+void InitInventory() {
+    inventory[0] = (Item) { copperTexture, 2 };  // Bloc de cuivre avec 2 unités
+    inventory[1] = (Item) { ironTexture, 2 };    // Bloc de fer avec 2 unités
+    inventory[2] = (Item) { coalTexture, 20 };   // Bloc de charbon avec 20 unités
+    inventory[3] = (Item) {};
+    inventory[4] = (Item) {};
+    inventory[5] = (Item) {};
+    inventory[6] = (Item) {};
+    inventory[7] = (Item) {};
+    inventory[8] = (Item) {};
+    inventory[9] = (Item) {};
+}
 
 // Fonction pour dessiner l'inventaire avec des images agrandies
 void DrawInventory() {

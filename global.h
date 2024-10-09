@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "cell.h"
 #include "inventory.h"
+#include "texture.h"
 
 Cell grid[ROW][COL];
 

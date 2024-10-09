@@ -26,16 +26,7 @@ int main(void) {
     }
 
     // Initialisation de l'inventaire avec des textures et des quantités d'exemple
-    inventory[0] = (Item) { copperTexture, 2 };  // Bloc de cuivre avec 2 unités
-    inventory[1] = (Item) { ironTexture, 2 };    // Bloc de fer avec 2 unités
-    inventory[2] = (Item) { coalTexture, 20 };   // Bloc de charbon avec 20 unités
-    inventory[3] = (Item) {};
-    inventory[4] = (Item) {};
-    inventory[5] = (Item) {};
-    inventory[6] = (Item) {};
-    inventory[7] = (Item) {};
-    inventory[8] = (Item) {};
-    inventory[9] = (Item) {};
+    InitInventory();
 
     SetTargetFPS(60);
 
