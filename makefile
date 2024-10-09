@@ -8,11 +8,14 @@ cell.o: cell.c
 inventory.o: inventory.c
 	gcc -c inventory.c -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
 
+texture.o: texture.c
+	gcc -c texture.c -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
+
 main.o : main.c
 	gcc -c main.c  -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
 # Règle pour lier les fichiers objets en un exécutable
-jeu: cell.o inventory.o main.o
-	gcc cell.o inventory.o main.o -o jeu -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+jeu: cell.o inventory.o texture.o main.o
+	gcc cell.o inventory.o texture.o main.o -o jeu -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
 # Nettoyage des fichiers objets et de l'exécutable
 clean:
