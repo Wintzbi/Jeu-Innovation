@@ -1,10 +1,4 @@
-#include "raylib.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "cell.h"
-#include "inventory.h"
 #include "global.h"
-#include "texture.h"
 
 int main(void) {
 
@@ -96,7 +90,7 @@ int main(void) {
         // Dessiner la grille
         GridDraw();
 
-        DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
+        mouseDefault();
 
         // Dessiner l'inventaire
         DrawInventory();
