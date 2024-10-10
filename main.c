@@ -5,6 +5,8 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
     // Charger les textures des items
     InitTexture();
+
+    // Inititaliser la grille
     InitGrid();
 
     // Initialisation de l'inventaire avec des textures et des quantités d'exemple
@@ -18,6 +20,7 @@ int main(void) {
 
         // Placer un bloc avec un clic droit
         rightClic();
+        // Le récupérer grâce au clil gauche
         leftClic();
 
         // Début du dessin
@@ -27,6 +30,7 @@ int main(void) {
         // Dessiner la grille
         GridDraw();
 
+        // Afficher la souris par défault
         mouseDefault();
 
         // Dessiner l'inventaire
@@ -36,7 +40,6 @@ int main(void) {
 
     // Déchargement des textures
     UnloadAllTexture();
-
     CloseWindow();
 
     return 0;
