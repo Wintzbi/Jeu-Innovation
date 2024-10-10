@@ -1,4 +1,5 @@
 #include "cell.h"
+#include "inventory.h"
 
 const int screenWidth = 1920*0.5;
 const int screenHeight = 1200*0.5;
@@ -19,6 +20,19 @@ void CellDraw(Cell cell) {
 // Fonction pour vérifier si les indices de la grille sont valides
 bool IndexIsValid(int i, int j) {
     return (i >= 0 && i < COL && j >= 0 && j < ROW);
+}
+
+void InitGrid() {
+    for (int i = 0; i < COL; i++) {
+        for (int j = 0; j < ROW; j++) {
+            grid[i][j] = (Cell) {
+                .i = i,
+                .j = j,
+                .placed = false,
+                .texture = copperTexture  // Par défaut, on peut utiliser n'importe quelle texture
+            };
+        }
+    }
 }
 
 void GridDraw() {

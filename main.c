@@ -3,20 +3,9 @@
 int main(void) {
 
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
-
     // Charger les textures des items
     InitTexture();
-
-    for (int i = 0; i < COL; i++) {
-        for (int j = 0; j < ROW; j++) {
-            grid[i][j] = (Cell) {
-                .i = i,
-                .j = j,
-                .placed = false,
-                .texture = copperTexture  // Par défaut, on peut utiliser n'importe quelle texture
-            };
-        }
-    }
+    InitGrid();
 
     // Initialisation de l'inventaire avec des textures et des quantités d'exemple
     InitInventory();

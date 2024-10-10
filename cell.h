@@ -5,6 +5,7 @@
 extern const int screenWidth;
 extern const int screenHeight;
 extern const int cellSize;
+
 #define COL 50
 #define ROW 50
 
@@ -21,6 +22,7 @@ typedef struct Cell {
 extern Cell grid[ROW][COL];
 void CellDraw(Cell cell);
 bool IndexIsValid(int i, int j);
+void InitGrid();
 void GridDraw();
 
 #endif
