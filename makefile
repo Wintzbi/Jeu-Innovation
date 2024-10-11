@@ -15,12 +15,14 @@ input.o: input.c
 	gcc -c input.c -I/opt/homebrew/Cellar/raylib/5.0/include 
 menu.o: menu.c
 	gcc -c menu.c -I/opt/homebrew/Cellar/raylib/5.0/include 
+musique.o: musique.c
+	gcc -c musique.c -I/opt/homebrew/Cellar/raylib/5.0/include 
 
 main.o : main.c
 	gcc -c main.c  -I/opt/homebrew/Cellar/raylib/5.0/include 
 # Règle pour lier les fichiers objets en un exécutable
-jeu: cell.o inventory.o texture.o input.o menu.o main.o
-	gcc cell.o inventory.o texture.o input.o menu.o main.o -o jeu -I/opt/homebrew/Cellar/raylib/5.0/include -L/opt/homebrew/Cellar/raylib/5.0/lib -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+jeu: cell.o inventory.o texture.o input.o menu.o main.o musique.o
+	gcc cell.o inventory.o texture.o input.o menu.o musique.o main.o -o jeu -I/opt/homebrew/Cellar/raylib/5.0/include -L/opt/homebrew/Cellar/raylib/5.0/lib -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 
 # Nettoyage des fichiers objets et de l'exécutable
 clean:

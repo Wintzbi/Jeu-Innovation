@@ -42,8 +42,9 @@ int main(void) {
             DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
             // Dessiner le menu
             DrawMenu(&currentScreen);
+            
         }
-        else if (currentScreen == GAME) {
+       
         
             // Dessiner la grille
         if (IsKeyPressed(KEY_E))
@@ -51,8 +52,14 @@ int main(void) {
             isInventoryOpen = !isInventoryOpen;  // Inverser l'état de l'inventaire
         }
 
-        if (!isInventoryOpen)
-        {
+        else if (isInventoryOpen) {
+            currentScreen = INVENT;
+            DrawInventoryPage();
+            }
+
+        else if (!isInventoryOpen) currentScreen = GAME;
+
+        if (currentScreen == GAME) {
             GridDraw();
             // Placer un bloc avec un clic droit
             rightClic();
@@ -64,9 +71,8 @@ int main(void) {
             // Dessiner l'inventaire
             DrawInventoryBar();
         }
-        if(isInventoryOpen) DrawInventoryPage();
               
-        }
+        
 
     EndDrawing();
 }

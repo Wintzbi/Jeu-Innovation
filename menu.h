@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 
-typedef enum GameScreen { MENU = 0, GAME } GameScreen;
+typedef enum GameScreen { MENU = 0, GAME,INVENT,MUSIC } GameScreen;
 
 // Déclaration de la variable globale pour le bouton Play
 extern Rectangle playButton;

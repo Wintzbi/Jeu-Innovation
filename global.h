@@ -9,6 +9,7 @@
 #include "global.h"
 #include "texture.h"
 #include "input.h"
+#include "musique.h"
 
 Cell grid[ROW][COL];
 

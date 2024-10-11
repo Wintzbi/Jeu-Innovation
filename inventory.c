@@ -91,9 +91,13 @@ void DrawInventorySlot() {
         }
     }
 }
-
+void DrawMusic(){
+    DrawRectangle(90, 100, screenWidth-200, 60, DARKGRAY);
+    DrawText(TextFormat("Musique :"), 100, 101, 60, WHITE);
+}
 void DrawInventoryPage(){
-    DrawRectangle(100, 100, screenWidth-200, 60, DARKGRAY);
-    DrawText(TextFormat("Inventaire"), 330, 101, 60, WHITE); // Display quantity
+    DrawRectangle(100, 10, screenWidth-200, 60, DARKGRAY);
+    DrawText(TextFormat("Inventaire"), 330, 11, 60, WHITE); // Display quantity
     DrawInventorySlot();
+    DrawMusic();
 }
