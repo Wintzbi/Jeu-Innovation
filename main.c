@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,6 +124,31 @@ int main(void) {
 
         // Placer un bloc avec un clic droit
         rightClic();
+=======
+#include "global.h"
+//test pull
+int main(void) {
+
+    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
+    // Charger les textures des items
+    InitTexture();
+
+    // Inititaliser la grille
+    InitGrid();
+
+    // Initialisation de l'inventaire avec des textures et des quantités d'exemple
+    InitInventory();
+
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose()) {
+        // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
+        InitInventoryKeyBiding();
+
+        // Placer un bloc avec un clic droit
+        rightClic();
+        // Le récupérer grâce au clil gauche
+>>>>>>> 564ce8022679a86fbc78daac1dbfff4b59414fdc
         leftClic();
 
         // Début du dessin
@@ -132,17 +158,27 @@ int main(void) {
         // Dessiner la grille
         GridDraw();
 
+<<<<<<< HEAD
         mouseDefault();
 
         // Dessiner l'inventaire
         DrawInventory();
+=======
+        // Afficher la souris par défault
+        mouseDefault();
+>>>>>>> 564ce8022679a86fbc78daac1dbfff4b59414fdc
 
+        // Dessiner l'inventaire
+        DrawInventory();
         EndDrawing();
     }
 
     // Déchargement des textures
     UnloadAllTexture();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 564ce8022679a86fbc78daac1dbfff4b59414fdc
     CloseWindow();
 
     return 0;
