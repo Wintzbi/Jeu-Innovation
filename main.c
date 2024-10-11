@@ -28,7 +28,15 @@ int main(void) {
         ClearBackground(RAYWHITE);
 
         // Dessiner la grille
-        GridDraw();
+        if (IsKeyPressed(KEY_E))
+        {
+            isInventoryOpen = !isInventoryOpen;  // Inverser l'état de l'inventaire
+        }
+        if (!isInventoryOpen)
+        {
+            GridDraw();
+        }
+        
 
         // Afficher la souris par défault
         mouseDefault();

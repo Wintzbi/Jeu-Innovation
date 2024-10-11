@@ -4,6 +4,7 @@
 bool itemFound = false;         // Définition de itemFound
 int selectedItem = 0;          // Définition de l'index de l'item sélectionné
 Item inventory[INVENTORY_SIZE]; // Inventaire avec 10 types de blocs
+bool isInventoryOpen = false;
 
 void InitInventory() {
     inventory[0] = (Item) { copperTexture, 2 };  // Bloc de cuivre avec 2 unités

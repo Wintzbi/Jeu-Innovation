@@ -13,6 +13,7 @@ typedef struct Item {
 extern int selectedItem; // Déclaration externe de selectedItem
 extern bool itemFound;   // Déclaration externe de itemFound
 extern Item inventory[INVENTORY_SIZE]; // Déclaration externe de inventory
+extern bool isInventoryOpen;
 
 void DrawInventory();
 void InitInventory();
