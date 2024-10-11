@@ -5,7 +5,6 @@
 
 extern Rectangle playButton;
 
-
 void ButtonPlay();
 
 #endif
