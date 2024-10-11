@@ -25,14 +25,27 @@ int main(void) {
     while (!WindowShouldClose()) {
         // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
         InitInventoryKeyBiding();
-
-        
-
-        // Début du dessin
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
-        // Dessiner la grille
+        if (currentScreen == MENU) {
+            // Menu principal
+            DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
+            // Dessiner le bouton "Play"
+            if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    currentScreen = GAME;  // Commence le jeu quand le bouton est cliqué
+                }
+                DrawRectangleRec(playButton, LIGHTGRAY);  // Couleur survolée
+            } else {
+                DrawRectangleRec(playButton, GRAY);  // Couleur normale
+            }
+            DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
+            // Dessiner le menu
+            DrawMenu(&currentScreen);
+        }
+        else if (currentScreen == GAME) {
+        
+            // Dessiner la grille
         if (IsKeyPressed(KEY_E))
         {
             isInventoryOpen = !isInventoryOpen;  // Inverser l'état de l'inventaire
@@ -45,18 +58,18 @@ int main(void) {
             rightClic();
             // Le récupérer grâce au clil gauche
             leftClic();
+            // Afficher la souris par défaut
+            mouseDefault();
+
+            // Dessiner l'inventaire
+            DrawInventoryBar();
         }
         if(isInventoryOpen) DrawInventoryPage();
-        
+              
+        }
 
-        // Afficher la souris par défault
-        mouseDefault();
-
-        // Dessiner l'inventaire
-        DrawInventoryBar();
-        EndDrawing();
-    }
-
+    EndDrawing();
+}
     // Déchargement des textures
     UnloadAllTexture();
     CloseWindow();
