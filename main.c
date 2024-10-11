@@ -1,4 +1,5 @@
 #include "global.h"
+#include "menu.h"
 
 int main(void) {
     // Initialisation de la fenêtre
@@ -7,7 +8,7 @@ int main(void) {
     // Charger les textures des items
     InitTexture();
 
-    // Inititaliser la grille
+    // Initialiser la grille
     InitGrid();
 
     // Initialisation de l'inventaire avec des textures et des quantités d'exemple
@@ -18,6 +19,7 @@ int main(void) {
     // État du jeu : MENU ou GAME
     GameScreen currentScreen = MENU;
 
+    // Initialisation du bouton Play
     ButtonPlay();
 
     while (!WindowShouldClose()) {
@@ -26,19 +28,8 @@ int main(void) {
         ClearBackground(RAYWHITE);
 
         if (currentScreen == MENU) {
-            // Menu principal
-            DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
-
-            // Dessiner le bouton "Play"
-            if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                    currentScreen = GAME;  // Commence le jeu quand le bouton est cliqué
-                }
-                DrawRectangleRec(playButton, LIGHTGRAY);  // Couleur survolée
-            } else {
-                DrawRectangleRec(playButton, GRAY);  // Couleur normale
-            }
-            DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
+            // Dessiner le menu
+            DrawMenu(&currentScreen);
         }
         else if (currentScreen == GAME) {
             // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)

@@ -15,6 +15,5 @@ Cell grid[ROW][COL];
 #include "menu.h"
 
 Cell grid[ROW][COL];
-typedef enum GameScreen { MENU = 0, GAME } GameScreen;
 
 #endif
