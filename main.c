@@ -1,6 +1,15 @@
 #include "global.h"
 
-int main() {
+int main(void) {
+    // Initialisation de la fenêtre
+    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
+    
+    // Charger les textures des items
+    InitTexture();
+
+    // Inititaliser la grille
+    InitGrid();
+
     // Initialisation de l'inventaire avec des textures et des quantités d'exemple
     InitInventory();
 
@@ -9,11 +18,10 @@ int main() {
     // État du jeu : MENU ou GAME
     GameScreen currentScreen = MENU;
 
-    // Initialiser le bouton Play
     ButtonPlay();
 
     while (!WindowShouldClose()) {
-        // Commencer le dessin
+        // Commencez le dessin
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -30,9 +38,8 @@ int main() {
             } else {
                 DrawRectangleRec(playButton, GRAY);  // Couleur normale
             }
-
             DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
-        } 
+        }
         else if (currentScreen == GAME) {
             // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
             InitInventoryKeyBiding();
