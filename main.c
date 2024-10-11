@@ -1,5 +1,5 @@
 #include "global.h"
-//test pull
+
 int main(void) {
 
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
@@ -42,7 +42,7 @@ int main(void) {
         mouseDefault();
 
         // Dessiner l'inventaire
-        DrawInventory();
+        DrawInventoryBar();
         EndDrawing();
     }
 
