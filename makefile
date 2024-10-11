@@ -20,6 +20,15 @@ main.o : main.c
 jeu: cell.o inventory.o texture.o input.o main.o
 	gcc cell.o inventory.o texture.o input.o main.o -o jeu -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
+menu.o: menu.c
+	gcc -c menu.c -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
+
+main.o : main.c
+	gcc -c main.c  -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
+# Règle pour lier les fichiers objets en un exécutable
+jeu: cell.o inventory.o texture.o input.o menu.o main.o
+	gcc cell.o inventory.o texture.o input.o menu.o main.o -o jeu -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
 # Nettoyage des fichiers objets et de l'exécutable
 clean:
 	rm -f jeu *.o
