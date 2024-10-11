@@ -34,7 +34,7 @@ int main(void) {
         mouseDefault();
 
         // Dessiner l'inventaire
-        DrawInventory();
+        DrawInventoryBar();
         EndDrawing();
     }
 

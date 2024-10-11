@@ -19,7 +19,7 @@ void InitInventory() {
 }
 
 // Fonction pour dessiner l'inventaire avec des images agrandies
-void DrawInventory() {
+void DrawInventoryBar() {
     int invWidth = screenWidth;
     int invHeight = 50;  // Fixed height for inventory
     int slotSize = invWidth / INVENTORY_SIZE;  // Size of each inventory slot

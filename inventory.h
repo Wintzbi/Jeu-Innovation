@@ -14,7 +14,7 @@ extern int selectedItem; // Déclaration externe de selectedItem
 extern bool itemFound;   // Déclaration externe de itemFound
 extern Item inventory[INVENTORY_SIZE]; // Déclaration externe de inventory
 
-void DrawInventory();
+void DrawInventoryBar();
 void InitInventory();
 
 #endif
