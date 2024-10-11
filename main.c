@@ -18,10 +18,7 @@ int main(void) {
         // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
         InitInventoryKeyBiding();
 
-        // Placer un bloc avec un clic droit
-        rightClic();
-        // Le récupérer grâce au clil gauche
-        leftClic();
+        
 
         // Début du dessin
         BeginDrawing();
@@ -32,10 +29,16 @@ int main(void) {
         {
             isInventoryOpen = !isInventoryOpen;  // Inverser l'état de l'inventaire
         }
+
         if (!isInventoryOpen)
         {
             GridDraw();
+            // Placer un bloc avec un clic droit
+            rightClic();
+            // Le récupérer grâce au clil gauche
+            leftClic();
         }
+        if(isInventoryOpen) DrawInventoryPage();
         
 
         // Afficher la souris par défault

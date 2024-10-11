@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include "texture.h"
 
-#define INVENTORY_SIZE 10
+#define INVENTORY_SIZE 40
 typedef struct Item {
     Texture2D texture;
     int quantity;
@@ -17,5 +17,7 @@ extern bool isInventoryOpen;
 
 void DrawInventoryBar();
 void InitInventory();
+void DrawInventoryPage();
+void DrawInventorySlot();
 
 #endif

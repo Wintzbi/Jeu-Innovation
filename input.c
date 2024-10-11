@@ -21,7 +21,7 @@ void InitInventoryKeyBiding() {
 }
 
 void rightClic() {
-    if(!isInventoryOpen){
+
     int posX = (int)(GetMousePosition().x / cellSize);
     int posY = (int)(GetMousePosition().y / cellSize);
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0) {
@@ -36,11 +36,11 @@ void rightClic() {
                 }
             }
         }
-    }
+    
 }
 
 void leftClic() {
-    if(!isInventoryOpen){
+
     int posX = (int)(GetMousePosition().x / cellSize);
     int posY = (int)(GetMousePosition().y / cellSize);
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -72,6 +72,6 @@ void leftClic() {
                 grid[posX][posY].placed = false;
             }
         }
-    }
+    
 }
 
