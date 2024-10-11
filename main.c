@@ -1,5 +1,5 @@
 #include "global.h"
-
+//test pull
 int main(void) {
 
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
