@@ -58,12 +58,9 @@ void DrawInventoryBar() {
 
 void DrawInventorySlot() {
     int invWidth = screenWidth;
-    int invHeight = screenHeight;  // Fixed height for inventory
     int rect_per_line=10;
     int slotSize = (invWidth-20) / (rect_per_line);  // Size of each inventory slot
 
-    // Size of textures in the inventory
-    int targetImageSize = slotSize-5;
     for(int j=0;j<2;j++){
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             // Draw the inventory slot with DARKGRAY

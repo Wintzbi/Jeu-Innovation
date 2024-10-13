@@ -2,83 +2,71 @@
 #include "menu.h"
 
 int main(void) {
-    // Initialisation de la fenêtre
-    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
-    
-    // Charger les textures des items
-    InitTexture();
+    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre
 
-    // Initialiser la grille
-    InitGrid();
+    InitTexture();  // Charger les textures des items
 
-    // Initialisation de l'inventaire avec des textures et des quantités d'exemple
-    InitInventory();
+    InitGrid();  // Initialiser la grille
 
-    SetTargetFPS(60);
+    InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
 
-    // État du jeu : MENU ou GAME
-    GameScreen currentScreen = MENU;
+    SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
-    // Initialisation du bouton Play
-    ButtonPlay();
+    GameScreen currentScreen = MENU;  // État initial du jeu : MENU
+
+    bool isInventoryOpen = false;  // Inventaire fermé par défaut
+
+    ButtonPlay();  // Initialiser le bouton Play
 
     while (!WindowShouldClose()) {
-        // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
-        InitInventoryKeyBiding();
+        InitInventoryKeyBiding();  // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
+
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(RAYWHITE);  // Effacer l'écran avec un fond blanc
+
         if (currentScreen == MENU) {
-            // Menu principal
-            DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
-            // Dessiner le bouton "Play"
+            DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);  // Afficher le titre du menu
+
             if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                    currentScreen = GAME;  // Commence le jeu quand le bouton est cliqué
+                    currentScreen = GAME;  // Passer à l'état GAME si le bouton Play est cliqué
                 }
-                DrawRectangleRec(playButton, LIGHTGRAY);  // Couleur survolée
+                DrawRectangleRec(playButton, LIGHTGRAY);  // Afficher le bouton "Play" survolé
             } else {
-                DrawRectangleRec(playButton, GRAY);  // Couleur normale
+                DrawRectangleRec(playButton, GRAY);  // Afficher le bouton "Play" normal
             }
-            DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
-            // Dessiner le menu
-            DrawMenu(&currentScreen);
-            
-        }
-       
-        
-            // Dessiner la grille
-        if (IsKeyPressed(KEY_E))
-        {
-            isInventoryOpen = !isInventoryOpen;  // Inverser l'état de l'inventaire
+            DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);  // Afficher le texte "Play" sur le bouton
+            DrawMenu(&currentScreen);  // Dessiner le menu
         }
 
-        else if (isInventoryOpen) {
-            currentScreen = INVENT;
-            DrawInventoryPage();
+        if (IsKeyPressed(KEY_E)) {
+            isInventoryOpen = !isInventoryOpen;  // Ouvrir/fermer l'inventaire avec la touche E
+
+            if (!isInventoryOpen) {
+                currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
             }
-
-        else if (!isInventoryOpen) currentScreen = GAME;
-
-        if (currentScreen == GAME) {
-            GridDraw();
-            // Placer un bloc avec un clic droit
-            rightClic();
-            // Le récupérer grâce au clil gauche
-            leftClic();
-            // Afficher la souris par défaut
-            mouseDefault();
-
-            // Dessiner l'inventaire
-            DrawInventoryBar();
         }
-              
-        
 
-    EndDrawing();
-}
-    // Déchargement des textures
-    UnloadAllTexture();
-    CloseWindow();
+        if (isInventoryOpen) {
+            currentScreen = INVENT;  // Passer à l'état INVENT si l'inventaire est ouvert
+            DrawInventoryPage();  // Afficher la page de l'inventaire
+        } else if (currentScreen == GAME) {
+            GridDraw();  // Dessiner la grille de jeu
+
+            rightClic();  // Placer un bloc avec un clic droit
+
+            leftClic();  // Récupérer un bloc avec un clic gauche
+
+            mouseDefault();  // Afficher la souris par défaut
+
+            DrawInventoryBar();  // Dessiner la barre de l'inventaire
+        }
+
+        EndDrawing();  // Terminer le dessin de la frame
+    }
+
+    UnloadAllTexture();  // Décharger les textures
+    CloseWindow();  // Fermer la fenêtre
 
     return 0;
 }
