@@ -1,34 +1,36 @@
 # Cibles par défaut
 all: jeu
 
+# Détecter le système d'exploitation
+UNAME_S := $(shell uname -s)
+
+# Paramètres spécifiques à macOS
+ifeq ($(UNAME_S), Darwin)
+    CC = gcc
+    CFLAGS = -I/opt/homebrew/Cellar/raylib/5.0/include -Wall
+    LDFLAGS = -L/opt/homebrew/Cellar/raylib/5.0/lib -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+    OUTPUT = jeu
+else
+    # Paramètres spécifiques à Linux
+    CC = gcc
+    CFLAGS = -I$(HOME)/raylib/src -Wall
+    LDFLAGS = -L$(HOME)/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+    OUTPUT = jeu
+endif
+
+# Liste des fichiers objets
+OBJS = cell.o inventory.o texture.o input.o menu.o musique.o main.o
+
 # Compilation des fichiers objets
-cell.o: cell.c
-	gcc -c cell.c -I ~/raylib/src -Wall
+%.o: %.c
+	$(CC) -c $< $(CFLAGS) -o $@
 
-inventory.o: inventory.c
-	gcc -c inventory.c -I ~/raylib/src -Wall
-
-texture.o: texture.c
-	gcc -c texture.c -I ~/raylib/src -Wall
-
-input.o: input.c
-	gcc -c input.c -I ~/raylib/src -Wall
-
-menu.o: menu.c
-	gcc -c menu.c -I ~/raylib/src -Wall
-
-musique.o: musique.c
-	gcc -c musique.c -I ~/raylib/src -Wall
-
-main.o: main.c
-	gcc -c main.c -I ~/raylib/src -Wall
-
-# Règle pour lier les fichiers objets en un exécutable
-jeu: cell.o inventory.o texture.o input.o menu.o main.o musique.o
-	gcc cell.o inventory.o texture.o input.o menu.o musique.o main.o -o jeu -I ~/raylib/src -L ~/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
+# Lier les fichiers objets en un exécutable
+$(OUTPUT): $(OBJS)
+	$(CC) $(OBJS) -o $(OUTPUT) $(LDFLAGS)
 
 # Nettoyage des fichiers objets et de l'exécutable
 clean:
-	rm -f jeu *.o
+	rm -f $(OUTPUT) *.o
 
 .PHONY: all clean
