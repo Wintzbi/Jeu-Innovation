@@ -19,5 +19,8 @@ void DrawInventoryBar();
 void InitInventory();
 void DrawInventoryPage();
 void DrawInventorySlot();
+void DrawMusicMenu();
+void DrawMusic();
+void MusicButton();
 
 #endif
