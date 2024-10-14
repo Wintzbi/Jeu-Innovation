@@ -7,7 +7,7 @@ int main(void) {
     InitTexture();  // Charger les textures des items
 
     InitGrid();  // Initialiser la grille
-
+    InitMusic();
     InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
 
     SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
@@ -17,8 +17,8 @@ int main(void) {
     bool isInventoryOpen = false;  // Inventaire fermé par défaut
 
     ButtonPlay();  // Initialiser le bouton Play
-
     while (!WindowShouldClose()) {
+        UpdateMusic();
         InitInventoryKeyBiding();  // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
 
         BeginDrawing();
@@ -64,7 +64,7 @@ int main(void) {
 
         EndDrawing();  // Terminer le dessin de la frame
     }
-
+    UnloadMusic();
     UnloadAllTexture();  // Décharger les textures
     CloseWindow();  // Fermer la fenêtre
 

@@ -7,7 +7,7 @@ void InitMusic() {
     InitAudioDevice();
 
     // Charger la musique
-    music = LoadMusicStream("Jeu-Innovation/musiques/01.mp3"); // Remplacez par le bon chemin
+    music = LoadMusicStream("/Users/charliloumaes/Desktop/Esme/Cours/ingé1/innovation/Jeu-Innovation-ley/Jeu-Innovation/musiques/main theme - 03:10:2024 11.49.mp3"); // Remplacez par le bon chemin
     PlayMusicStream(music);
 }
 
