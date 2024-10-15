@@ -1,5 +1,4 @@
 #include "global.h"
-#include "menu.h"
 
 int main(void) {
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre

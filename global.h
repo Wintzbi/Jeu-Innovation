@@ -10,9 +10,6 @@
 #include "texture.h"
 #include "input.h"
 #include "musique.h"
-
-Cell grid[ROW][COL];
-
 #include "menu.h"
 
 Cell grid[ROW][COL];
