@@ -1,5 +1,6 @@
 #include "cell.h"
 #include "inventory.h"
+#include "musique.h"
 
 bool itemFound = false;         // Définition de itemFound
 int selectedItem = 0;          // Définition de l'index de l'item sélectionné
@@ -88,13 +89,61 @@ void DrawInventorySlot() {
         }
     }
 }
-void DrawMusic(){
-    DrawRectangle(90, 100, screenWidth-200, 60, DARKGRAY);
-    DrawText(TextFormat("Musique :"), 100, 101, 60, WHITE);
-}
+
 void DrawInventoryPage(){
     DrawRectangle(100, 10, screenWidth-200, 60, DARKGRAY);
     DrawText(TextFormat("Inventaire"), 330, 11, 60, WHITE); // Display quantity
     DrawInventorySlot();
     DrawMusic();
+    DrawMusicMenu();
+}
+
+void DrawMusic(){
+    DrawRectangle(100, 80, screenWidth-200, 60, DARKGRAY);
+    DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), 110, 81, 60, WHITE);
+}
+// Variable pour le bouton Play
+Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton;
+
+// Fonction pour initialiser le bouton Play
+void MusicButton() {
+    MusicPlayButton = (Rectangle) {100, 150, 100, 50 };
+    MusicPreviewButton = (Rectangle) {210, 150, 100, 50 };
+    MusicNextButton = (Rectangle) {320, 150, 100, 50 };
+}
+void DrawMusicMenu() {
+    MusicButton();
+
+    // Dessiner le bouton "Play"
+    if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
+        DrawRectangleRec(MusicPlayButton, LIGHTGRAY); } // Couleur survolée
+        
+    else {
+        DrawRectangleRec(MusicPlayButton, GRAY);}
+
+    if (CheckCollisionPointRec(GetMousePosition(), MusicPreviewButton)) {
+        DrawRectangleRec(MusicPreviewButton, LIGHTGRAY); } // Couleur survolée
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && currentMusicIndex>0) {
+            currentMusicIndex--;
+            currentChange=true;
+        }
+    else {
+        DrawRectangleRec(MusicPreviewButton, GRAY);  // Couleur normale
+    }
+    if (CheckCollisionPointRec(GetMousePosition(), MusicNextButton)) {
+        DrawRectangleRec(MusicNextButton, LIGHTGRAY);  // Couleur survolée
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            currentMusicIndex++;
+            currentChange=true;
+
+        }
+        } 
+    else {
+        DrawRectangleRec(MusicNextButton, GRAY);  // Couleur normale
+
+    }
+    DrawText(TextFormat("PAUSE /\nPLAY"), 100, 150, 20, WHITE);
+    DrawText(TextFormat("Preview"), 210, 150, 20, WHITE);
+    DrawText(TextFormat("Next "), 320, 150, 20, WHITE);
+
 }
