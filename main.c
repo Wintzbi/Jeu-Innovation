@@ -46,7 +46,7 @@ int main(void) {
                 currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
             }
         }
-        if (IsKeyPressed(KEY_P)) {
+        if (IsKeyPressed(KEY_TAB)) {
             isOptionOpen = !isOptionOpen;  // Ouvrir/fermer l'inventaire avec la touche E
 
             if (!isOptionOpen) {
