@@ -9,6 +9,7 @@
 extern int currentMusicIndex;
 extern Music currentMusic;
 extern bool currentChange;
+extern bool MusicPlay;
 
 // Prototypes des fonctions
 void InitMusic();

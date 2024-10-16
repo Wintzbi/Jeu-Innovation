@@ -117,24 +117,40 @@ void DrawMusicMenu() {
     // Dessiner le bouton "Play"
     if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
         DrawRectangleRec(MusicPlayButton, LIGHTGRAY); } // Couleur survolée
-        
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ){
+            MusicPlay=!MusicPlay;
+        }
     else {
         DrawRectangleRec(MusicPlayButton, GRAY);}
 
-    if (CheckCollisionPointRec(GetMousePosition(), MusicPreviewButton)) {
-        DrawRectangleRec(MusicPreviewButton, LIGHTGRAY); } // Couleur survolée
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && currentMusicIndex>0) {
-            currentMusicIndex--;
-            currentChange=true;
+   if (CheckCollisionPointRec(GetMousePosition(),MusicPreviewButton )) {
+        DrawRectangleRec(MusicPreviewButton, LIGHTGRAY);  // Couleur survolée
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ) {
+            if (currentMusicIndex>0){
+                currentMusicIndex--;
+                currentChange=true;
+            }
+            else currentMusicIndex=NUM_MUSIC_FILES-1;
         }
+        } 
     else {
         DrawRectangleRec(MusicPreviewButton, GRAY);  // Couleur normale
+
     }
+
     if (CheckCollisionPointRec(GetMousePosition(), MusicNextButton)) {
         DrawRectangleRec(MusicNextButton, LIGHTGRAY);  // Couleur survolée
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            currentMusicIndex++;
-            currentChange=true;
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ) {
+            if (currentMusicIndex<NUM_MUSIC_FILES-1){
+                currentMusicIndex++;
+                currentChange=true;
+            }
+            else 
+            {
+                currentMusicIndex=0;
+                currentChange=true;
+
+            }
 
         }
         } 

@@ -3,6 +3,7 @@
 // Définir la variable index pour suivre la musique en cours
 int currentMusicIndex = 0;
 bool currentChange = false;
+bool MusicPlay=true;
 
 // Définir la musique actuellement jouée
 Music currentMusic;
@@ -29,11 +30,14 @@ void InitMusic() {
 }
 
 void UpdateMusic() {
+    if (MusicPlay) PlayMusicStream(currentMusic);
+    else if (!MusicPlay) PlayMusicStream(currentMusic);
+
     // Mettre à jour le flux audio
     UpdateMusicStream(currentMusic);
 
     // Vérifier si la musique est terminée et qu'il n'y a pas de changement en attente
-    if (!IsMusicStreamPlaying(currentMusic) && !currentChange) {
+    if (!IsMusicStreamPlaying(currentMusic) && (!currentChange)) {
         // Décharger la musique actuelle
         UnloadMusicStream(currentMusic);
 
