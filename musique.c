@@ -7,8 +7,8 @@ bool MusicPlay=true;
 
 
 void DrawEscapePage(){
-    DrawRectangle(100, 10, screenWidth-200, 60, DARKGRAY);
-    DrawText(TextFormat("OPTIONS"), 330, 11, 60, WHITE); // Display quantity
+    DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
+    DrawText(TextFormat("OPTIONS"), (screenWidth/2)-390, 11, 60, WHITE); // Display quantity
     DrawMusic();
     DrawMusicMenu();
 }
@@ -81,17 +81,17 @@ void UnloadMusic() {
 
 
 void DrawMusic(){
-    DrawRectangle(100, 80, screenWidth-200, 60, DARKGRAY);
-    DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), 110, 81, 60, WHITE);
+    DrawRectangle((screenWidth/2)-400, 80, 800, 60, DARKGRAY);
+    DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
 }
 // Variable pour le bouton Play
 Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
-    MusicPlayButton = (Rectangle) {100, 150, 100, 50 };
-    MusicPreviewButton = (Rectangle) {210, 150, 100, 50 };
-    MusicNextButton = (Rectangle) {320, 150, 100, 50 };
+    MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
+    MusicPreviewButton = (Rectangle) {screenWidth/2-200, 150, 100, 50 };
+    MusicNextButton = (Rectangle) {(screenWidth/2)+100, 150, 100, 50 };
 }
 void DrawMusicMenu() {
     MusicButton();
@@ -146,8 +146,8 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
         DrawRectangleRec(MusicNextButton, GRAY);  // Couleur normale
 
     }
-    DrawText(TextFormat("PAUSE /\nPLAY"), 100, 150, 20, WHITE);
-    DrawText(TextFormat("Preview"), 210, 150, 20, WHITE);
-    DrawText(TextFormat("Next "), 320, 150, 20, WHITE);
+    DrawText(TextFormat("PAUSE /\nPLAY"), MusicPlayButton.x+10, 150, 20, WHITE);
+    DrawText(TextFormat("Preview"), MusicPreviewButton.x+10, 150, 20, WHITE);
+    DrawText(TextFormat("Next "), MusicNextButton.x+10, 150, 20, WHITE);
 
 }
