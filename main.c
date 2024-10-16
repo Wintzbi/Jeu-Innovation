@@ -14,6 +14,7 @@ int main(void) {
     GameScreen currentScreen = MENU;  // État initial du jeu : MENU
 
     bool isInventoryOpen = false;  // Inventaire fermé par défaut
+    bool isOptionOpen=false;
 
     ButtonPlay();  // Initialiser le bouton Play
     while (!WindowShouldClose()) {
@@ -45,10 +46,20 @@ int main(void) {
                 currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
             }
         }
+        if (IsKeyPressed(KEY_P)) {
+            isOptionOpen = !isOptionOpen;  // Ouvrir/fermer l'inventaire avec la touche E
+
+            if (!isOptionOpen) {
+                currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
+            }
+        }
 
         if (isInventoryOpen) {
             currentScreen = INVENT;  // Passer à l'état INVENT si l'inventaire est ouvert
-            DrawInventoryPage();  // Afficher la page de l'inventaire
+            DrawInventoryPage(); } // Afficher la page de l'inventaire
+        else if (isOptionOpen) {
+            currentScreen = OPTION;  // Passer à l'état ESCAPE si l'inventaire est ouvert
+            DrawEscapePage();
         } else if (currentScreen == GAME) {
             GridDraw();  // Dessiner la grille de jeu
 
