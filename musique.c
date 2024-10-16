@@ -37,29 +37,29 @@ void InitMusic() {
 }
 
 void UpdateMusic() {
-    if (MusicPlay) PlayMusicStream(currentMusic);
-    else if (!MusicPlay) PlayMusicStream(currentMusic);
+    // Ne pas passer à la musique suivante si la lecture est en pause
+    if (MusicPlay) {
+        // Mettre à jour le flux audio (si la musique est en lecture)
+        UpdateMusicStream(currentMusic);
 
-    // Mettre à jour le flux audio
-    UpdateMusicStream(currentMusic);
+        // Vérifier si la musique est terminée
+        if (!IsMusicStreamPlaying(currentMusic) && !currentChange) {
+            // Décharger la musique actuelle
+            UnloadMusicStream(currentMusic);
 
-    // Vérifier si la musique est terminée et qu'il n'y a pas de changement en attente
-    if (!IsMusicStreamPlaying(currentMusic) && (!currentChange)) {
-        // Décharger la musique actuelle
-        UnloadMusicStream(currentMusic);
+            // Passer à la musique suivante
+            currentMusicIndex++;
+            if (currentMusicIndex >= NUM_MUSIC_FILES) {
+                currentMusicIndex = 0;  // Revenir à la première musique
+            }
 
-        // Passer à la musique suivante
-        currentMusicIndex++;
-        if (currentMusicIndex >= NUM_MUSIC_FILES) {
-            currentMusicIndex = 0;  // Revenir à la première musique
+            // Charger et jouer la nouvelle musique
+            currentMusic = LoadMusicStream(musicFiles[currentMusicIndex]);
+            PlayMusicStream(currentMusic);
         }
-
-        // Charger et jouer la nouvelle musique
-        currentMusic = LoadMusicStream(musicFiles[currentMusicIndex]);
-        PlayMusicStream(currentMusic);
     }
 
-    // Gérer le changement de musique manuel
+    // Gérer le changement manuel de musique
     if (currentChange) {
         // Décharger la musique actuelle
         UnloadMusicStream(currentMusic);
@@ -97,11 +97,17 @@ void DrawMusicMenu() {
     MusicButton();
 
     // Dessiner le bouton "Play"
-    if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
-        DrawRectangleRec(MusicPlayButton, LIGHTGRAY); } // Couleur survolée
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ){
-            MusicPlay=!MusicPlay;
+if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
+    DrawRectangleRec(MusicPlayButton, LIGHTGRAY); // Couleur survolée
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        MusicPlay = !MusicPlay;  // Basculer entre lecture et pause
+        if (MusicPlay) {
+            ResumeMusicStream(currentMusic);  // Reprendre la musique
+        } else {
+            PauseMusicStream(currentMusic);   // Mettre en pause la musique
         }
+    }
+}
     else {
         DrawRectangleRec(MusicPlayButton, GRAY);}
 
