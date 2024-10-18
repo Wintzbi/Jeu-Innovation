@@ -83,6 +83,7 @@ void DrawMusic(){
     DrawRectangle((screenWidth/2)-400, 80, 800, 60, DARKGRAY);
     DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
 }
+Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
