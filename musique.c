@@ -1,6 +1,5 @@
 #include "musique.h"
 #include <stdlib.h>  // Pour rand() et srand()
-#include <stdio.h>
 
 
 // Définir la variable index pour suivre la musique en cours
@@ -8,7 +7,7 @@ int currentMusicIndex = 0;
 bool currentChange = false;
 bool MusicPlay=true;
 bool MusicLoop=false;
-bool MusicShuffle=true;
+bool MusicShuffle=false;
 
 
 void DrawEscapePage(){
@@ -49,9 +48,11 @@ void UpdateMusic() {
 
     }
 
-    if (!IsMusicStreamPlaying(currentMusic)  ){ //passe à la suivante si la musique est terminée
-        printf("Musique suivante");
-        currentMusicIndex++;
+    if (GetMusicTimeLength(currentMusic)<=GetMusicTimePlayed(currentMusic)+1  && !MusicLoop){ //passe à la suivante si la musique est terminée
+        if (MusicShuffle){
+                    RandomInt();
+                }
+                else currentMusicIndex++;
         if (currentMusicIndex >= NUM_MUSIC_FILES) {
             currentMusicIndex = 0;  // Revenir à la première musique
         }
@@ -83,10 +84,11 @@ void DrawMusic(){
     DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
 }
 // Variable pour le bouton Play
-Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton;
+Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
+    MusicLoopButton = (Rectangle) {screenWidth/2-350, 150, 100, 50 };
     MusicPreviewButton = (Rectangle) {screenWidth/2-200, 150, 100, 50 };
     MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
     MusicNextButton = (Rectangle) {(screenWidth/2)+100, 150, 100, 50 };
@@ -96,6 +98,15 @@ void DrawMusicMenu() {
     MusicButton();
 
     // Dessiner les bouttons
+if (CheckCollisionPointRec(GetMousePosition(), MusicLoopButton)) {
+    DrawRectangleRec(MusicLoopButton, LIGHTGRAY); // Couleur survolée
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        MusicLoop = !MusicLoop;  
+    }
+}
+    else {
+        DrawRectangleRec(MusicLoopButton, GRAY);}
+
 
 if (CheckCollisionPointRec(GetMousePosition(), MusicShuffleButton)) {
     DrawRectangleRec(MusicShuffleButton, LIGHTGRAY); // Couleur survolée
@@ -166,11 +177,17 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
         DrawRectangleRec(MusicNextButton, GRAY);  // Couleur normale
 
     }
-    DrawText(TextFormat("PAUSE /\nPLAY"), MusicPlayButton.x+10, 150, 20, WHITE);
+    if(MusicPlay) DrawText(TextFormat("PAUSE /\nPLAY"), MusicPlayButton.x+10, 150, 20, WHITE);
+    else DrawText(TextFormat("PAUSE /\nPLAY"), MusicPlayButton.x+10, 150, 20, BLUE);
+
     DrawText(TextFormat("Preview"), MusicPreviewButton.x+10, 150, 20, WHITE);
     DrawText(TextFormat("Next "), MusicNextButton.x+10, 150, 20, WHITE);
-    DrawText(TextFormat("Shuffle "), MusicShuffleButton.x+10, 150, 20, WHITE);
 
+    if(MusicShuffle) DrawText(TextFormat("Shuffle "), MusicShuffleButton.x+10, 150, 20, BLUE);
+    else DrawText(TextFormat("Shuffle "), MusicShuffleButton.x+10, 150, 20, WHITE);
+    
+    if (MusicLoop) DrawText(TextFormat("Loop "), MusicLoopButton.x+10, 150, 20, BLUE);
+    else DrawText(TextFormat("Loop "), MusicLoopButton.x+10, 150, 20, WHITE);
 }
 
 void RandomInt() {
