@@ -12,6 +12,8 @@ extern int currentMusicIndex;
 extern Music currentMusic;
 extern bool currentChange;
 extern bool MusicPlay;
+extern bool MusicLoop;
+extern bool MusicShuffle;
 
 // Prototypes des fonctions
 void InitMusic();
@@ -27,5 +29,6 @@ extern const char* musicFiles[NUM_MUSIC_FILES];
 void DrawMusicMenu();
 void DrawMusic();
 void MusicButton();
+void RandomInt() ;
 
 #endif

@@ -56,11 +56,16 @@ int main(void) {
 
         if (isInventoryOpen) {
             currentScreen = INVENT;  // Passer à l'état INVENT si l'inventaire est ouvert
-            DrawInventoryPage(); } // Afficher la page de l'inventaire
+            DrawInventoryPage(); 
+            } 
+            
+
         else if (isOptionOpen) {
             currentScreen = OPTION;  // Passer à l'état ESCAPE si l'inventaire est ouvert
             DrawEscapePage();
-        } else if (currentScreen == GAME) {
+
+        } 
+        else if (currentScreen == GAME) {
             GridDraw();  // Dessiner la grille de jeu
 
             rightClic();  // Placer un bloc avec un clic droit

@@ -1,9 +1,14 @@
 #include "musique.h"
+#include <stdlib.h>  // Pour rand() et srand()
+#include <stdio.h>
+
 
 // Définir la variable index pour suivre la musique en cours
 int currentMusicIndex = 0;
 bool currentChange = false;
 bool MusicPlay=true;
+bool MusicLoop=false;
+bool MusicShuffle=true;
 
 
 void DrawEscapePage(){
@@ -42,23 +47,16 @@ void UpdateMusic() {
         // Mettre à jour le flux audio (si la musique est en lecture)
         UpdateMusicStream(currentMusic);
 
-        // Vérifier si la musique est terminée
-        if (!IsMusicStreamPlaying(currentMusic) && !currentChange) {
-            // Décharger la musique actuelle
-            UnloadMusicStream(currentMusic);
-
-            // Passer à la musique suivante
-            currentMusicIndex++;
-            if (currentMusicIndex >= NUM_MUSIC_FILES) {
-                currentMusicIndex = 0;  // Revenir à la première musique
-            }
-
-            // Charger et jouer la nouvelle musique
-            currentMusic = LoadMusicStream(musicFiles[currentMusicIndex]);
-            PlayMusicStream(currentMusic);
-        }
     }
 
+    if (!IsMusicStreamPlaying(currentMusic)  ){ //passe à la suivante si la musique est terminée
+        printf("Musique suivante");
+        currentMusicIndex++;
+        if (currentMusicIndex >= NUM_MUSIC_FILES) {
+            currentMusicIndex = 0;  // Revenir à la première musique
+        }
+        currentChange=true;
+    }
     // Gérer le changement manuel de musique
     if (currentChange) {
         // Décharger la musique actuelle
@@ -85,18 +83,29 @@ void DrawMusic(){
     DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
 }
 // Variable pour le bouton Play
-Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton;
+Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
-    MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
     MusicPreviewButton = (Rectangle) {screenWidth/2-200, 150, 100, 50 };
+    MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
     MusicNextButton = (Rectangle) {(screenWidth/2)+100, 150, 100, 50 };
+    MusicShuffleButton = (Rectangle) {(screenWidth/2)+250, 150, 100, 50 };
 }
 void DrawMusicMenu() {
     MusicButton();
 
-    // Dessiner le bouton "Play"
+    // Dessiner les bouttons
+
+if (CheckCollisionPointRec(GetMousePosition(), MusicShuffleButton)) {
+    DrawRectangleRec(MusicShuffleButton, LIGHTGRAY); // Couleur survolée
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        MusicShuffle = !MusicShuffle;  
+    }
+}
+    else {
+        DrawRectangleRec(MusicShuffleButton, GRAY);}
+
 if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
     DrawRectangleRec(MusicPlayButton, LIGHTGRAY); // Couleur survolée
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -115,10 +124,17 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
         DrawRectangleRec(MusicPreviewButton, LIGHTGRAY);  // Couleur survolée
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ) {
             if (currentMusicIndex>0){
-                currentMusicIndex--;
+                if (MusicShuffle){
+                    RandomInt();
+                }
+                else currentMusicIndex--;
+                
                 currentChange=true;
             }
-            else currentMusicIndex=NUM_MUSIC_FILES-1;
+            else {
+                currentMusicIndex=NUM_MUSIC_FILES-1;
+                currentChange=true;
+            }
         }
         } 
     else {
@@ -130,7 +146,11 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
         DrawRectangleRec(MusicNextButton, LIGHTGRAY);  // Couleur survolée
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ) {
             if (currentMusicIndex<NUM_MUSIC_FILES-1){
-                currentMusicIndex++;
+                if (MusicShuffle){
+                    RandomInt();
+                }
+                else currentMusicIndex++;
+
                 currentChange=true;
             }
             else 
@@ -149,5 +169,13 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
     DrawText(TextFormat("PAUSE /\nPLAY"), MusicPlayButton.x+10, 150, 20, WHITE);
     DrawText(TextFormat("Preview"), MusicPreviewButton.x+10, 150, 20, WHITE);
     DrawText(TextFormat("Next "), MusicNextButton.x+10, 150, 20, WHITE);
+    DrawText(TextFormat("Shuffle "), MusicShuffleButton.x+10, 150, 20, WHITE);
 
+}
+
+void RandomInt() {
+    int old = currentMusicIndex;  // Sauvegarde de la valeur actuelle
+    do {
+        currentMusicIndex = rand() % NUM_MUSIC_FILES;  // Génération d'un nouvel index
+    } while (currentMusicIndex == old);  // Comparer les valeurs pour éviter la répétition
 }

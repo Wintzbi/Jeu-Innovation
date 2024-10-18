@@ -6,6 +6,7 @@ bool itemFound = false;         // Définition de itemFound
 int selectedItem = 0;          // Définition de l'index de l'item sélectionné
 Item inventory[INVENTORY_SIZE]; // Inventaire avec 10 types de blocs
 bool isInventoryOpen = false;
+bool isCaseClicked=false;
 
 void InitInventory() {
     inventory[0] = (Item) { copperTexture, 2 };  // Bloc de cuivre avec 2 unités
@@ -88,6 +89,13 @@ void DrawInventorySlot() {
             }
         }
     }
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        isCaseClicked=!isCaseClicked;
+        if (isCaseClicked) FollowMouse(slotSize);
+    }
+    
+
 }
 
 void DrawInventoryPage(){
@@ -95,5 +103,31 @@ void DrawInventoryPage(){
     DrawText(TextFormat("Inventaire"), 330, 11, 60, WHITE); // Display quantity
     DrawInventorySlot();
 
+}
+void FollowMouse(int slotSize) {
+    // Obtenir la position de la souris
+    Vector2 mousePosition = GetMousePosition();
+    
+    // Calculer la position en fonction de la grille (si nécessaire)
+    int posX = (int)(mousePosition.x / slotSize);
+    int posY = (int)(mousePosition.y / slotSize);
+
+    // Dessiner un rectangle à la position de la souris (suivant la grille)
+    DrawRectangle(posX * slotSize +10, posY * slotSize +10, slotSize, slotSize, Fade(RED, 0.3f));
+
+    // Définir la source de la texture à afficher (tout le sprite)
+    Rectangle source = (Rectangle){ 0, 0, inventory[0].texture.width, inventory[0].texture.height };
+
+    // Définir la destination de la texture (la position où elle sera dessinée)
+    Rectangle dest = (Rectangle){ mousePosition.x - slotSize / 2, 
+                                  mousePosition.y - slotSize / 2, 
+                                  slotSize, 
+                                  slotSize };
+
+    // L'origine de la texture est son centre (pour la suivre précisément)
+    Vector2 origin = (Vector2){ inventory[0].texture.width / 2, inventory[0].texture.height / 2 };
+
+    // Dessiner la texture qui suit la souris
+    DrawTexturePro(inventory[0].texture, source, dest, origin, 0.0f, WHITE);
 }
 

@@ -14,11 +14,13 @@ extern int selectedItem; // Déclaration externe de selectedItem
 extern bool itemFound;   // Déclaration externe de itemFound
 extern Item inventory[INVENTORY_SIZE]; // Déclaration externe de inventory
 extern bool isInventoryOpen;
+extern bool isCaseClicked;
 
 void DrawInventoryBar();
 void InitInventory();
 void DrawInventoryPage();
 void DrawInventorySlot();
+void FollowMouse(int x);
 
 
 #endif
