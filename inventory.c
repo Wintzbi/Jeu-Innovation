@@ -7,6 +7,10 @@ int selectedItem = 0;          // Définition de l'index de l'item sélectionné
 Item inventory[INVENTORY_SIZE]; // Inventaire avec 10 types de blocs
 bool isInventoryOpen = false;
 bool isCaseClicked=false;
+bool TextureFollow=false;
+int indTexture=0;
+int NewindTexture=0;
+
 
 void InitInventory() {
     inventory[0] = (Item) { copperTexture, 2 };  // Bloc de cuivre avec 2 unités
@@ -92,7 +96,29 @@ void DrawInventorySlot() {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         isCaseClicked=!isCaseClicked;
-        if (isCaseClicked) FollowMouse(slotSize);
+       
+    }
+     if (isCaseClicked) {
+        if (!TextureFollow) indTexture= checkPos( slotSize, rect_per_line);
+        if(indTexture !=-1){
+            FollowMouse(slotSize,rect_per_line,indTexture);
+        }
+        
+     }
+
+    else if (!isCaseClicked){
+        if (TextureFollow){
+            NewindTexture=checkPos(slotSize, rect_per_line);
+            if (NewindTexture != -1 && NewindTexture != indTexture && inventory[NewindTexture].quantity == 0){
+                inventory[NewindTexture] = inventory[indTexture];
+                inventory[indTexture] = (Item) {};
+                TextureFollow=false;
+            
+            }
+            else isCaseClicked=true;
+        }
+        
+        
     }
     
 
@@ -104,30 +130,37 @@ void DrawInventoryPage(){
     DrawInventorySlot();
 
 }
-void FollowMouse(int slotSize) {
-    // Obtenir la position de la souris
+
+void FollowMouse(int slotSize,int rect_per_line,int indTexture) {
+    TextureFollow= true;
+    // Obtenez la position de la souris
     Vector2 mousePosition = GetMousePosition();
     
-    // Calculer la position en fonction de la grille (si nécessaire)
-    int posX = (int)(mousePosition.x / slotSize);
-    int posY = (int)(mousePosition.y / slotSize);
+            Rectangle source = { 0, 0, inventory[indTexture].texture.width, inventory[indTexture].texture.height };
+            Rectangle dest = { mousePosition.x - slotSize / 2, 
+                               mousePosition.y - slotSize / 2, 
+                               slotSize, 
+                               slotSize };
+            Vector2 origin = { inventory[indTexture].texture.width / 2, inventory[indTexture].texture.height / 2 };
 
-    // Dessiner un rectangle à la position de la souris (suivant la grille)
-    DrawRectangle(posX * slotSize +10, posY * slotSize +10, slotSize, slotSize, Fade(RED, 0.3f));
+            DrawTexturePro(inventory[indTexture].texture, source, dest, origin, 0.0f, WHITE);        
+    }
 
-    // Définir la source de la texture à afficher (tout le sprite)
-    Rectangle source = (Rectangle){ 0, 0, inventory[0].texture.width, inventory[0].texture.height };
+int checkPos(int slotSize,int rect_per_line){
+// Obtenez la position de la souris
+    Vector2 mousePosition = GetMousePosition();
+    
+    // Vérifiez si la souris est sur un slot
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        int slotX = ((i % rect_per_line) * slotSize) + 10; // Position X du slot
+        int slotY = 200 + (i / rect_per_line) * slotSize; // Position Y du slot
 
-    // Définir la destination de la texture (la position où elle sera dessinée)
-    Rectangle dest = (Rectangle){ mousePosition.x - slotSize / 2, 
-                                  mousePosition.y - slotSize / 2, 
-                                  slotSize, 
-                                  slotSize };
-
-    // L'origine de la texture est son centre (pour la suivre précisément)
-    Vector2 origin = (Vector2){ inventory[0].texture.width / 2, inventory[0].texture.height / 2 };
-
-    // Dessiner la texture qui suit la souris
-    DrawTexturePro(inventory[0].texture, source, dest, origin, 0.0f, WHITE);
+        // Vérifiez si la souris est dans les limites du slot
+        if (mousePosition.x >= slotX && mousePosition.x <= slotX + slotSize &&
+            mousePosition.y >= slotY && mousePosition.y <= slotY + slotSize ){
+                return i;
+            }
+  
 }
-
+  return -1;
+}

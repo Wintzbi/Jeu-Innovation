@@ -15,12 +15,15 @@ extern bool itemFound;   // Déclaration externe de itemFound
 extern Item inventory[INVENTORY_SIZE]; // Déclaration externe de inventory
 extern bool isInventoryOpen;
 extern bool isCaseClicked;
-
+extern bool TextureFollow;
+extern int indTexture;
+extern int  NewindTexture;
 void DrawInventoryBar();
 void InitInventory();
 void DrawInventoryPage();
 void DrawInventorySlot();
-void FollowMouse(int x);
+void FollowMouse(int x,int y,int z);
+int checkPos(int x,int y);
 
 
 #endif

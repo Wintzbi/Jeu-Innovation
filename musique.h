@@ -23,6 +23,8 @@ void DrawEscapePage();
 
 // Définir le nombre de musiques dans la liste
 #define NUM_MUSIC_FILES 6
+// Variable pour les bouttons
+Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton;
 
 // Liste des chemins des musiques (tableau de chaînes de caractères)
 extern const char* musicFiles[NUM_MUSIC_FILES];

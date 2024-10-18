@@ -83,8 +83,6 @@ void DrawMusic(){
     DrawRectangle((screenWidth/2)-400, 80, 800, 60, DARKGRAY);
     DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
 }
-// Variable pour le bouton Play
-Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
@@ -185,7 +183,7 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
 
     if(MusicShuffle) DrawText(TextFormat("Shuffle "), MusicShuffleButton.x+10, 150, 20, BLUE);
     else DrawText(TextFormat("Shuffle "), MusicShuffleButton.x+10, 150, 20, WHITE);
-    
+
     if (MusicLoop) DrawText(TextFormat("Loop "), MusicLoopButton.x+10, 150, 20, BLUE);
     else DrawText(TextFormat("Loop "), MusicLoopButton.x+10, 150, 20, WHITE);
 }
