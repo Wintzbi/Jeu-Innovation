@@ -47,7 +47,7 @@ void DrawInventoryBar() {
         }
 
         // Check if the quantity is > 0 to draw the enlarged texture
-        if (inventory[i].quantity > 0) {
+        if (inventory[i].quantity > 0 ) {
             Rectangle source = { 0, 0, inventory[i].texture.width, inventory[i].texture.height };
             Rectangle dest = { i * slotSize + (slotSize - targetImageSize) / 2, 
                                (invHeight - targetImageSize) / 2, 
