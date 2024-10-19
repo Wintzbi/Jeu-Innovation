@@ -19,7 +19,7 @@ else
 endif
 
 # Liste des fichiers objets
-OBJS = cell.o inventory.o texture.o input.o menu.o musique.o main.o
+OBJS = cell.o inventory.o texture.o input.o menu.o musique.o camera.o main.o
 
 # Compilation des fichiers objets
 %.o: %.c

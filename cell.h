@@ -6,8 +6,8 @@ extern const int screenWidth;
 extern const int screenHeight;
 extern const int cellSize;
 
-#define COL 50
-#define ROW 50
+#define COL 100
+#define ROW 100
 
 extern int offsetX ;
 extern int offsetY;
