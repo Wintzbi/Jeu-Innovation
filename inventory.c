@@ -106,20 +106,30 @@ void DrawInventorySlot() {
         
      }
 
-    else if (!isCaseClicked){
-        if (TextureFollow){
-            NewindTexture=checkPos(slotSize, rect_per_line);
-            if (NewindTexture != -1 && NewindTexture != indTexture && inventory[NewindTexture].quantity == 0){
-                inventory[NewindTexture] = inventory[indTexture];
-                inventory[indTexture] = (Item) {};
-                TextureFollow=false;
-            
+    else if (!isCaseClicked) {
+        if (TextureFollow) {
+            NewindTexture = checkPos(slotSize, rect_per_line);
+
+            // Vérifier si la nouvelle position n'est pas la même que l'ancienne et qu'elle est valide
+            if (NewindTexture != -1 && NewindTexture != indTexture) {
+                // Si la case contient déjà un objet du même type (même texture), additionner les quantités
+                if (inventory[NewindTexture].texture.id == inventory[indTexture].texture.id) {
+                    inventory[NewindTexture].quantity += inventory[indTexture].quantity;
+                    inventory[indTexture] = (Item) {};  // Vider l'ancienne case
+                }
+                // Si la case est vide, déplacer l'objet
+                else if (inventory[NewindTexture].quantity == 0) {
+                    inventory[NewindTexture] = inventory[indTexture];
+                    inventory[indTexture] = (Item) {};  // Vider l'ancienne case
+                }
+                
+                TextureFollow = false;  // Arrêter le suivi de la texture
+            } else {
+                isCaseClicked = true;  // Rester en mode suivi si la condition de dépôt n'est pas remplie
             }
-            else isCaseClicked=true;
         }
-        
-        
     }
+
     
 
 }
