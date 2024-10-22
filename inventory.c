@@ -109,7 +109,7 @@ void DrawInventorySlot() {
      if (isCaseClicked) {
         if (!TextureFollow) indTexture= checkPos( slotSize, rect_per_line);
         if(indTexture !=-1){
-            FollowMouse(slotSize,rect_per_line,indTexture);
+            if ((RightClick && inventory[indTexture].quantity>1)|| !RightClick) FollowMouse(slotSize,rect_per_line,indTexture);
         }
         
      }
