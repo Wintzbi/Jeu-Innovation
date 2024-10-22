@@ -88,7 +88,7 @@ void DrawInventorySlot() {
                 Rectangle dest = { ((i % rect_per_line) * slotSize)+10, 195 + slotSize*(i / rect_per_line),slotSize, slotSize };
                 Vector2 origin = { 0, 0 };
                 DrawTexturePro(inventory[i].texture, source, dest, origin, 0.0f, WHITE);
-                DrawText(TextFormat("%d", inventory[i].quantity), ((i % rect_per_line) * slotSize)+10, 195 + slotSize*(i / rect_per_line), 20, WHITE); // Display quantity
+                DrawText(TextFormat("%d", inventory[i].quantity), ((i % rect_per_line) * slotSize)+10, 180+slotSize + slotSize*(i / rect_per_line), 20, WHITE); // Display quantity
                 itemFound = true;}
             } else {
                 itemFound = false;
