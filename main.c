@@ -15,6 +15,7 @@ int main(void) {
 
     bool isInventoryOpen = false;  // Inventaire fermé par défaut
     bool isOptionOpen=false;
+    bool isCraftOpen=false;
 
     ButtonPlay();  // Initialiser le bouton Play
     while (!WindowShouldClose()) {
@@ -54,6 +55,14 @@ int main(void) {
             }
         }
 
+        if (IsKeyPressed(KEY_C)) {
+                isCraftOpen = !isCraftOpen;  // Ouvrir/fermer l'inventaire avec la touche E
+
+                if (!isCraftOpen) {
+                    currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
+                }
+            }
+
         if (isInventoryOpen) {
             currentScreen = INVENT;  // Passer à l'état INVENT si l'inventaire est ouvert
             DrawInventoryPage(); 
@@ -64,6 +73,11 @@ int main(void) {
             currentScreen = OPTION;  // Passer à l'état ESCAPE si l'inventaire est ouvert
             DrawEscapePage();
 
+        } 
+
+        else if (isCraftOpen) {
+            currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
+            DrawCraftPage();
         } 
         else if (currentScreen == GAME) {
             GridDraw();  // Dessiner la grille de jeu
@@ -82,6 +96,5 @@ int main(void) {
     UnloadMusic();
     UnloadAllTexture();  // Décharger les textures
     CloseWindow();  // Fermer la fenêtre
-
     return 0;
 }
