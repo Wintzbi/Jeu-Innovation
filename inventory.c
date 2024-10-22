@@ -8,8 +8,8 @@ Item inventory[INVENTORY_SIZE]; // Inventaire avec 10 types de blocs
 bool isInventoryOpen = false;
 bool isCaseClicked=false;
 bool TextureFollow=false;
-int indTexture=0;
-int NewindTexture=0;
+int indTexture=-1;
+int NewindTexture=-1;
 
 
 void InitInventory() {
@@ -82,12 +82,13 @@ void DrawInventorySlot() {
 
             // Check if the quantity is > 0 to draw the enlarged texture
             if (inventory[i].quantity > 0) {
+                if(i!=indTexture){
                 Rectangle source = { 0, 0, inventory[i].texture.width, inventory[i].texture.height };
                 Rectangle dest = { ((i % rect_per_line) * slotSize)+10, 195 + slotSize*(i / rect_per_line),slotSize, slotSize };
                 Vector2 origin = { 0, 0 };
                 DrawTexturePro(inventory[i].texture, source, dest, origin, 0.0f, WHITE);
                 DrawText(TextFormat("%d", inventory[i].quantity), ((i % rect_per_line) * slotSize)+10, 195 + slotSize*(i / rect_per_line), 20, WHITE); // Display quantity
-                itemFound = true;
+                itemFound = true;}
             } else {
                 itemFound = false;
             }
@@ -116,13 +117,15 @@ void DrawInventorySlot() {
                 if (inventory[NewindTexture].texture.id == inventory[indTexture].texture.id) {
                     inventory[NewindTexture].quantity += inventory[indTexture].quantity;
                     inventory[indTexture] = (Item) {};  // Vider l'ancienne case
+                    
                 }
                 // Si la case est vide, déplacer l'objet
                 else if (inventory[NewindTexture].quantity == 0) {
                     inventory[NewindTexture] = inventory[indTexture];
                     inventory[indTexture] = (Item) {};  // Vider l'ancienne case
+                    
                 }
-                
+                indTexture=-1;
                 TextureFollow = false;  // Arrêter le suivi de la texture
             } else {
                 isCaseClicked = true;  // Rester en mode suivi si la condition de dépôt n'est pas remplie
