@@ -8,7 +8,7 @@ int main(void) {
     InitGrid();  // Initialiser la grille
     InitMusic();
     InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
-
+    InitBaseCraft();
     SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
     GameScreen currentScreen = MENU;  // État initial du jeu : MENU
