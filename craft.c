@@ -53,7 +53,7 @@ void DrawCraftMenu() {
 void InitBaseCraft() {
     // Remplir BaseCraft avec des textures fictives (à remplacer par vos vraies textures)
     for (int i = 0; i < MaxBaseCraft; i++) {
-        BaseCraft[i] = (Craft) { LoadTexture("path_to_texture.png"), 1 };
+        //BaseCraft[i] = (Craft) { LoadTexture("path_to_texture.png"), 1 };
     }
 
     // Initialiser les rectangles des options de menu
@@ -71,8 +71,5 @@ void DrawBaseCraft() {
         }
     }
 
-    // Afficher l'option sélectionnée
-    if (CraftSelectedItem >= 0) {
-        DrawText(TextFormat("Selected: Option %d", CraftSelectedItem + 1), 100, 400, 20, DARKGREEN);
-    }
+    
 }
