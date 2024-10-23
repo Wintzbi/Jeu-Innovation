@@ -26,7 +26,8 @@ const char* musicFiles[NUM_MUSIC_FILES] = {
     "musiques/03.mp3",
     "musiques/04.mp3",
     "musiques/05.mp3",
-    "musiques/06.mp3"
+    "musiques/06.mp3",
+    "musiques/07.mp3"
 };
 
 void InitMusic() {
