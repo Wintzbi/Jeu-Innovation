@@ -11,6 +11,8 @@ int main(void) {
     //InitBaseCraft();
     SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
+    setPlayerCamera();
+
     GameScreen currentScreen = MENU;
     bool isInventoryOpen = false;
     bool isOptionOpen = false;
@@ -21,10 +23,12 @@ int main(void) {
     while (!WindowShouldClose()) {
         UpdateMusic();
         InitInventoryKeyBiding();
-        setPlayerCamera();
+        moveCamera();
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
+
+        BeginMode2D(camera);
 
         if (currentScreen == MENU) {
             DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
@@ -87,7 +91,7 @@ int main(void) {
 
             DrawInventoryBar();  // Dessiner la barre de l'inventaire
         }
-
+        EndMode2D();
         EndDrawing();
     }
 

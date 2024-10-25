@@ -1,8 +1,8 @@
 #include "cell.h"
 #include "inventory.h"
 
-const int screenWidth = 1920*0.5;
-const int screenHeight = 1200*0.5;
+const int screenWidth = 1920;
+const int screenHeight = 1200;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;

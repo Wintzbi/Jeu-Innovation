@@ -1,5 +1,6 @@
 #include "cell.h"
 #include "inventory.h"
+#include "camera.h"
 
 void mouseDefault() {
     int posX = (int)(GetMousePosition().x / cellSize);
