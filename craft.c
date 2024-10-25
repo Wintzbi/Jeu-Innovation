@@ -1,6 +1,6 @@
 #include "craft.h"
 #include <stdio.h>
-#include <string.h> // Pour utiliser strcmp
+
 
 
 int CraftSelectedItem=-1;
@@ -76,7 +76,7 @@ void DrawCraftItem(){
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton1)) {
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
-            //CraftItem(1,BaseCraftInvent[selectedItem]);
+            CraftItem(1,BaseCraftInvent[selectedItem]);
         }
     } else {
         DrawRectangleRec(ConfirmCraftButton1, GRAY);
@@ -87,7 +87,8 @@ void DrawCraftItem(){
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton5)) {
             DrawRectangleRec(ConfirmCraftButton5, LIGHTGRAY); // Couleur si survolé
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable ) {
-
+                CraftItem(5,BaseCraftInvent[selectedItem]);
+                DeletComp(BaseCraftInvent[selectedItem]);
             }
         } else {
             DrawRectangleRec(ConfirmCraftButton5, GRAY);
@@ -98,7 +99,7 @@ void DrawCraftItem(){
 
 
 void InitBaseCraft() {
-    BaseCraftInvent[0] = (Craft) { "Lingot Cuivre",copperTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 20 }}};
+    BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 20 }}};
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
@@ -137,16 +138,40 @@ int CheckQuantity(Item comp){
     return 0;
 }
 
-void CraftItem(int q,Craft obj){
-    printf("Objet en cours de craft");
+int CraftItem(int q,Craft obj){
+    printf("Tentative de crafting de %s avec quantité %d\n", obj.name, q);
+
     for (int i=0;i<INVENTORY_SIZE;i++){
-        if (inventory[i].quantity>0 )
+        if (strcmp(obj.name, inventory[i].name) ==0  )
         {
-            printf("emplacement dispo trouvé");
-            strcpy(inventory[i].name, obj.name);
+            printf("Add %s et %s\n",inventory[i].name,obj.name);
+
+            inventory[i].quantity += q;
+            return 0;
+        }
+    }
+    for (int i=0;i<INVENTORY_SIZE;i++){
+        if (inventory[i].quantity==0)
+        {
+            strncpy(inventory[i].name, obj.name, sizeof(inventory[i].name) );
+            //inventory[i].name[sizeof(inventory[i].name) - 1] = '\0'; // S'assurer que c'est terminé par '\0'
+            printf("Init %s et %s\n",inventory[i].name,obj.name);
             inventory[i].quantity = q;
             inventory[i].texture = obj.texture;
+            return 0;
         }
     }
     IsCraftable=true;
+    return -1;
+}
+int DeletComp(Craft obj){
+    for (int i =0;i<obj.ComponentCount;i++){
+        for (int i=0;i<INVENTORY_SIZE;i++){
+            if (strcmp(obj.components[i].name, inventory[i].name) ==0 ){
+                inventory[i].quantity= inventory[i].quantity - obj.components[i].quantity;
+                return 0;
+            }
+        }
+    }
+    return 1;
 }

@@ -19,8 +19,9 @@ void DrawCraftMenu();
 void DrawBaseCraft();
 void InitBaseCraft();
 void DrawCraftItem();
-void CraftItem(int q,Craft obj);
+int CraftItem(int q,Craft obj);
 int CheckQuantity(Item comp);
+int DeletComp(Craft obj);
 
 extern bool DropDownMenu;
 extern bool IsCraftable;

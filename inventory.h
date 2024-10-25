@@ -2,10 +2,10 @@
 #define INVENTORY_H
 #include "raylib.h"
 #include "texture.h"
-
+#include <string.h> // Pour utiliser strcmp
 #define INVENTORY_SIZE 10
 typedef struct Item {
-    char name[10];
+    char name[20];
     Texture2D texture;
     int quantity;
 } Item;
