@@ -1,3 +1,5 @@
+#ifndef CRAFT_H
+#define CRAFT_H
 #include "cell.h"
 #include "inventory.h"
 
@@ -20,3 +22,4 @@ Craft BaseCraft[MaxBaseCraft];
 
 Rectangle BaseCraftButton, dropdownMenu[MaxBaseCraft];
 extern int CraftSelectedItem;
+#endif
