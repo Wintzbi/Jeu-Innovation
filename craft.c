@@ -47,7 +47,7 @@ void DrawCraftMenu() {
 void DrawCraftItem(){
     DrawText(TextFormat("Selected: Option %d", CraftSelectedItem + 1), 400, 180, 20, DARKGREEN);
     Vector2 pos = { 400, 200 };
-    DrawTextureEx(BaseCraftInvent.texture, pos,  0.0f,  8.0f, WHITE);
+    DrawTextureEx(BaseCraftInvent[CraftSelectedItem].texture, pos,  0.0f,  8.0f, WHITE);
 
     ConfirmCraftButton1 = (Rectangle) { 300, 400, 120, 50 };
     ConfirmCraftButton5 = (Rectangle) { 450, 400, 120, 50 };
@@ -76,7 +76,7 @@ void DrawCraftItem(){
 
 
 void InitBaseCraft() {
-    BaseCraftInvent[0] = (Craft) { copperTexture, 2 };
+    BaseCraftInvent[0] = (Craft) { "Cuivre",copperTexture, 2 };
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
@@ -96,7 +96,7 @@ void DrawBaseCraft() {
                 DrawRectangleRec(dropdownMenu[i], GRAY);
             }
 
-            DrawText(TextFormat("Option %d", i + 1), dropdownMenu[i].x + 10, dropdownMenu[i].y + 10, 20, DARKGRAY);
+            DrawText(TextFormat("%s",BaseCraftInvent[i].name), dropdownMenu[i].x + 10, dropdownMenu[i].y + 10, 20, DARKGRAY);
         }
 
     

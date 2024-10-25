@@ -18,6 +18,7 @@ CraftMenu CurrentMenu;
 
 
 typedef struct Craft {
+    char name[10];
     Texture2D texture;
     int quantity;
 } Craft;
