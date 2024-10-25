@@ -5,23 +5,29 @@
 
 #define MaxBaseCraft 5
 
+typedef struct Craft {
+    char name[20];
+    Texture2D texture;
+    int quantity;
+    int ComponentCount;
+    Item components[5]; // Composants nécessaires
+} Craft;
+
 void DrawCraftPage();
 void CraftButton();
 void DrawCraftMenu();
 void DrawBaseCraft();
 void InitBaseCraft();
 void DrawCraftItem();
+void CraftItem(int q,Craft obj);
+int CheckQuantity(Item comp);
 
 extern bool DropDownMenu;
+extern bool IsCraftable;
 typedef enum CraftMenu { NONE,BASE } CraftMenu;
 CraftMenu CurrentMenu;
 
 
-typedef struct Craft {
-    char name[10];
-    Texture2D texture;
-    int quantity;
-} Craft;
 
 extern Craft BaseCraftInvent[MaxBaseCraft];
 

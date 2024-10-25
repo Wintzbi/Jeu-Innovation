@@ -1,7 +1,10 @@
 #include "craft.h"
+#include <stdio.h>
+#include <string.h> // Pour utiliser strcmp
+
 
 int CraftSelectedItem=-1;
-
+bool IsCraftable=true;
 CraftMenu CurrentMenu=NONE;
 Craft BaseCraftInvent[MaxBaseCraft];
 
@@ -45,17 +48,36 @@ void DrawCraftMenu() {
 }
 }
 void DrawCraftItem(){
-    DrawText(TextFormat("Selected: Option %d", CraftSelectedItem + 1), 400, 180, 20, DARKGREEN);
+    DrawText(TextFormat("%s",BaseCraftInvent[CraftSelectedItem].name), 400, 180, 30, DARKGRAY);
     Vector2 pos = { 400, 200 };
     DrawTextureEx(BaseCraftInvent[CraftSelectedItem].texture, pos,  0.0f,  8.0f, WHITE);
 
+    
+
+    for (int i =0;i<BaseCraftInvent[selectedItem].ComponentCount;i++)
+    {
+        if(CheckQuantity(BaseCraftInvent[selectedItem].components[i]) ==0 ){
+            DrawRectangle(screenWidth-210, 200+70*i, 170, 60, DARKGRAY);
+        }
+        else 
+        {
+            DrawRectangle(screenWidth-210, 200+70*i, 170, 60, LIGHTGRAY);
+            IsCraftable=false;
+        }
+        DrawText(TextFormat("%d %s",BaseCraftInvent[selectedItem].components[i].quantity,BaseCraftInvent[selectedItem].components[i].name), screenWidth-200, 210+70*i, 15, WHITE);
+        Vector2 pos = { screenWidth-100, 200+70*i};
+        DrawTextureEx(BaseCraftInvent[selectedItem].components[i].texture, pos,  0.0f,  3.0f, WHITE);
+
+    }
+
     ConfirmCraftButton1 = (Rectangle) { 300, 400, 120, 50 };
     ConfirmCraftButton5 = (Rectangle) { 450, 400, 120, 50 };
+
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton1)) {
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CurrentMenu==NONE) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
+            //CraftItem(1,BaseCraftInvent[selectedItem]);
         }
-        else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) ;
     } else {
         DrawRectangleRec(ConfirmCraftButton1, GRAY);
     }
@@ -64,9 +86,9 @@ void DrawCraftItem(){
 
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton5)) {
             DrawRectangleRec(ConfirmCraftButton5, LIGHTGRAY); // Couleur si survolé
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CurrentMenu==NONE) {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable ) {
+
             }
-            else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) ;
         } else {
             DrawRectangleRec(ConfirmCraftButton5, GRAY);
         }
@@ -76,7 +98,7 @@ void DrawCraftItem(){
 
 
 void InitBaseCraft() {
-    BaseCraftInvent[0] = (Craft) { "Cuivre",copperTexture, 2 };
+    BaseCraftInvent[0] = (Craft) { "Lingot Cuivre",copperTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 20 }}};
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
@@ -100,4 +122,31 @@ void DrawBaseCraft() {
         }
 
     
+}
+
+int CheckQuantity(Item comp){
+    int res=0;
+    for (int i=0;i<INVENTORY_SIZE;i++){
+        //printf("nom comp : %s, inventaire : %s\n",comp.name,inventory[i].name);
+        if (strcmp(comp.name, inventory[i].name) ==0 ){
+            //printf("Quantité %d et %d",inventory[i].quantity,comp.quantity);
+            res+=inventory[i].quantity;
+        }
+    }
+    if (res<comp.quantity) return -1;
+    return 0;
+}
+
+void CraftItem(int q,Craft obj){
+    printf("Objet en cours de craft");
+    for (int i=0;i<INVENTORY_SIZE;i++){
+        if (inventory[i].quantity>0 )
+        {
+            printf("emplacement dispo trouvé");
+            strcpy(inventory[i].name, obj.name);
+            inventory[i].quantity = q;
+            inventory[i].texture = obj.texture;
+        }
+    }
+    IsCraftable=true;
 }

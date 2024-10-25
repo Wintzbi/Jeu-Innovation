@@ -3,8 +3,9 @@
 #include "raylib.h"
 #include "texture.h"
 
-#define INVENTORY_SIZE 40
+#define INVENTORY_SIZE 10
 typedef struct Item {
+    char name[10];
     Texture2D texture;
     int quantity;
 } Item;
