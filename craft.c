@@ -1,6 +1,10 @@
 #include "craft.h"
+#include "raylib.h"
+
 int CraftSelectedItem=-1;
 bool DropDownMenu = false;
+
+Rectangle BaseCraftButton, dropdownMenu[MaxBaseCraft];
 
 void CraftButton() {
     BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };

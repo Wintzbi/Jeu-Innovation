@@ -8,7 +8,7 @@ int main(void) {
     InitMusic();
 
     InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
-    InitBaseCraft();
+    //InitBaseCraft();
     SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
     GameScreen currentScreen = MENU;
@@ -21,6 +21,7 @@ int main(void) {
     while (!WindowShouldClose()) {
         UpdateMusic();
         InitInventoryKeyBiding();
+        setPlayerCamera();
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -73,7 +74,7 @@ int main(void) {
 
         else if (isCraftOpen) {
             currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
-            DrawCraftPage();
+            //DrawCraftPage();
         } 
         else if (currentScreen == GAME) {
             GridDraw();  // Dessiner la grille de jeu
