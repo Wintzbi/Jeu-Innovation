@@ -22,6 +22,7 @@ void DrawCraftItem();
 int CraftItem(int q,Craft obj);
 int CheckQuantity(Item comp);
 int DeletComp(Craft obj,int q);
+extern int AvaQuantity;
 
 extern bool DropDownMenu;
 extern bool IsCraftable;

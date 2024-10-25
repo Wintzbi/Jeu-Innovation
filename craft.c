@@ -4,6 +4,7 @@
 
 
 int CraftSelectedItem=-1;
+int AvaQuantity=0;
 bool IsCraftable=true;
 CraftMenu CurrentMenu=NONE;
 Craft BaseCraftInvent[MaxBaseCraft];
@@ -56,7 +57,9 @@ void DrawCraftItem(){
 
     for (int i =0;i<BaseCraftInvent[selectedItem].ComponentCount;i++)
     {
-        if(CheckQuantity(BaseCraftInvent[selectedItem].components[i]) ==0 ){
+        AvaQuantity=CheckQuantity(BaseCraftInvent[selectedItem].components[i]);
+
+        if( AvaQuantity>0 ){
             DrawRectangle(screenWidth-210, 200+70*i, 170, 60, DARKGRAY);
         }
         else 
@@ -75,7 +78,7 @@ void DrawCraftItem(){
 
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton1)) {
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && AvaQuantity>0) {
             CraftItem(1,BaseCraftInvent[selectedItem]);
             DeletComp(BaseCraftInvent[selectedItem],1);
 
@@ -88,7 +91,7 @@ void DrawCraftItem(){
 
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton5)) {
             DrawRectangleRec(ConfirmCraftButton5, LIGHTGRAY); // Couleur si survolé
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable ) {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && AvaQuantity>=5 ) {
                 CraftItem(5,BaseCraftInvent[selectedItem]);
                 DeletComp(BaseCraftInvent[selectedItem],5);
             }
@@ -137,7 +140,9 @@ int CheckQuantity(Item comp){
         }
     }
     if (res<comp.quantity) return -1;
-    return 0;
+    else if (res>=comp.quantity) return 1;
+    else if (res>=5*comp.quantity) return 5;
+    return -2;
 }
 
 int CraftItem(int q,Craft obj){
