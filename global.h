@@ -11,7 +11,7 @@
 #include "input.h"
 #include "musique.h"
 #include "menu.h"
-#include "camera.h"
+#include "craft.h"
 
 Cell grid[ROW][COL];
 

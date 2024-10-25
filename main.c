@@ -6,15 +6,18 @@ int main(void) {
     InitTexture();
     InitGrid();
     InitMusic();
-    InitInventory();
 
-    SetTargetFPS(60);
+    InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
+    InitBaseCraft();
+    SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
     GameScreen currentScreen = MENU;
     bool isInventoryOpen = false;
     bool isOptionOpen = false;
+    bool isCraftOpen=false;
 
     ButtonPlay();
+
     while (!WindowShouldClose()) {
         UpdateMusic();
         InitInventoryKeyBiding();
@@ -51,18 +54,37 @@ int main(void) {
             }
         }
 
+        if (IsKeyPressed(KEY_C)) {
+                isCraftOpen = !isCraftOpen;  // Ouvrir/fermer l'inventaire avec la touche E
+
+                if (!isCraftOpen) {
+                    currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
+                }
+            }
+
         if (isInventoryOpen) {
             currentScreen = INVENT;
             DrawInventoryPage();
         } else if (isOptionOpen) {
             currentScreen = OPTION;
             DrawEscapePage();
-        } else if (currentScreen == GAME) {
-            CameraUpdateAndDraw();  // Mise à jour et dessin de la caméra pour déplacer la vue
-            rightClic();
-            leftClic();
-            mouseDefault();
-            DrawInventoryBar();
+
+        } 
+
+        else if (isCraftOpen) {
+            currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
+            DrawCraftPage();
+        } 
+        else if (currentScreen == GAME) {
+            GridDraw();  // Dessiner la grille de jeu
+
+            rightClic();  // Placer un bloc avec un clic droit
+
+            leftClic();  // Récupérer un bloc avec un clic gauche
+
+            mouseDefault();  // Afficher la souris par défaut
+
+            DrawInventoryBar();  // Dessiner la barre de l'inventaire
         }
 
         EndDrawing();

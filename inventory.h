@@ -16,6 +16,7 @@ extern Item inventory[INVENTORY_SIZE]; // Déclaration externe de inventory
 extern bool isInventoryOpen;
 extern bool isCaseClicked;
 extern bool TextureFollow;
+extern bool RightClick;
 extern int indTexture;
 extern int  NewindTexture;
 void DrawInventoryBar();

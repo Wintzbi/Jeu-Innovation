@@ -1,9 +1,7 @@
 #ifndef MUSIQUE_H
 #define MUSIQUE_H
-
 #include "raylib.h"
 #include "cell.h"
-
 #include <unistd.h>  // pour utiliser chdir()
 
 
@@ -22,7 +20,7 @@ void UnloadMusic();
 void DrawEscapePage();
 
 // Définir le nombre de musiques dans la liste
-#define NUM_MUSIC_FILES 6
+#define NUM_MUSIC_FILES 7
 // Variable pour les bouttons
 
 // Liste des chemins des musiques (tableau de chaînes de caractères)
