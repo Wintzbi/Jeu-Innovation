@@ -77,6 +77,8 @@ void DrawCraftItem(){
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
             CraftItem(1,BaseCraftInvent[selectedItem]);
+            DeletComp(BaseCraftInvent[selectedItem],1);
+
         }
     } else {
         DrawRectangleRec(ConfirmCraftButton1, GRAY);
@@ -88,7 +90,7 @@ void DrawCraftItem(){
             DrawRectangleRec(ConfirmCraftButton5, LIGHTGRAY); // Couleur si survolé
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable ) {
                 CraftItem(5,BaseCraftInvent[selectedItem]);
-                DeletComp(BaseCraftInvent[selectedItem]);
+                DeletComp(BaseCraftInvent[selectedItem],5);
             }
         } else {
             DrawRectangleRec(ConfirmCraftButton5, GRAY);
@@ -139,12 +141,9 @@ int CheckQuantity(Item comp){
 }
 
 int CraftItem(int q,Craft obj){
-    printf("Tentative de crafting de %s avec quantité %d\n", obj.name, q);
-
     for (int i=0;i<INVENTORY_SIZE;i++){
         if (strcmp(obj.name, inventory[i].name) ==0  )
         {
-            printf("Add %s et %s\n",inventory[i].name,obj.name);
 
             inventory[i].quantity += q;
             return 0;
@@ -155,7 +154,6 @@ int CraftItem(int q,Craft obj){
         {
             strncpy(inventory[i].name, obj.name, sizeof(inventory[i].name) );
             //inventory[i].name[sizeof(inventory[i].name) - 1] = '\0'; // S'assurer que c'est terminé par '\0'
-            printf("Init %s et %s\n",inventory[i].name,obj.name);
             inventory[i].quantity = q;
             inventory[i].texture = obj.texture;
             return 0;
@@ -164,11 +162,12 @@ int CraftItem(int q,Craft obj){
     IsCraftable=true;
     return -1;
 }
-int DeletComp(Craft obj){
+int DeletComp(Craft obj,int q){
     for (int i =0;i<obj.ComponentCount;i++){
         for (int i=0;i<INVENTORY_SIZE;i++){
             if (strcmp(obj.components[i].name, inventory[i].name) ==0 ){
-                inventory[i].quantity= inventory[i].quantity - obj.components[i].quantity;
+                printf("Delet use item");
+                inventory[i].quantity -= q * obj.components[i].quantity;
                 return 0;
             }
         }
