@@ -1,8 +1,6 @@
 #include "craft.h"
 #include <stdio.h>
 
-
-
 int CraftSelectedItem=-1;
 int AvaQuantity=0;
 bool IsCraftable=true;
@@ -22,7 +20,6 @@ void DrawCraftPage() {
 
 void DrawCraftMenu() {
     CraftButton();
-
     // Dessiner le bouton principal du menu déroulant
     if (CheckCollisionPointRec(GetMousePosition(), BaseCraftButton)) {
         DrawRectangleRec(BaseCraftButton, LIGHTGRAY); // Couleur si survolé
@@ -49,15 +46,13 @@ void DrawCraftMenu() {
 }
 }
 void DrawCraftItem(){
-    DrawText(TextFormat("%s",BaseCraftInvent[CraftSelectedItem].name), 400, 180, 30, DARKGRAY);
+    DrawText(TextFormat("%s, %d",BaseCraftInvent[CraftSelectedItem].name,CraftSelectedItem), 400, 180, 30, DARKGRAY);
     Vector2 pos = { 400, 200 };
     DrawTextureEx(BaseCraftInvent[CraftSelectedItem].texture, pos,  0.0f,  8.0f, WHITE);
 
-    
-
-    for (int i =0;i<BaseCraftInvent[selectedItem].ComponentCount;i++)
+    for (int i =0;i<BaseCraftInvent[CraftSelectedItem].ComponentCount;i++)
     {
-        AvaQuantity=CheckQuantity(BaseCraftInvent[selectedItem].components[i]);
+        AvaQuantity=CheckQuantity(BaseCraftInvent[CraftSelectedItem].components[i]);
 
         if( AvaQuantity>0 ){
             DrawRectangle(screenWidth-210, 200+70*i, 170, 60, DARKGRAY);
@@ -67,9 +62,9 @@ void DrawCraftItem(){
             DrawRectangle(screenWidth-210, 200+70*i, 170, 60, LIGHTGRAY);
             IsCraftable=false;
         }
-        DrawText(TextFormat("%d %s",BaseCraftInvent[selectedItem].components[i].quantity,BaseCraftInvent[selectedItem].components[i].name), screenWidth-200, 210+70*i, 15, WHITE);
+        DrawText(TextFormat("%d %s",BaseCraftInvent[CraftSelectedItem].components[i].quantity,BaseCraftInvent[CraftSelectedItem].components[i].name), screenWidth-200, 210+70*i, 15, WHITE);
         Vector2 pos = { screenWidth-100, 200+70*i};
-        DrawTextureEx(BaseCraftInvent[selectedItem].components[i].texture, pos,  0.0f,  3.0f, WHITE);
+        DrawTextureEx(BaseCraftInvent[CraftSelectedItem].components[i].texture, pos,  0.0f,  3.0f, WHITE);
 
     }
 
@@ -78,10 +73,10 @@ void DrawCraftItem(){
 
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton1)) {
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && AvaQuantity>0) {
-            CraftItem(1,BaseCraftInvent[selectedItem]);
-            DeletComp(BaseCraftInvent[selectedItem],1);
-
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
+            printf("LAncement de Craft et supp\n");
+            CraftItem(1,BaseCraftInvent[CraftSelectedItem]);
+            DeletComp(BaseCraftInvent[CraftSelectedItem],1);
         }
     } else {
         DrawRectangleRec(ConfirmCraftButton1, GRAY);
@@ -91,9 +86,9 @@ void DrawCraftItem(){
 
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton5)) {
             DrawRectangleRec(ConfirmCraftButton5, LIGHTGRAY); // Couleur si survolé
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && AvaQuantity>=5 ) {
-                CraftItem(5,BaseCraftInvent[selectedItem]);
-                DeletComp(BaseCraftInvent[selectedItem],5);
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable ) {
+                CraftItem(5,BaseCraftInvent[CraftSelectedItem]);
+                DeletComp(BaseCraftInvent[CraftSelectedItem],5);
             }
         } else {
             DrawRectangleRec(ConfirmCraftButton5, GRAY);
@@ -104,8 +99,8 @@ void DrawCraftItem(){
 
 
 void InitBaseCraft() {
-    BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 20 }}};
-
+    BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 2 }}};
+    BaseCraftInvent[1] = (Craft) {"Lingot Fer",ironTexture, 2,2,{{ "Fer",ironTexture, 2 },{ "Charbon",coalTexture, 2 }}};
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
         dropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
@@ -168,14 +163,15 @@ int CraftItem(int q,Craft obj){
     return -1;
 }
 int DeletComp(Craft obj,int q){
-    for (int i =0;i<obj.ComponentCount;i++){
+    for (int j =0;j<obj.ComponentCount;j++){
         for (int i=0;i<INVENTORY_SIZE;i++){
-            if (strcmp(obj.components[i].name, inventory[i].name) ==0 ){
-                printf("Delet use item");
-                inventory[i].quantity -= q * obj.components[i].quantity;
-                return 0;
+            if (inventory[i].quantity !=0){
+                if ((strcmp(obj.components[j].name, inventory[i].name) ==0) || (obj.components[j].texture.id == inventory[i].texture.id)){
+                    inventory[i].quantity -= q * obj.components[j].quantity;
+                    break;
+                }
             }
         }
     }
-    return 1;
+    return 0;
 }
