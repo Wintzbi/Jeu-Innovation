@@ -46,6 +46,7 @@ void DrawCraftMenu() {
 }
 }
 void DrawCraftItem(){
+    IsCraftable=true;
     DrawText(TextFormat("%s, %d",BaseCraftInvent[CraftSelectedItem].name,CraftSelectedItem), 400, 180, 30, DARKGRAY);
     Vector2 pos = { 400, 200 };
     DrawTextureEx(BaseCraftInvent[CraftSelectedItem].texture, pos,  0.0f,  8.0f, WHITE);
@@ -70,11 +71,9 @@ void DrawCraftItem(){
 
     ConfirmCraftButton1 = (Rectangle) { 300, 400, 120, 50 };
     ConfirmCraftButton5 = (Rectangle) { 450, 400, 120, 50 };
-
     if (CheckCollisionPointRec(GetMousePosition(), ConfirmCraftButton1)) {
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
-            printf("LAncement de Craft et supp\n");
             CraftItem(1,BaseCraftInvent[CraftSelectedItem]);
             DeletComp(BaseCraftInvent[CraftSelectedItem],1);
         }
@@ -113,6 +112,7 @@ void DrawBaseCraft() {
                 DrawRectangleRec(dropdownMenu[i], LIGHTGRAY);  // Survolé
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                     CraftSelectedItem = i;  // Option sélectionnée
+                    printf("CraftSelectedItem = %d\n",CraftSelectedItem);
                     CurrentMenu=NONE;  // Fermer le menu après sélection
                 }
             } else {
