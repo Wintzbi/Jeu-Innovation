@@ -42,11 +42,11 @@ void DrawCraftMenu() {
     }
     // Afficher l'option sélectionnée
     if (CraftSelectedItem >= 0) {
+        IsCraftable=true;
         DrawCraftItem();
 }
 }
 void DrawCraftItem(){
-    IsCraftable=true;
     DrawText(TextFormat("%s, %d",BaseCraftInvent[CraftSelectedItem].name,CraftSelectedItem), 400, 180, 30, DARKGRAY);
     Vector2 pos = { 400, 200 };
     DrawTextureEx(BaseCraftInvent[CraftSelectedItem].texture, pos,  0.0f,  8.0f, WHITE);
@@ -98,8 +98,10 @@ void DrawCraftItem(){
 
 
 void InitBaseCraft() {
-    BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 2 }}};
-    BaseCraftInvent[1] = (Craft) {"Lingot Fer",ironTexture, 2,2,{{ "Fer",ironTexture, 2 },{ "Charbon",coalTexture, 2 }}};
+    BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperLingotTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 2 }}};
+    BaseCraftInvent[1] = (Craft) {"Lingot Fer",ironLingotTexture, 2,2,{{ "Fer",ironTexture, 2 },{ "Charbon",coalTexture, 2 }}};
+    BaseCraftInvent[2] = (Craft) {"Lingot Acier",ironTexture, 2,2,{{ "Lingot Fer",ironTexture, 1 },{ "Charbon",coalTexture, 2 }}};
+
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
         dropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
@@ -112,7 +114,6 @@ void DrawBaseCraft() {
                 DrawRectangleRec(dropdownMenu[i], LIGHTGRAY);  // Survolé
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                     CraftSelectedItem = i;  // Option sélectionnée
-                    printf("CraftSelectedItem = %d\n",CraftSelectedItem);
                     CurrentMenu=NONE;  // Fermer le menu après sélection
                 }
             } else {

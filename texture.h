@@ -6,6 +6,8 @@
 extern Texture2D copperTexture;
 extern Texture2D ironTexture;
 extern Texture2D coalTexture;
+extern Texture2D ironLingotTexture;
+extern Texture2D copperLingotTexture;
 
 void InitTexture();
 void UnloadAllTexture();
