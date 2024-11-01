@@ -11,6 +11,8 @@ Rectangle (*currentDropDownMenu)[MaxBaseCraft] = NULL;
 Craft BaseCraftInvent[MaxBaseCraft];
 Craft StructCraftInvent[MaxBaseCraft];
 Craft MecaCraftInvent[MaxBaseCraft];
+Craft ProdCraftInvent[MaxBaseCraft];
+
 
 
 void InitBaseCraft() {
@@ -26,12 +28,14 @@ void InitBaseCraft() {
     
     MecaCraftInvent[0] = (Craft) {"Engrenage",ironTexture, 2,1,{{ "Plaque Acier",ironLingotTexture, 1 }}};
 
+    ProdCraftInvent[0] = (Craft) {"Forreuse",ironTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
         BaseDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
         StructDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
         MecaDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
+        ProdDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
     }
     
 }
@@ -40,6 +44,7 @@ void CraftButton() {
     BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };
     StructCraftButton= (Rectangle) { GetScreenWidth()/2 - 240, 100, 100, 50 };
     MecaCraftButton= (Rectangle) { GetScreenWidth()/2 - 130, 100, 100, 50 };
+    ProdCraftButton= (Rectangle) { GetScreenWidth()/2 - 20, 100, 100, 50 };
 }
 
 void DrawCraftPage() {
@@ -87,6 +92,18 @@ void DrawCraftMenu() {
 
         DrawText("Meca", MecaCraftButton.x + 10, MecaCraftButton.y + 10, 20, WHITE);
 
+    if (CheckCollisionPointRec(GetMousePosition(), ProdCraftButton)) {
+            DrawRectangleRec(ProdCraftButton, LIGHTGRAY); // Couleur si survolé
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CurrentMenu!=PROD) {
+                CurrentMenu=PROD;  // Ouvrir/fermer le menu
+            }
+            else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) CurrentMenu =NONE;
+        } else {
+            DrawRectangleRec(ProdCraftButton, GRAY);
+        }
+
+        DrawText("Prod", ProdCraftButton.x + 10, ProdCraftButton.y + 10, 20, WHITE);
+
 
 
     // Si le menu déroulant est ouvert
@@ -106,6 +123,11 @@ void DrawCraftMenu() {
     if (CurrentMenu==MECA) {
         OldMenu=MECA;
         currentInventory = MecaCraftInvent;
+        DrawBaseCraft();}
+
+    if (CurrentMenu==PROD) {
+        OldMenu=PROD;
+        currentInventory = ProdCraftInvent;
         DrawBaseCraft();
     }
     if (CurrentMenu!=NONE) {
@@ -117,6 +139,7 @@ void DrawCraftMenu() {
         DrawCraftItem(OldMenu);
 }
 }
+
 void DrawCraftItem(CraftMenu OldMenu){
 
 
