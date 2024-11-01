@@ -44,7 +44,7 @@ void leftClic() {
     int posX = (int)(GetMousePosition().x / cellSize);
     int posY = (int)(GetMousePosition().y / cellSize);
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            if (IndexIsValid(posX, posY) && grid[posX][posY].placed) {
+            if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable) {
                 Texture2D brokenTexture = grid[posX][posY].texture;  // Texture du bloc cassé
                 bool itemFoundInInventory = false;
 

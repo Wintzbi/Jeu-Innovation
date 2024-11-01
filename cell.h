@@ -21,6 +21,7 @@ typedef struct Cell {
     int i;
     int j;
     bool placed;
+    bool pickable;
     Texture2D texture;
 } Cell;
 
@@ -30,6 +31,10 @@ typedef struct Generator {
     bool placed;
     Texture2D texture;
 } Generator;
+
+#define MAX_GENERATORS 8 // Définir le nombre maximal de générateurs
+
+Generator generators[MAX_GENERATORS]; // Tableau de générateurs
 
 extern Cell grid[ROW][COL];
 extern Generator MineraiCuivreGenerator;
