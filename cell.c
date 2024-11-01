@@ -6,6 +6,7 @@ const int screenHeight = 1200*0.5;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
+Generator MineraiCuivreGenerator;
 
 // Fonction pour dessiner une cellule
 void CellDraw(Cell cell) {
@@ -31,6 +32,42 @@ void InitGrid() {
                 .placed = false,
                 .texture = copperTexture  // Par défaut, on peut utiliser n'importe quelle texture
             };
+        }
+    }
+    InitMineraiGenerator();
+}
+void InitMineraiGenerator(){
+    MineraiCuivreGenerator=(Generator){
+        .i = 25,
+        .j = 25,
+        .placed = true,
+        .texture = copperTexture
+    };
+    grid[MineraiCuivreGenerator.i][MineraiCuivreGenerator.j].texture = MineraiCuivreGenerator.texture ;
+    grid[MineraiCuivreGenerator.i][MineraiCuivreGenerator.j].placed = MineraiCuivreGenerator.placed ;
+    MineraiGenerator();
+}
+void MineraiGenerator() {
+    int directions[4][2] = {
+        {-1, 0}, // Haut
+        {1, 0},  // Bas
+        {0, -1}, // Gauche
+        {0, 1}   // Droite
+    };
+
+    int mineralsPlaced = 0;
+    while (mineralsPlaced < 3) { // Tenter de placer 3 minerais
+        int dirIndex = rand() % 4; // Choisir une direction aléatoire
+        int newI = MineraiCuivreGenerator.i + directions[dirIndex][0];
+        int newJ = MineraiCuivreGenerator.j + directions[dirIndex][1];
+
+        // Vérifier si la nouvelle position est valide
+        if (newI >= 0 && newI < COL && newJ >= 0 && newJ < ROW && !grid[newI][newJ].placed) {
+            // Placer le minerai
+            grid[newI][newJ].texture = copperTexture; // Vous pouvez changer le type de minerai si nécessaire
+            grid[newI][newJ].placed = true;
+            mineralsPlaced++;
+            printf("Mineral placed at (%d, %d)\n", newI, newJ);
         }
     }
 }

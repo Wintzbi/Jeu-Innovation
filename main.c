@@ -2,6 +2,7 @@
 
 int main(void) {
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre
+    srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
 
     InitTexture();  // Charger les textures des items
 
@@ -18,7 +19,20 @@ int main(void) {
     bool isCraftOpen=false;
 
     ButtonPlay();  // Initialiser le bouton Play
+
+    float elapsedTime = 0.0f; // Compteur de temps écoulé
+
     while (!WindowShouldClose()) {
+
+        // Calculer le temps écoulé depuis la dernière frame
+        float deltaTime = GetFrameTime();
+        elapsedTime += deltaTime;
+
+        // Vérifier si l'intervalle de mise à jour est atteint
+        if (elapsedTime >= UPDATE_INTERVAL) {
+            MineraiGenerator(); // Mettre à jour le générateur de minerai
+            elapsedTime = 0.0f; // Réinitialiser le compteur de temps
+        }
         UpdateMusic();
         InitInventoryKeyBiding();  // Sélectionner l'item avec les touches numériques (1, 2, 3, ...)
 
@@ -81,6 +95,7 @@ int main(void) {
         } 
         else if (currentScreen == GAME) {
             GridDraw();  // Dessiner la grille de jeu
+            
 
             rightClic();  // Placer un bloc avec un clic droit
 
@@ -89,6 +104,7 @@ int main(void) {
             mouseDefault();  // Afficher la souris par défaut
 
             DrawInventoryBar();  // Dessiner la barre de l'inventaire
+
         }
 
         EndDrawing();  // Terminer le dessin de la frame

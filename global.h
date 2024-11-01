@@ -12,6 +12,7 @@
 #include "musique.h"
 #include "menu.h"
 #include "craft.h"
+#define UPDATE_INTERVAL 15.0f // Intervalle de mise à jour en secondes
 Cell grid[ROW][COL];
 
 #endif
