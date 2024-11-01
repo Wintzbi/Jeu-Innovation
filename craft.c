@@ -6,8 +6,12 @@ int AvaQuantity=0;
 bool IsCraftable=true;
 CraftMenu CurrentMenu=NONE;
 CraftMenu OldMenu=NONE;
+Craft *currentInventory = NULL;
+Rectangle (*currentDropDownMenu)[MaxBaseCraft] = NULL;
 Craft BaseCraftInvent[MaxBaseCraft];
 Craft StructCraftInvent[MaxBaseCraft];
+Craft MecaCraftInvent[MaxBaseCraft];
+
 
 void InitBaseCraft() {
     BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperLingotTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 2 }}};
@@ -20,19 +24,22 @@ void InitBaseCraft() {
     StructCraftInvent[2] = (Craft) {"Barre cuivre",copperTexture, 2,1,{{ "Lingot Acier",copperLingotTexture, 2 }}};
     StructCraftInvent[3] = (Craft) {"Plaque cuivre",copperTexture, 2,1,{{ "Lingot Acier",copperLingotTexture, 2 }}};
     
+    MecaCraftInvent[0] = (Craft) {"Engrenage",ironTexture, 2,1,{{ "Plaque Acier",ironLingotTexture, 1 }}};
+
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
         BaseDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
-    }
-    for (int i = 0; i < MaxBaseCraft; i++) {
         StructDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
+        MecaDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
     }
+    
 }
 
 void CraftButton() {
     BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };
     StructCraftButton= (Rectangle) { GetScreenWidth()/2 - 240, 100, 100, 50 };
+    MecaCraftButton= (Rectangle) { GetScreenWidth()/2 - 130, 100, 100, 50 };
 }
 
 void DrawCraftPage() {
@@ -68,15 +75,38 @@ void DrawCraftMenu() {
 
         DrawText("Struct", StructCraftButton.x + 10, StructCraftButton.y + 10, 20, WHITE);
 
+    if (CheckCollisionPointRec(GetMousePosition(), MecaCraftButton)) {
+            DrawRectangleRec(MecaCraftButton, LIGHTGRAY); // Couleur si survolé
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CurrentMenu!=MECA) {
+                CurrentMenu=MECA;  // Ouvrir/fermer le menu
+            }
+            else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) CurrentMenu =NONE;
+        } else {
+            DrawRectangleRec(MecaCraftButton, GRAY);
+        }
+
+        DrawText("Meca", MecaCraftButton.x + 10, MecaCraftButton.y + 10, 20, WHITE);
+
+
+
     // Si le menu déroulant est ouvert
     if (CurrentMenu==BASE) {
         OldMenu=BASE;
+        currentInventory = BaseCraftInvent;
+        currentDropDownMenu=&BaseDropdownMenu;
         DrawBaseCraft();
         
     }
-    if (CurrentMenu==STRUCT) {
+   if (CurrentMenu==STRUCT) {
         OldMenu=STRUCT;
-        DrawStructCraft();
+        currentInventory = StructCraftInvent;
+        currentDropDownMenu = &StructDropdownMenu;
+        DrawBaseCraft();
+    }
+    if (CurrentMenu==MECA) {
+        OldMenu=MECA;
+        currentInventory = MecaCraftInvent;
+        DrawBaseCraft();
     }
     if (CurrentMenu!=NONE) {
       CraftSelectedItem=-1;
@@ -84,14 +114,11 @@ void DrawCraftMenu() {
     // Afficher l'option sélectionnée
     if (CraftSelectedItem >= 0) {
         IsCraftable=true;
-       
         DrawCraftItem(OldMenu);
 }
 }
 void DrawCraftItem(CraftMenu OldMenu){
-    Craft *currentInventory = NULL;
-    if (OldMenu==BASE) currentInventory = BaseCraftInvent;
-    else if (OldMenu==STRUCT) currentInventory = StructCraftInvent;
+
 
     DrawText(TextFormat("%s",currentInventory[CraftSelectedItem].name), 400, 180, 30, DARKGRAY);
     Vector2 pos = { 400, 200 };
@@ -143,40 +170,25 @@ void DrawCraftItem(CraftMenu OldMenu){
 }
 
 void DrawBaseCraft() {
-    for (int i = 0; i < MaxBaseCraft; i++) {
-            if (CheckCollisionPointRec(GetMousePosition(), BaseDropdownMenu[i])) {
-                DrawRectangleRec(BaseDropdownMenu[i], LIGHTGRAY);  // Survolé
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)&& BaseCraftInvent[i].quantity!=0) {
-                    CraftSelectedItem = i;  // Option sélectionnée
-                    CurrentMenu=NONE;  // Fermer le menu après sélection
+    if (currentDropDownMenu != NULL){
+        for (int i = 0; i < MaxBaseCraft; i++) {
+                if (CheckCollisionPointRec(GetMousePosition(), (*currentDropDownMenu)[i])) {
+                    DrawRectangleRec((*currentDropDownMenu)[i], LIGHTGRAY);  // Survolé
+                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)&& currentInventory[i].quantity!=0) {
+                        CraftSelectedItem = i;  // Option sélectionnée
+                        CurrentMenu=NONE;  // Fermer le menu après sélection
+                    }
+                } else {
+                    DrawRectangleRec((*currentDropDownMenu)[i], GRAY);
                 }
-            } else {
-                DrawRectangleRec(BaseDropdownMenu[i], GRAY);
+
+                DrawText(TextFormat("%s",currentInventory[i].name), (*currentDropDownMenu)[i].x + 10, (*currentDropDownMenu)[i].y + 10, 20, DARKGRAY);
             }
 
-            DrawText(TextFormat("%s",BaseCraftInvent[i].name), BaseDropdownMenu[i].x + 10, BaseDropdownMenu[i].y + 10, 20, DARKGRAY);
-        }
-
-    
+    }
 }
 
-void DrawStructCraft() {
-    for (int i = 0; i < MaxBaseCraft; i++) {
-            if (CheckCollisionPointRec(GetMousePosition(), StructDropdownMenu[i])) {
-                DrawRectangleRec(StructDropdownMenu[i], LIGHTGRAY);  // Survolé
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && StructCraftInvent[i].quantity!=0 ) {
-                    CraftSelectedItem = i;  // Option sélectionnée
-                    CurrentMenu=NONE;  // Fermer le menu après sélection
-                }
-            } else {
-                DrawRectangleRec(StructDropdownMenu[i], GRAY);
-            }
 
-            DrawText(TextFormat("%s",StructCraftInvent[i].name), StructDropdownMenu[i].x + 10, StructDropdownMenu[i].y + 10, 20, DARKGRAY);
-        }
-
-    
-}
 
 int CheckQuantity(Item comp){
     int res=0;
