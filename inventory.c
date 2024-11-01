@@ -14,9 +14,9 @@ bool RightClick=false;
 
 
 void InitInventory() {
-    inventory[0] = (Item) { "Cuivre",copperTexture, 2 };  // Bloc de cuivre avec 2 unités
-    inventory[1] = (Item) { "Fer",ironTexture, 2 };    // Bloc de fer avec 2 unités
-    inventory[2] = (Item) { "Charbon",coalTexture, 20 };   // Bloc de charbon avec 20 unités
+    inventory[0] = (Item) { "Cuivre",copperTexture, 20 };  // Bloc de cuivre avec 2 unités
+    inventory[1] = (Item) { "Fer",ironTexture, 20 };    // Bloc de fer avec 2 unités
+    inventory[2] = (Item) { "Charbon",coalTexture, 40 };   // Bloc de charbon avec 20 unités
     inventory[3] = (Item) {};
     inventory[4] = (Item) {};
     inventory[5] = (Item) {};
@@ -154,6 +154,7 @@ void DrawInventoryPage(){
     DrawRectangle(100, 10, screenWidth-200, 60, DARKGRAY);
     DrawText(TextFormat("Inventaire"), 330, 11, 60, WHITE); // Display quantity
     DrawInventorySlot();
+    
 
 }
 
