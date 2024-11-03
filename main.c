@@ -89,9 +89,10 @@ int main(void) {
 
             mouseDefault();  // Afficher la souris par défaut
 
-            DrawInventoryBar();  // Dessiner la barre de l'inventaire
+            
         }
         EndMode2D();
+        DrawInventoryBar();  // Dessiner la barre de l'inventaire
         EndDrawing();
     }
 

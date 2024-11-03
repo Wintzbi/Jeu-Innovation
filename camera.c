@@ -22,6 +22,11 @@ void moveCamera() {
         // Gestion du zoom de la caméra avec la molette de la souris
     if (IsKeyDown(KEY_RIGHT)) camera.zoom += 0.005f;
     if (IsKeyDown(KEY_LEFT)) camera.zoom -= 0.005f;
+
+    float mouseWheelMove = GetMouseWheelMove();
+    if (mouseWheelMove != 0) {
+        camera.zoom += mouseWheelMove * 0.1f; // Ajuster le facteur pour un zoom plus ou moins rapide
+    }
     
         // Limiter le zoom pour éviter des comportements imprévus
     if (camera.zoom < 0.1f) camera.zoom = 1.0f;

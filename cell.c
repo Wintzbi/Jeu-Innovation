@@ -1,5 +1,6 @@
 #include "cell.h"
 #include "inventory.h"
+#include "camera.h"
 
 const int screenWidth = 1920;
 const int screenHeight = 1200;
@@ -36,8 +37,25 @@ void InitGrid() {
 }
 
 void GridDraw() {
-    for (int i = 0; i < COL; i++) {
-        for (int j = 0; j < ROW; j++) {
+    // Calculer les limites visibles de la vue de la caméra
+    Vector2 topLeft = GetScreenToWorld2D((Vector2){ 0, 0 }, camera);
+    Vector2 bottomRight = GetScreenToWorld2D((Vector2){ screenWidth, screenHeight }, camera);
+
+    // Calculer les indices de la grille qui sont visibles
+    int startX = (int)(topLeft.x / cellSize);
+    int startY = (int)(topLeft.y / cellSize);
+    int endX = (int)(bottomRight.x / cellSize);
+    int endY = (int)(bottomRight.y / cellSize);
+
+    // S'assurer que les indices restent dans les limites de la grille
+    startX = startX < 0 ? 0 : startX;
+    startY = startY < 0 ? 0 : startY;
+    endX = endX >= COL ? COL - 1 : endX;
+    endY = endY >= ROW ? ROW - 1 : endY;
+
+    // Dessiner uniquement les cellules visibles
+    for (int i = startX; i <= endX; i++) {
+        for (int j = startY; j <= endY; j++) {
             CellDraw(grid[i][j]);
         }
     }
