@@ -31,9 +31,6 @@ extern int AvaQuantity;
 extern bool DropDownMenu;
 extern bool IsCraftable;
 
-
-
-
 extern Craft BaseCraftInvent[MaxBaseCraft];
 extern Craft StructCraftInvent[MaxBaseCraft];
 extern Craft MecaCraftInvent[MaxBaseCraft];

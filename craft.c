@@ -1,5 +1,9 @@
 #include "craft.h"
+<<<<<<< HEAD
 #include <stdio.h>
+=======
+#include "raylib.h"
+>>>>>>> grid-camera
 
 int CraftSelectedItem=-1;
 int AvaQuantity=0;
@@ -39,6 +43,8 @@ void InitBaseCraft() {
     }
     
 }
+
+Rectangle BaseCraftButton, dropdownMenu[MaxBaseCraft];
 
 void CraftButton() {
     BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };
