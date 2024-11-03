@@ -11,8 +11,8 @@ int offsetY = 0;
 // Fonction pour dessiner une cellule
 void CellDraw(Cell cell) {
     if (cell.placed) {
-        int offsetX = (cellSize - cell.texture.width) / 2;
-        int offsetY = (cellSize - cell.texture.height) / 2;
+        int offsetX = (cellSize - cell.texture.width)/2;
+        int offsetY = (cellSize - cell.texture.height)/2;
         DrawTexture(cell.texture, cell.i * cellSize + offsetX, cell.j * cellSize + offsetY, WHITE);
     }
     DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize, cellSize, LIGHTGRAY);
@@ -41,19 +41,19 @@ void GridDraw() {
     Vector2 topLeft = GetScreenToWorld2D((Vector2){ 0, 0 }, camera);
     Vector2 bottomRight = GetScreenToWorld2D((Vector2){ screenWidth, screenHeight }, camera);
 
-    // Calculer les indices de la grille qui sont visibles
+    // Calculer la grille visibles les coordonnées
     int startX = (int)(topLeft.x / cellSize);
     int startY = (int)(topLeft.y / cellSize);
     int endX = (int)(bottomRight.x / cellSize);
     int endY = (int)(bottomRight.y / cellSize);
 
-    // S'assurer que les indices restent dans les limites de la grille
+    // Vérifier que cela fait bien parti de la grille
     startX = startX < 0 ? 0 : startX;
     startY = startY < 0 ? 0 : startY;
     endX = endX >= COL ? COL - 1 : endX;
     endY = endY >= ROW ? ROW - 1 : endY;
 
-    // Dessiner uniquement les cellules visibles
+    // Dessiner uniquement les cases visibles
     for (int i = startX; i <= endX; i++) {
         for (int j = startY; j <= endY; j++) {
             CellDraw(grid[i][j]);

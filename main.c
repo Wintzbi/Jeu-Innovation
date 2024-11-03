@@ -23,18 +23,16 @@ int main(void) {
     while (!WindowShouldClose()) {
         UpdateMusic();
         InitInventoryKeyBiding();
-        moveCamera();
-
+        
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
-        BeginMode2D(camera);
 
         if (currentScreen == MENU) {
             DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
 
             if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+
                     currentScreen = GAME;
                 }
                 DrawRectangleRec(playButton, LIGHTGRAY);
@@ -44,6 +42,8 @@ int main(void) {
             DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
             DrawMenu(&currentScreen);
         }
+
+        BeginMode2D(camera);
 
         if (IsKeyPressed(KEY_E)) {
             isInventoryOpen = !isInventoryOpen;
@@ -89,10 +89,14 @@ int main(void) {
 
             mouseDefault();  // Afficher la souris par défaut
 
+            moveCamera();
+
             
         }
         EndMode2D();
+        if (currentScreen == GAME) {
         DrawInventoryBar();  // Dessiner la barre de l'inventaire
+        }
         EndDrawing();
     }
 
