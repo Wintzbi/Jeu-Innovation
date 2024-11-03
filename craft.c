@@ -40,6 +40,8 @@ void InitBaseCraft() {
     
 }
 
+Rectangle BaseCraftButton, dropdownMenu[MaxBaseCraft];
+
 void CraftButton() {
     BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };
     StructCraftButton= (Rectangle) { GetScreenWidth()/2 - 240, 100, 100, 50 };
