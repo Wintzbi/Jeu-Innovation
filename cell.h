@@ -32,10 +32,17 @@ typedef struct Generator {
     Texture2D texture;
 } Generator;
 
+typedef struct Foreuse {
+    int i;
+    int j;
+    bool placed;
+    Texture2D texture;
+} Foreuse;
+
 #define MAX_GENERATORS 8 // Définir le nombre maximal de générateurs
-
+#define MAX_FOREUSES 8
 Generator generators[MAX_GENERATORS]; // Tableau de générateurs
-
+Foreuse ListeForeuse[MAX_FOREUSES];
 extern Cell grid[ROW][COL];
 extern Generator MineraiCuivreGenerator;
 void CellDraw(Cell cell);

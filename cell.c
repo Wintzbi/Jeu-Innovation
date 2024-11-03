@@ -7,6 +7,8 @@ const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
 Generator Generators[MAX_GENERATORS];
+Foreuse ListeForeuse[MAX_FOREUSES];
+Foreuse foreuse;
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
@@ -91,7 +93,13 @@ void MineraiGenerator() {
     }
 }
 
-
+void InteractForeuse(){
+    for (int k = 0; k < MAX_FOREUSES; k++){
+        if (ListeForeuse[k].placed){
+            continue;
+        }
+    }
+}
 
 void GridDraw() {
     for (int i = 0; i < COL; i++) {
