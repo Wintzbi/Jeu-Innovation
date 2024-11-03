@@ -1,9 +1,5 @@
 #include "craft.h"
-<<<<<<< HEAD
 #include <stdio.h>
-=======
-#include "raylib.h"
->>>>>>> grid-camera
 
 int CraftSelectedItem=-1;
 int AvaQuantity=0;

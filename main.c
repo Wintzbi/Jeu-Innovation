@@ -1,12 +1,9 @@
 #include "global.h"
 
 int main(void) {
-<<<<<<< HEAD
+
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
-=======
-    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
->>>>>>> grid-camera
 
     InitTexture();
     InitGrid();
@@ -23,13 +20,9 @@ int main(void) {
     bool isOptionOpen = false;
     bool isCraftOpen=false;
 
-<<<<<<< HEAD
     ButtonPlay();  // Initialiser le bouton Play
 
     float elapsedTime = 0.0f; // Compteur de temps écoulé
-=======
-    ButtonPlay();
->>>>>>> grid-camera
 
     while (!WindowShouldClose()) {
 
@@ -111,14 +104,7 @@ int main(void) {
 
             mouseDefault();  // Afficher la souris par défaut
 
-<<<<<<< HEAD
-            DrawInventoryBar();  // Dessiner la barre de l'inventaire
-
-        }
-=======
             moveCamera();
->>>>>>> grid-camera
-
             
         }
         EndMode2D();

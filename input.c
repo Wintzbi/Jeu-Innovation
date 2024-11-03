@@ -63,15 +63,10 @@ void leftClic() {
     int posY = (int)(worldPos.y / cellSize);
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-<<<<<<< HEAD
             if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable) {
                 Texture2D brokenTexture = grid[posX][posY].texture;  // Texture du bloc cassé
                 bool itemFoundInInventory = false;
-=======
-        if (IndexIsValid(posX, posY) && grid[posX][posY].placed) {
-            Texture2D brokenTexture = grid[posX][posY].texture;  // Texture du bloc cassé
-            bool itemFoundInInventory = false;
->>>>>>> grid-camera
+
 
             // Chercher l'item correspondant dans l'inventaire
             for (int i = 0; i < INVENTORY_SIZE; i++) {
