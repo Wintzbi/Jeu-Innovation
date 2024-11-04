@@ -1,110 +1,121 @@
-#include "raylib.h"
-#include <stdio.h>
-#include <stdlib.h>
-
-#define COL 30
-#define ROW 30
-
-const int screenWidth = 1000;
-const int screenHeight = 800;
-const int cellSize = screenWidth / COL;
-
-typedef struct Cell {
-    int i;
-    int j;
-    bool placed;
-    Color color;
-} Cell;
-
-typedef struct Machine {
-    Color color;
-} Machine;
-
-Cell grid[ROW][COL];
-
-Machine machine;
-Color colors[] = {RED, GREEN, BLUE}; 
-int colorIndex = 0; 
-
-void CellDraw(Cell cell) {
-    if (cell.placed) {
-        DrawRectangle(cell.i * cellSize, cell.j * cellSize, cellSize, cellSize, cell.color);
-    }
-    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize, cellSize, LIGHTGRAY);
-}
-
-bool IndexIsValid(int i, int j) {
-    return (i >= 0 && i < COL && j >= 0 && j < ROW);
-}
+#include "global.h"
 
 int main(void) {
-    // Initialisation de la fenêtre
-    InitWindow(screenWidth, screenHeight, "Minc Corp simulation");
 
-    // Initialisation de la machine avec la première couleur
-    machine.color = colors[colorIndex];
+    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre
+    srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
 
-    for (int i = 0; i < COL; i++) {
-        for (int j = 0; j < ROW; j++) {
-            grid[i][j] = (Cell) {
-                .i = i,
-                .j = j,
-                .placed = false,
-                .color = WHITE // Couleur par défaut pour les cellules non placées
-            };
+    InitTexture();
+    InitGrid();
+    InitMusic();
+
+    InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
+    //InitBaseCraft();
+    SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
+
+    setPlayerCamera();
+
+    GameScreen currentScreen = MENU;
+    bool isInventoryOpen = false;
+    bool isOptionOpen = false;
+    bool isCraftOpen=false;
+
+    ButtonPlay();  // Initialiser le bouton Play
+
+    float elapsedTime = 0.0f; // Compteur de temps écoulé
+
+    while (!WindowShouldClose()) {
+
+        // Calculer le temps écoulé depuis la dernière frame
+        float deltaTime = GetFrameTime();
+        elapsedTime += deltaTime;
+
+        // Vérifier si l'intervalle de mise à jour est atteint
+        if (elapsedTime >= UPDATE_INTERVAL) {
+            MineraiGenerator(); // Mettre à jour le générateur de minerai
+            elapsedTime = 0.0f; // Réinitialiser le compteur de temps
         }
-    }
-
-    SetTargetFPS(60);  // Limite à 60 FPS
-
-    // Boucle principale du jeu
-    while (!WindowShouldClose()) { // Tant que l'utilisateur ne ferme pas la fenêtre
-
-        int posX = (int)(GetMousePosition().x / cellSize);
-        int posY = (int)(GetMousePosition().y / cellSize);
-
-        // Changer la couleur de la machine en faisant défiler la molette de la souris
-        if (GetMouseWheelMove() < 0) {
-            colorIndex = (colorIndex + 1) % (sizeof(colors) / sizeof(colors[0]));
-        }
-        // Si la molette est tournée vers le haut
-        if (GetMouseWheelMove() > 0) {
-            colorIndex = (colorIndex - 1 + (sizeof(colors) / sizeof(colors[0]))) % (sizeof(colors) / sizeof(colors[0]));
-        }
-        machine.color = colors[colorIndex];
-
-        // Réinitialiser les clics sur les cellules lorsque le bouton est enfoncé
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            if (IndexIsValid(posX, posY)) {
-                grid[posX][posY].placed = false;
-            }
-        }
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-            if (IndexIsValid(posX, posY)) {
-                grid[posX][posY].placed = true;
-                grid[posX][posY].color = machine.color; // Assignez la couleur actuelle
-            }
-        }
-
-        // Début du dessin
+        UpdateMusic();
+        InitInventoryKeyBiding();
+        
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // Dessiner le rectangle de survol avec la couleur actuelle de la machine
-        DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(machine.color, 0.3f));
+        if (currentScreen == MENU) {
+            DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
 
-        // Dessiner le cadrillage
-        for (int i = 0; i < COL; i++) {
-            for (int j = 0; j < ROW; j++) {
-                CellDraw(grid[i][j]);
+            if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+
+                    currentScreen = GAME;
+                }
+                DrawRectangleRec(playButton, LIGHTGRAY);
+            } else {
+                DrawRectangleRec(playButton, GRAY);
+            }
+            DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
+            DrawMenu(&currentScreen);
+        }
+
+        BeginMode2D(camera);
+
+        if (IsKeyPressed(KEY_E)) {
+            isInventoryOpen = !isInventoryOpen;
+            if (!isInventoryOpen) {
+                currentScreen = GAME;
             }
         }
 
+        if (IsKeyPressed(KEY_TAB)) {
+            isOptionOpen = !isOptionOpen;
+            if (!isOptionOpen) {
+                currentScreen = GAME;
+            }
+        }
+
+        if (IsKeyPressed(KEY_C)) {
+                isCraftOpen = !isCraftOpen;  // Ouvrir/fermer l'inventaire avec la touche E
+
+                if (!isCraftOpen) {
+                    currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
+                }
+            }
+
+        if (isInventoryOpen) {
+            currentScreen = INVENT;
+            DrawInventoryPage();
+        } else if (isOptionOpen) {
+            currentScreen = OPTION;
+            DrawEscapePage();
+
+        } 
+
+        else if (isCraftOpen) {
+            currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
+            //DrawCraftPage();
+        } 
+        else if (currentScreen == GAME) {
+            GridDraw();  // Dessiner la grille de jeu
+            
+
+            rightClic();  // Placer un bloc avec un clic droit
+
+            leftClic();  // Récupérer un bloc avec un clic gauche
+
+            mouseDefault();  // Afficher la souris par défaut
+
+            moveCamera();
+            
+        }
+        EndMode2D();
+        if (currentScreen == GAME) {
+        DrawInventoryBar();  // Dessiner la barre de l'inventaire
+        }
         EndDrawing();
     }
 
-    // Fermeture de la fenêtre et nettoyage
+    UnloadMusic();
+    UnloadAllTexture();
     CloseWindow();
 
     return 0;
