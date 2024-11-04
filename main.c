@@ -57,8 +57,6 @@ int main(void) {
             DrawMenu(&currentScreen);
         }
 
-        BeginMode2D(camera);
-
         if (IsKeyPressed(KEY_E)) {
             isInventoryOpen = !isInventoryOpen;
             if (!isInventoryOpen) {
@@ -87,14 +85,16 @@ int main(void) {
         } else if (isOptionOpen) {
             currentScreen = OPTION;
             DrawEscapePage();
-
         } 
 
         else if (isCraftOpen) {
             currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
             //DrawCraftPage();
-        } 
-        else if (currentScreen == GAME) {
+        }
+
+        BeginMode2D(camera); 
+
+        if (currentScreen == GAME) {
             GridDraw();  // Dessiner la grille de jeu
             
 

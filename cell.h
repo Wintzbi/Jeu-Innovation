@@ -13,6 +13,8 @@ extern const int cellSize;
 #define COL 200
 #define ROW 200
 
+#define MAX_GENERATORS 8
+
 extern int offsetX ;
 extern int offsetY;
 
@@ -31,9 +33,9 @@ typedef struct Generator {
     Texture2D texture;
 } Generator;
 
-#define MAX_GENERATORS 8 // Définir le nombre maximal de générateurs
+ // Définir le nombre maximal de générateurs
 
-Generator generators[MAX_GENERATORS]; // Tableau de générateurs
+extern Generator generators[MAX_GENERATORS]; // Tableau de générateurs
 
 extern Cell grid[ROW][COL];
 extern Generator MineraiCuivreGenerator;

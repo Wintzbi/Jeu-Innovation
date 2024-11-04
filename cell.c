@@ -7,7 +7,8 @@ const int screenHeight = 1200;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
-Generator Generators[MAX_GENERATORS];
+
+Generator generators[MAX_GENERATORS];
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
