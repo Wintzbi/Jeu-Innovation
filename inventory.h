@@ -4,6 +4,7 @@
 #include "texture.h"
 #include <string.h> // Pour utiliser strcmp
 #define INVENTORY_SIZE 10
+
 typedef struct Item {
     char name[20];
     Texture2D texture;
@@ -20,6 +21,7 @@ extern bool TextureFollow;
 extern bool RightClick;
 extern int indTexture;
 extern int  NewindTexture;
+
 void DrawInventoryBar();
 void InitInventory();
 void DrawInventoryPage();

@@ -2,21 +2,14 @@
 #define CELL_H
 #include "raylib.h"
 #include "texture.h"
-#include <stdio.h>   // Pour printf
-#include <stdlib.h>  // Pour rand et srand
-#include <time.h>    // Pour time
-
-extern const int screenWidth;
-extern const int screenHeight;
-extern const int cellSize;
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define COL 200
 #define ROW 200
-
 #define MAX_GENERATORS 8
-
-extern int offsetX ;
-extern int offsetY;
+#define MAX_FOREUSES 8
 
 typedef struct Cell {
     int i;
@@ -40,13 +33,13 @@ typedef struct Foreuse {
     Texture2D texture;
 } Foreuse;
 
-#define MAX_GENERATORS 8 // Définir le nombre maximal de générateurs
-#define MAX_FOREUSES 8
-extern Generator generators[MAX_GENERATORS]; // Tableau de générateurs
-extern Foreuse ListeForeuse[MAX_FOREUSES];
-
+extern Generator generators[MAX_GENERATORS];
 extern Cell grid[ROW][COL];
-extern Generator MineraiCuivreGenerator;
+
+extern const int screenWidth;
+extern const int screenHeight;
+extern const int cellSize;
+
 void CellDraw(Cell cell);
 bool IndexIsValid(int i, int j);
 void InitGrid();
