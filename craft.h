@@ -14,8 +14,8 @@ typedef struct Craft {
 } Craft;
 
 typedef enum CraftMenu { NONE,BASE,STRUCT,MECA,PROD } CraftMenu;
-CraftMenu CurrentMenu;
-CraftMenu OldMenu;
+extern CraftMenu CurrentMenu;
+extern CraftMenu OldMenu;
 
 void DrawCraftPage();
 void CraftButton();
@@ -37,8 +37,8 @@ extern Craft MecaCraftInvent[MaxBaseCraft];
 extern Craft ProdCraftInvent[MaxBaseCraft];
 
 
-Rectangle BaseCraftButton,StructCraftButton,MecaCraftButton,ProdCraftButton,ConfirmCraftButton1,ConfirmCraftButton5;
-Rectangle BaseDropdownMenu[MaxBaseCraft] ,StructDropdownMenu[MaxBaseCraft],MecaDropdownMenu[MaxBaseCraft],ProdDropdownMenu[MaxBaseCraft];
+extern Rectangle BaseCraftButton,StructCraftButton,MecaCraftButton,ProdCraftButton,ConfirmCraftButton1,ConfirmCraftButton5;
+extern Rectangle BaseDropdownMenu[MaxBaseCraft] ,StructDropdownMenu[MaxBaseCraft],MecaDropdownMenu[MaxBaseCraft],ProdDropdownMenu[MaxBaseCraft];
 extern Rectangle (*currentDropDownMenu)[MaxBaseCraft] ;
 extern int CraftSelectedItem;
 #endif

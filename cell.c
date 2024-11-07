@@ -8,7 +8,7 @@ const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
 
-Generator Generators[MAX_GENERATORS];
+Generator generators[MAX_GENERATORS];
 Foreuse ListeForeuse[MAX_FOREUSES];
 Foreuse foreuse;
 

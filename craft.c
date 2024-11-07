@@ -13,6 +13,9 @@ Craft StructCraftInvent[MaxBaseCraft];
 Craft MecaCraftInvent[MaxBaseCraft];
 Craft ProdCraftInvent[MaxBaseCraft];
 
+Rectangle BaseCraftButton,StructCraftButton,MecaCraftButton,ProdCraftButton,ConfirmCraftButton1,ConfirmCraftButton5;
+Rectangle BaseDropdownMenu[MaxBaseCraft] ,StructDropdownMenu[MaxBaseCraft],MecaDropdownMenu[MaxBaseCraft],ProdDropdownMenu[MaxBaseCraft];
+
 
 
 void InitBaseCraft() {

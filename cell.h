@@ -34,6 +34,7 @@ typedef struct Foreuse {
 } Foreuse;
 
 extern Generator generators[MAX_GENERATORS];
+extern Foreuse ListeForeuse[MAX_FOREUSES];
 extern Cell grid[ROW][COL];
 
 extern const int screenWidth;

@@ -10,7 +10,7 @@ int main(void) {
     InitMusic();
 
     InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
-    //InitBaseCraft();
+    InitBaseCraft();
     SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
     setPlayerCamera();
@@ -89,7 +89,7 @@ int main(void) {
 
         else if (isCraftOpen) {
             currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
-            //DrawCraftPage();
+            DrawCraftPage();
         }
 
         BeginMode2D(camera); 
