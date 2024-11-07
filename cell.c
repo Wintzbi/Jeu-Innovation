@@ -7,12 +7,13 @@ const int screenHeight = 1200;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
+
 Generator Generators[MAX_GENERATORS];
 Foreuse ListeForeuse[MAX_FOREUSES];
 Foreuse foreuse;
+
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
-
 
 // Fonction pour dessiner une cellule
 void CellDraw(Cell cell) {

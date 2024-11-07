@@ -13,6 +13,8 @@ extern const int cellSize;
 #define COL 200
 #define ROW 200
 
+#define MAX_GENERATORS 8
+
 extern int offsetX ;
 extern int offsetY;
 
@@ -40,8 +42,9 @@ typedef struct Foreuse {
 
 #define MAX_GENERATORS 8 // Définir le nombre maximal de générateurs
 #define MAX_FOREUSES 8
-Generator generators[MAX_GENERATORS]; // Tableau de générateurs
-Foreuse ListeForeuse[MAX_FOREUSES];
+extern Generator generators[MAX_GENERATORS]; // Tableau de générateurs
+extern Foreuse ListeForeuse[MAX_FOREUSES];
+
 extern Cell grid[ROW][COL];
 extern Generator MineraiCuivreGenerator;
 void CellDraw(Cell cell);
