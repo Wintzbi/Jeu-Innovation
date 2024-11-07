@@ -2,9 +2,6 @@
 #include "inventory.h"
 #include "camera.h"
 
-const int screenWidth = 1920;
-const int screenHeight = 1200;
-const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
 
@@ -12,6 +9,15 @@ Generator generators[MAX_GENERATORS];
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
+int screenWidth;
+int screenHeight;
+int cellSize;
+
+void InitScreenSize() {
+    screenWidth = GetScreenWidth();
+    screenHeight = GetScreenHeight();
+    cellSize = screenWidth / COL;
+}
 
 // Fonction pour dessiner une cellule
 void CellDraw(Cell cell) {
