@@ -6,9 +6,9 @@
 #include <stdlib.h>  // Pour rand et srand
 #include <time.h>    // Pour time
 
-extern int screenWidth;
-extern int screenHeight;
-extern int cellSize;
+extern const int screenWidth;
+extern const int screenHeight;
+extern const int cellSize;
 
 #define COL 200
 #define ROW 200
@@ -39,7 +39,6 @@ extern Generator generators[MAX_GENERATORS]; // Tableau de générateurs
 
 extern Cell grid[ROW][COL];
 extern Generator MineraiCuivreGenerator;
-void InitScreenSize();
 void CellDraw(Cell cell);
 bool IndexIsValid(int i, int j);
 void InitGrid();
