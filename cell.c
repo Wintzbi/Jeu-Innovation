@@ -84,13 +84,13 @@ void InitMineraiGenerator() {
             generators[k] = (Generator){
                 .i = rand()%60, // Position x initiale
                 .j = 10 +rand()%40, // Position y initiale
-                .placed = true, // Initialisé comme placé
+                .placed = false, // Initialisé comme placé
                 .texture = GeneratorVeinTextures[ore_type],
                 .up_texture =GeneratorOreTextures[ore_type]};
 
             grid[generators[k].i][generators[k].j].texture = generators[k].texture ;
             grid[generators[k].i][generators[k].j].placed = generators[k].placed ;
-            grid[generators[k].i][generators[k].j].pickable=false;
+            grid[generators[k].i][generators[k].j].pickable=true;
          } 
     
     MineraiGenerator();
@@ -122,6 +122,11 @@ void MineraiGenerator() {
                     grid[newI][newJ].placed = true; // Marquer la cellule comme occupée
                     mineralsPlaced++;
                     if(rand()%6 >2) grid[newI][newJ].up_texture = generators[k].up_texture;
+                    else {
+                        grid[newI][newJ].up_texture = (Texture2D){0};
+                        grid[newI][newJ].placed=false;
+                        }
+    
                 }
                 dirIndex = rand() % 4 ;
                 newI +=directions[dirIndex][0];
