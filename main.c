@@ -22,7 +22,6 @@ int main(void) {
 
     ButtonPlay();  // Initialiser le bouton Play
 
-    float elapsedTime = 0.0f; // Compteur de temps écoulé
 
     while (!WindowShouldClose()) {
 

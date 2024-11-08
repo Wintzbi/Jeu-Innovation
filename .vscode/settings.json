@@ -2,6 +2,7 @@
     "files.associations": {
         "unistd.h": "c",
         "inventory.h": "c",
-        "musique.h": "c"
+        "musique.h": "c",
+        "global.h": "c"
     }
 }
