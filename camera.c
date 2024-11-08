@@ -69,5 +69,5 @@ void moveCamera() {
     if (camera.target.y > maxY) camera.target.y = maxY;
 
     // Debug
-    printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
+    //printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
 }
