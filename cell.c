@@ -1,7 +1,7 @@
 #include "cell.h"
 #include "inventory.h"
 #include "camera.h"
-
+#include <stdio.h>
 const int screenWidth = 1920*0.75;
 const int screenHeight = 1200*0.75;
 const int cellSize = screenWidth / COL;
@@ -10,8 +10,10 @@ int offsetY = 0;
 
 Generator generators[MAX_GENERATORS];
 Foreuse ListeForeuse[MAX_FOREUSES];
+Filon ListeFilon[2];
 Foreuse foreuse;
-
+Filon CopperVein;
+Filon IronVein;
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
@@ -73,20 +75,33 @@ void InitGrid() {
     InitMineraiGenerator();
 }
 void InitMineraiGenerator() {
-    // Exemple de textures pour les générateurs
-    Texture2D GeneratorVeinTextures[] = {copperVeinTexture, ironVeinTexture}; // Ajoutez d'autres textures selon vos besoins
-    Texture2D GeneratorOreTextures[] = {copperTexture, ironTexture}; // Ajoutez d'autres textures selon vos besoins
-
+     CopperVein=(Filon) {
+        .max_number=5,
+        .density=15,
+        .texture =copperVeinTexture,
+        .up_texture=copperTexture
+    };
+    IronVein=(Filon) {
+        .max_number=10,
+        .density=10,
+        .texture =ironVeinTexture,
+        .up_texture=ironTexture
+    };
+    ListeFilon[0]= CopperVein;
+    ListeFilon[1]= IronVein;
     // Initialiser chaque générateur
     srand(time(NULL)); // Utilise le temps actuel comme valeur de départ
     for (int k = 0; k < MAX_GENERATORS; k++) {
-        int ore_type = rand() % (sizeof(GeneratorVeinTextures) / sizeof(GeneratorVeinTextures[0]));
+        int ore_type = (rand() % (sizeof(ListeFilon) / sizeof(ListeFilon[0])));
+        printf("ore type : %d\n", ore_type);
             generators[k] = (Generator){
+                .max_number=ListeFilon[ore_type].max_number,
+                .density=ListeFilon[ore_type].density,
                 .i = rand()%60, // Position x initiale
                 .j = 10 +rand()%40, // Position y initiale
                 .placed = false, // Initialisé comme placé
-                .texture = GeneratorVeinTextures[ore_type],
-                .up_texture =GeneratorOreTextures[ore_type]};
+                .texture = ListeFilon[ore_type].texture,
+                .up_texture =ListeFilon[ore_type].up_texture};
 
             grid[generators[k].i][generators[k].j].texture = generators[k].texture ;
             grid[generators[k].i][generators[k].j].placed = generators[k].placed ;
@@ -108,12 +123,12 @@ void MineraiGenerator() {
         int mineralsPlaced = 0;
         int attempts = 0; // Compteur pour les tentatives
 
-        while (mineralsPlaced < 10 && attempts < 10) { // Tenter de placer 3 minerais avec une limite de tentatives
+        while (mineralsPlaced < generators[k].max_number && attempts < 10) { // Tenter de placer 3 minerais avec une limite de tentatives
             int dirIndex = rand() % 5; // Choisir une direction aléatoire
             int newI = generators[k].i + directions[dirIndex][0];
             int newJ = generators[k].j + directions[dirIndex][1];
 
-            for(int i = 0;i<10;i++){ // étend les filons
+            for(int i = 0;i<generators[k].density;i++){ // étend les filons
                 // Vérifier si la nouvelle position est valide et si la cellule n'est pas déjà occupée
                 if (IndexIsValid(newI, newJ) && !grid[newI][newJ].placed) 
                 {
