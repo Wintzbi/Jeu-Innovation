@@ -2,7 +2,7 @@
 #include "inventory.h"
 #include "camera.h"
 #include <stdio.h>
-int MinPlaceableID=4;//liste des id de textures plaçables;
+int MinPlaceableID=11;//liste des id de textures plaçables;
 
 
 void mouseDefault() {
@@ -17,7 +17,6 @@ void mouseDefault() {
     // Dessiner une cellule en surbrillance là où la souris est positionnée
     DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
 }
-
 
 void InitInventoryKeyBiding() {
     if (IsKeyPressed(KEY_ONE)) selectedItem = 0;
@@ -95,6 +94,31 @@ void leftClic() {
             // Retirer le bloc de la grille
             grid[posX][posY].up_texture=(Texture2D){ 0 };
             grid[posX][posY].placed = false;
+        }
+    }
+}
+
+void InteractForeuse() {
+    for (int k = 0; k < MAX_FOREUSES; k++) {
+        if (ListeForeuse[k].placed) {
+            // Récupérer la position de la foreuse
+            int foreuseI = ListeForeuse[k].i;
+            int foreuseJ = ListeForeuse[k].j;
+
+            // Vérifier si la cellule est valide
+            if (IndexIsValid(foreuseI, foreuseJ)) {
+                // Accéder à la cellule sous la foreuse
+                Cell cell = grid[foreuseI][foreuseJ];
+
+                // Vérifier si la cellule a une texture
+                if (cell.texture.id != 0) {
+                    // Afficher l'ID de la texture dans le terminal
+                    printf("La foreuse est sur une cellule avec la texture ID: %d\n", cell.texture.id);
+                } else {
+                    // Afficher si la cellule n'a pas de texture
+                    printf("La foreuse est sur une cellule sans texture.\n");
+                }
+            }
         }
     }
 }

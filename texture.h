@@ -11,6 +11,7 @@ extern Texture2D coalTexture;
 extern Texture2D ironLingotTexture;
 extern Texture2D copperLingotTexture;
 extern Texture2D defaultTexture;
+extern Texture2D drillTexture;
 
 void InitTexture();
 void UnloadAllTexture();

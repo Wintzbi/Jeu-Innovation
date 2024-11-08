@@ -10,8 +10,8 @@ int offsetY = 0;
 
 Generator generators[MAX_GENERATORS];
 Foreuse ListeForeuse[MAX_FOREUSES];
-Foreuse foreuse;
 
+Foreuse foreuse;
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
@@ -137,14 +137,6 @@ void MineraiGenerator() {
 
             attempts++; // Incrémenter le compteur de tentatives
         }        
-    }
-}
-
-void InteractForeuse(){
-    for (int k = 0; k < MAX_FOREUSES; k++){
-        if (ListeForeuse[k].placed){
-            continue;
-        }
     }
 }
 
