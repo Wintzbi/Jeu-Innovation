@@ -1,6 +1,9 @@
 #include "cell.h"
 #include "inventory.h"
 #include "camera.h"
+#include <stdio.h>
+int MinPlaceableID=4;//liste des id de textures plaçables;
+
 
 void mouseDefault() {
     // Récupérer la position de la souris et la convertir en coordonnées du monde
@@ -38,11 +41,12 @@ void rightClic() {
     int posX = (int)(worldPos.x / cellSize);
     int posY = (int)(worldPos.y / cellSize);
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id >= MinPlaceableID) {
         if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
             grid[posX][posY].placed = true;
             grid[posX][posY].up_texture = inventory[selectedItem].texture;
             inventory[selectedItem].quantity--;  // Décrémenter la quantité
+            printf("ID : %u\n",grid[posX][posY].up_texture.id);
 
             // Si la quantité atteint 0, réinitialiser la case de l'inventaire
             if (inventory[selectedItem].quantity == 0) {

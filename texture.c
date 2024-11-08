@@ -11,6 +11,7 @@ Texture2D ironLingotTexture;
 Texture2D defaultTexture;
 
 void InitTexture() {
+    //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
     copperTexture = LoadTexture("assets/copper_item.png");
     copperVeinTexture= LoadTexture("assets/copper_vein.png");
     ironVeinTexture= LoadTexture("assets/iron_vein.png");

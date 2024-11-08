@@ -2,6 +2,7 @@
 #define INPUT_H
 #include "raylib.h"
 
+extern int MinPlaceableID ;
 void InitInventoryKeyBiding();
 void mouseDefault();
 void leftClic();
