@@ -63,7 +63,7 @@ void leftClic() {
     int posY = (int)(worldPos.y / cellSize);
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable) {
+            if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable &&grid[posX][posY].up_texture.id != 0 ) {
                 Texture2D brokenTexture = grid[posX][posY].up_texture;  // Texture du bloc cassé
                 bool itemFoundInInventory = false;
 
@@ -89,6 +89,7 @@ void leftClic() {
             }
 
             // Retirer le bloc de la grille
+            grid[posX][posY].up_texture=(Texture2D){ 0 };
             grid[posX][posY].placed = false;
         }
     }
