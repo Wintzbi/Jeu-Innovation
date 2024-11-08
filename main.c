@@ -42,18 +42,6 @@ int main(void) {
         ClearBackground(RAYWHITE);
 
         if (currentScreen == MENU) {
-            DrawText("Minc Corp Simulation", screenWidth / 2 - 150, screenHeight / 2 - 100, 30, DARKGRAY);
-
-            if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-
-                    currentScreen = GAME;
-                }
-                DrawRectangleRec(playButton, LIGHTGRAY);
-            } else {
-                DrawRectangleRec(playButton, GRAY);
-            }
-            DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
             DrawMenu(&currentScreen);
         }
 
