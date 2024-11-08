@@ -8,7 +8,7 @@
 
 #define COL 200
 #define ROW 200
-#define MAX_GENERATORS 20
+#define MAX_GENERATORS 30
 #define MAX_FOREUSES 8
 
 typedef struct Cell {
@@ -46,7 +46,7 @@ typedef struct Filon {
 
 extern Generator generators[MAX_GENERATORS];
 extern Foreuse ListeForeuse[MAX_FOREUSES];
-extern Filon ListeFilon[2];  
+extern Filon ListeFilon[4];  
 extern Cell grid[ROW][COL];
 
 extern const int screenWidth;

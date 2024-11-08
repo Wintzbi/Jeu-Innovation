@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include "texture.h"
 #include <string.h> // Pour utiliser strcmp
-#define INVENTORY_SIZE 10
+#define INVENTORY_SIZE 30
 
 typedef struct Item {
     char name[20];

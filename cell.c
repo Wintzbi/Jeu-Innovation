@@ -1,7 +1,6 @@
 #include "cell.h"
 #include "inventory.h"
 #include "camera.h"
-#include <stdio.h>
 const int screenWidth = 1920*0.75;
 const int screenHeight = 1200*0.75;
 const int cellSize = screenWidth / COL;
@@ -10,12 +9,16 @@ int offsetY = 0;
 
 Generator generators[MAX_GENERATORS];
 Foreuse ListeForeuse[MAX_FOREUSES];
-Filon ListeFilon[2];
+Filon ListeFilon[4];
 Foreuse foreuse;
 Filon CopperVein;
 Filon IronVein;
+Filon CoalVein;
+Filon RockVein;
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
+Generator MineraiCoalGenerator;
+Generator MineraiRockGenerator;
 
 // Fonction pour dessiner une cellule avec texture ajustée et centrée
 // Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
@@ -87,13 +90,26 @@ void InitMineraiGenerator() {
         .texture =ironVeinTexture,
         .up_texture=ironTexture
     };
+    CoalVein=(Filon) {
+        .max_number=5,
+        .density=20,
+        .texture =coalVeinTexture,
+        .up_texture=coalTexture
+    };
+    RockVein=(Filon) {
+        .max_number=15,
+        .density=20,
+        .texture =rockVeinTexture,
+        .up_texture=rockTexture
+    };
     ListeFilon[0]= CopperVein;
     ListeFilon[1]= IronVein;
+    ListeFilon[2]= CoalVein;
+    ListeFilon[3]= RockVein;
     // Initialiser chaque générateur
     srand(time(NULL)); // Utilise le temps actuel comme valeur de départ
     for (int k = 0; k < MAX_GENERATORS; k++) {
         int ore_type = (rand() % (sizeof(ListeFilon) / sizeof(ListeFilon[0])));
-        printf("ore type : %d\n", ore_type);
             generators[k] = (Generator){
                 .max_number=ListeFilon[ore_type].max_number,
                 .density=ListeFilon[ore_type].density,
