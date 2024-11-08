@@ -27,7 +27,6 @@ void CellDraw(Cell cell) {
             RefTexture = cell.texture;     // Sinon, on utilise texture
         }
 
-
         float scaleX = (float)cellSize / RefTexture.width;
         float scaleY = (float)cellSize / RefTexture.height;
         float scale = (scaleX < scaleY) ? scaleX : scaleY; // Choisir le plus petit pour garder les proportions

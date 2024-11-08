@@ -8,6 +8,7 @@ Texture2D ironVeinTexture;
 Texture2D coalTexture;
 Texture2D copperLingotTexture;
 Texture2D ironLingotTexture;
+Texture2D defaultTexture;
 
 void InitTexture() {
     copperTexture = LoadTexture("assets/copper_item.png");
@@ -17,6 +18,7 @@ void InitTexture() {
     coalTexture = LoadTexture("assets/coal_item.png");
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
     ironLingotTexture= LoadTexture("assets/iron_lingot.png");
+    defaultTexture = LoadTexture("assets/default_white.png");
 }
 
 void UnloadAllTexture() {
@@ -27,4 +29,5 @@ void UnloadAllTexture() {
     UnloadTexture(coalTexture);
     UnloadTexture(copperLingotTexture);
     UnloadTexture(ironLingotTexture);
+    UnloadTexture(defaultTexture);
 }
