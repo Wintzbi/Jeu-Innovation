@@ -18,15 +18,13 @@ Generator MineraiFerGenerator;
 // Fonction pour dessiner une cellule avec texture ajustée et centrée
 // Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
 void CellDraw(Cell cell) {
-    if(cell.up_texture.id != 0 || cell.texture.id != 0){
-        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
-        Texture2D RefTexture;
+    Texture2D RefTexture;
+    RefTexture = defaultTexture;        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
         if (cell.up_texture.id != 0) {
             RefTexture = cell.up_texture;  // Si up_texture est valide, on l'utilise
-        } else if (cell.texture.id != 0){
+        } else if (cell.texture.id != defaultTexture.id){
             RefTexture = cell.texture;     // Sinon, on utilise texture
         }
-        else RefTexture = defaultTexture;
 
         float scaleX = (float)cellSize / RefTexture.width;
         float scaleY = (float)cellSize / RefTexture.height;
@@ -42,17 +40,15 @@ void CellDraw(Cell cell) {
         Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
         Vector2 origin = { 0, 0 };
 
-        // Dessine la texture de sol si elle est valide (id != 0)
-        if (cell.texture.id != 0) {
-            DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
-        }
+        DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+        
 
+    
         // Dessine la texture supplémentaire si elle est valide (id != 0)
         if (cell.up_texture.id != 0) {
             DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, 0.0f, WHITE);
         }
-
-    }
+        
     // Dessiner les contours de la cellule
     DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize * 1.25, cellSize * 1.25, LIGHTGRAY);
 }
