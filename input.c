@@ -41,7 +41,7 @@ void rightClic() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0) {
         if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
             grid[posX][posY].placed = true;
-            grid[posX][posY].texture = inventory[selectedItem].texture;
+            grid[posX][posY].up_texture = inventory[selectedItem].texture;
             inventory[selectedItem].quantity--;  // Décrémenter la quantité
 
             // Si la quantité atteint 0, réinitialiser la case de l'inventaire
@@ -64,7 +64,7 @@ void leftClic() {
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable) {
-                Texture2D brokenTexture = grid[posX][posY].texture;  // Texture du bloc cassé
+                Texture2D brokenTexture = grid[posX][posY].up_texture;  // Texture du bloc cassé
                 bool itemFoundInInventory = false;
 
 

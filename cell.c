@@ -16,15 +16,14 @@ Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
 // Fonction pour dessiner une cellule avec texture ajustée et centrée
+// Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
 void CellDraw(Cell cell) {
+    // Vérifie si la cellule doit être dessinée
     if (cell.placed) {
         float scaleX = (float)cellSize / cell.texture.width;
         float scaleY = (float)cellSize / cell.texture.height;
         float scale = (scaleX < scaleY) ? scaleX : scaleY; // Choisir le plus petit pour garder les proportions
 
-        Rectangle sourceRec = { 0, 0, (float)cell.texture.width, (float)cell.texture.height };
-        
-        // Centrer le rectangle de destination dans la cellule
         Rectangle destRec = { 
             cell.i * cellSize + (cellSize - cell.texture.width * scale) / 2, 
             cell.j * cellSize + (cellSize - cell.texture.height * scale) / 2, 
@@ -32,17 +31,24 @@ void CellDraw(Cell cell) {
             cell.texture.height * scale 
         };
 
-        Vector2 origin = { 0, 0 }; // Pas besoin de centrer avec l'origine ici
+        Rectangle sourceRec = { 0, 0, (float)cell.texture.width, (float)cell.texture.height };
+        Vector2 origin = { 0, 0 };
 
-        DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
-        // Dessiner la texture supplémentaire si elle est disponible
-        if (cell.up_texture.id != 0) {  // Vérifier que up_texture est chargée
+        // Dessine la texture de sol si elle est valide (id != 0)
+        if (cell.texture.id != 0) {
+            DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+        }
+
+        // Dessine la texture supplémentaire si elle est valide (id != 0)
+        if (cell.up_texture.id != 0) {
             DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, 0.0f, WHITE);
         }
     }
 
+    // Dessiner les contours de la cellule
     DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize * 1.25, cellSize * 1.25, LIGHTGRAY);
 }
+
 
 
 // Fonction pour vérifier si les indices de la grille sont valides
