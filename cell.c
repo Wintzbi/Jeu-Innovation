@@ -23,9 +23,10 @@ void CellDraw(Cell cell) {
         Texture2D RefTexture;
         if (cell.up_texture.id != 0) {
             RefTexture = cell.up_texture;  // Si up_texture est valide, on l'utilise
-        } else {
+        } else if (cell.texture.id != 0){
             RefTexture = cell.texture;     // Sinon, on utilise texture
         }
+        else RefTexture = defaultTexture;
 
         float scaleX = (float)cellSize / RefTexture.width;
         float scaleY = (float)cellSize / RefTexture.height;
