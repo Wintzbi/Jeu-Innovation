@@ -23,7 +23,14 @@ void InitBounds(int screenWidth, int screenHeight) {
         minX = 320.0f;           // Bord gauche
         maxX = 1480;        // Bord droit
         minY = 200.0f;           // Bord en haut
-        maxY = 1300;        // Bord en bas
+        maxY = 1600;        // Bord en bas
+    }
+
+    if (screenWidth == 1920*0.75 && screenHeight == 1200*0.75) {
+        minX = 320.0f*0.75;           // Bord gauche
+        maxX = 1160.0f;        // Bord droit
+        minY = 200.0f*0.75;           // Bord en haut
+        maxY = 1250.0f;        // Bord en bas
     }
 }
 
@@ -62,5 +69,5 @@ void moveCamera() {
     if (camera.target.y > maxY) camera.target.y = maxY;
 
     // Debug
-    //printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
+    printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
 }
