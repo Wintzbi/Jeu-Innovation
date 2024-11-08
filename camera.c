@@ -6,17 +6,34 @@
 const float cameraSpeed = 200.0f;
 Camera2D camera;
 
+float minX;
+float maxX;
+float minY;
+float maxY;
+
+void InitBounds(int screenWidth, int screenHeight) {
+    if (screenWidth == 1920*0.5 && screenHeight == 1200*0.5) {
+        minX = 320.0f*0.5;           // Bord gauche
+        maxX = 640.0f;        // Bord droit
+        minY = 200.0f*0.5;           // Bord en haut
+        maxY = 700.0f;        // Bord en bas
+    }
+
+    if (screenWidth == 1920 && screenHeight == 1200) {
+        minX = 320.0f;           // Bord gauche
+        maxX = 1480;        // Bord droit
+        minY = 200.0f;           // Bord en haut
+        maxY = 1300;        // Bord en bas
+    }
+}
+
 void setPlayerCamera() {
     camera.target = (Vector2){ 0.0f, 0.0f }; // Position de la cible (initialement à l'origine)
     camera.offset = (Vector2){ screenWidth / 2.0f, screenHeight / 2.0f }; // Centre la caméra au milieu de l'écran
     camera.rotation = 0.0f;
     camera.zoom = 3.0f;
+    InitBounds(screenWidth,screenHeight);
 }
-
-const float minX = 320.0f;           // Bord gauche
-const float maxX = 1480.0f;        // Bord droit
-const float minY = 200.0f;           // Bord en haut
-const float maxY = 1600.0f;        // Bord en bas
 
 void moveCamera() {
     // Gère les mouvements de la caméra
