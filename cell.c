@@ -2,8 +2,8 @@
 #include "inventory.h"
 #include "camera.h"
 
-const int screenWidth = 1920;
-const int screenHeight = 1200;
+const int screenWidth = 1920*0.75;
+const int screenHeight = 1200*0.75;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
@@ -15,15 +15,35 @@ Foreuse foreuse;
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 
-// Fonction pour dessiner une cellule
+// Fonction pour dessiner une cellule avec texture ajustée et centrée
 void CellDraw(Cell cell) {
     if (cell.placed) {
-        int offsetX = (cellSize - cell.texture.width)/2;
-        int offsetY = (cellSize - cell.texture.height)/2;
-        DrawTexture(cell.texture, cell.i * cellSize + offsetX, cell.j * cellSize + offsetY, WHITE);
+        float scaleX = (float)cellSize / cell.texture.width;
+        float scaleY = (float)cellSize / cell.texture.height;
+        float scale = (scaleX < scaleY) ? scaleX : scaleY; // Choisir le plus petit pour garder les proportions
+
+        Rectangle sourceRec = { 0, 0, (float)cell.texture.width, (float)cell.texture.height };
+        
+        // Centrer le rectangle de destination dans la cellule
+        Rectangle destRec = { 
+            cell.i * cellSize + (cellSize - cell.texture.width * scale) / 2, 
+            cell.j * cellSize + (cellSize - cell.texture.height * scale) / 2, 
+            cell.texture.width * scale, 
+            cell.texture.height * scale 
+        };
+
+        Vector2 origin = { 0, 0 }; // Pas besoin de centrer avec l'origine ici
+
+        DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+        // Dessiner la texture supplémentaire si elle est disponible
+        if (cell.up_texture.id != 0) {  // Vérifier que up_texture est chargée
+            DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, 0.0f, WHITE);
+        }
     }
-    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize, cellSize, LIGHTGRAY);
+
+    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize * 1.25, cellSize * 1.25, LIGHTGRAY);
 }
+
 
 // Fonction pour vérifier si les indices de la grille sont valides
 bool IndexIsValid(int i, int j) {
@@ -38,7 +58,9 @@ void InitGrid() {
                 .j = j,
                 .placed = false,
                 .pickable=true,
-                .texture = (Texture2D){ 0 }  // Par défaut, on peut utiliser n'importe quelle texture
+                .texture = (Texture2D){ 0 },  // Par défaut, on peut utiliser n'importe quelle texture
+                .up_texture = (Texture2D){ 0 }  
+
             };
         }
     }
@@ -46,21 +68,24 @@ void InitGrid() {
 }
 void InitMineraiGenerator() {
     // Exemple de textures pour les générateurs
-    Texture2D GeneratorTextures[] = {copperTexture, ironTexture}; // Ajoutez d'autres textures selon vos besoins
+    Texture2D GeneratorVeinTextures[] = {copperVeinTexture, ironVeinTexture}; // Ajoutez d'autres textures selon vos besoins
+    Texture2D GeneratorOreTextures[] = {copperTexture, ironTexture}; // Ajoutez d'autres textures selon vos besoins
 
     // Initialiser chaque générateur
     srand(time(NULL)); // Utilise le temps actuel comme valeur de départ
     for (int k = 0; k < MAX_GENERATORS; k++) {
+        int ore_type = rand() % (sizeof(GeneratorVeinTextures) / sizeof(GeneratorVeinTextures[0]));
             generators[k] = (Generator){
-                .i = rand()%30, // Position x initiale
-                .j = 5+rand()%20, // Position y initiale
+                .i = rand()%60, // Position x initiale
+                .j = 10 +rand()%40, // Position y initiale
                 .placed = true, // Initialisé comme placé
-                .texture = GeneratorTextures[rand() % (sizeof(GeneratorTextures) / sizeof(GeneratorTextures[0]))]
-            };
+                .texture = GeneratorVeinTextures[ore_type],
+                .up_texture =GeneratorOreTextures[ore_type]};
+
             grid[generators[k].i][generators[k].j].texture = generators[k].texture ;
             grid[generators[k].i][generators[k].j].placed = generators[k].placed ;
             grid[generators[k].i][generators[k].j].pickable=false;
-    } 
+         } 
     
     MineraiGenerator();
 }
@@ -77,18 +102,27 @@ void MineraiGenerator() {
         int mineralsPlaced = 0;
         int attempts = 0; // Compteur pour les tentatives
 
-        while (mineralsPlaced < 3 && attempts < 10) { // Tenter de placer 3 minerais avec une limite de tentatives
-            int dirIndex = rand() % 4; // Choisir une direction aléatoire
+        while (mineralsPlaced < 10 && attempts < 10) { // Tenter de placer 3 minerais avec une limite de tentatives
+            int dirIndex = rand() % 5; // Choisir une direction aléatoire
             int newI = generators[k].i + directions[dirIndex][0];
             int newJ = generators[k].j + directions[dirIndex][1];
 
-            // Vérifier si la nouvelle position est valide et si la cellule n'est pas déjà occupée
-            if (IndexIsValid(newI, newJ) && !grid[newI][newJ].placed) {
-                // Placer le minerai
-                grid[newI][newJ].texture = generators[k].texture; // Utiliser la texture du générateur
-                grid[newI][newJ].placed = true; // Marquer la cellule comme occupée
-                mineralsPlaced++;
-            } 
+            for(int i = 0;i<10;i++){ // étend les filons
+                // Vérifier si la nouvelle position est valide et si la cellule n'est pas déjà occupée
+                if (IndexIsValid(newI, newJ) && !grid[newI][newJ].placed) 
+                {
+                    // Placer le minerai
+                    grid[newI][newJ].texture = generators[k].texture; // Utiliser la texture du générateur
+                    grid[newI][newJ].placed = true; // Marquer la cellule comme occupée
+                    mineralsPlaced++;
+                    if(rand()%6 >2) grid[newI][newJ].up_texture = generators[k].up_texture;
+                }
+                dirIndex = rand() % 4 ;
+                newI +=directions[dirIndex][0];
+                newJ +=directions[dirIndex][1];
+            }
+            
+
 
             attempts++; // Incrémenter le compteur de tentatives
         }        

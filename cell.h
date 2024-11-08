@@ -16,7 +16,8 @@ typedef struct Cell {
     int j;
     bool placed;
     bool pickable;
-    Texture2D texture;
+    Texture2D texture; //texture sol
+    Texture2D up_texture;//texture suplémentaire
 } Cell;
 
 typedef struct Generator {
@@ -24,6 +25,7 @@ typedef struct Generator {
     int j;
     bool placed;
     Texture2D texture;
+    Texture2D up_texture;
 } Generator;
 
 typedef struct Foreuse {

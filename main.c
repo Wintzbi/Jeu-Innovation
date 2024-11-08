@@ -26,15 +26,7 @@ int main(void) {
 
     while (!WindowShouldClose()) {
 
-        // Calculer le temps écoulé depuis la dernière frame
-        float deltaTime = GetFrameTime();
-        elapsedTime += deltaTime;
-
-        // Vérifier si l'intervalle de mise à jour est atteint
-        if (elapsedTime >= UPDATE_INTERVAL) {
-            MineraiGenerator(); // Mettre à jour le générateur de minerai
-            elapsedTime = 0.0f; // Réinitialiser le compteur de temps
-        }
+        
         UpdateMusic();
         InitInventoryKeyBiding();
         
