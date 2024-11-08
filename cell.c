@@ -18,13 +18,9 @@ Generator MineraiFerGenerator;
 // Fonction pour dessiner une cellule avec texture ajustée et centrée
 // Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
 void CellDraw(Cell cell) {
-    Texture2D RefTexture;
-    RefTexture = defaultTexture;        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
-        if (cell.up_texture.id != 0) {
-            RefTexture = cell.up_texture;  // Si up_texture est valide, on l'utilise
-        } else if (cell.texture.id != defaultTexture.id){
-            RefTexture = cell.texture;     // Sinon, on utilise texture
-        }
+        Texture2D RefTexture;
+        RefTexture = defaultTexture;        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
+        
 
         float scaleX = (float)cellSize / RefTexture.width;
         float scaleY = (float)cellSize / RefTexture.height;
@@ -68,7 +64,7 @@ void InitGrid() {
                 .j = j,
                 .placed = false,
                 .pickable=true,
-                .texture = (Texture2D){ 0 },  // Par défaut, on peut utiliser n'importe quelle texture
+                .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture
                 .up_texture = (Texture2D){ 0 }  
 
             };

@@ -19,7 +19,7 @@ void InitTexture() {
     coalTexture = LoadTexture("assets/coal_item.png");
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
     ironLingotTexture= LoadTexture("assets/iron_lingot.png");
-    defaultTexture = LoadTexture("assets/default_white.png");
+    defaultTexture = LoadTexture("assets/default.png");
 }
 
 void UnloadAllTexture() {
