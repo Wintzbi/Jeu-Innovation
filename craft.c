@@ -176,6 +176,7 @@ void DrawCraftItem(CraftMenu OldMenu){
         DrawRectangleRec(ConfirmCraftButton1, LIGHTGRAY); // Couleur si survolé
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable) {
             CraftItem(1,currentInventory[CraftSelectedItem]);
+            craftedObjects+=1;
             DeletComp(currentInventory[CraftSelectedItem],1);
         }
     } else {
@@ -188,6 +189,7 @@ void DrawCraftItem(CraftMenu OldMenu){
             DrawRectangleRec(ConfirmCraftButton5, LIGHTGRAY); // Couleur si survolé
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && IsCraftable ) {
                 CraftItem(5,currentInventory[CraftSelectedItem]);
+                craftedObjects+=5;
                 DeletComp(currentInventory[CraftSelectedItem],5);
             }
         } else {

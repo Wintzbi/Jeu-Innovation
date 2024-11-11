@@ -2,6 +2,7 @@
 #define CRAFT_H
 #include "cell.h"
 #include "inventory.h"
+#include "stat.h"
 
 #define MaxBaseCraft 5
 

@@ -3,6 +3,7 @@
         "unistd.h": "c",
         "inventory.h": "c",
         "musique.h": "c",
-        "global.h": "c"
+        "global.h": "c",
+        "cell.h": "c"
     }
 }

@@ -13,6 +13,7 @@
 #include "menu.h"
 #include "craft.h"
 #include "camera.h"
+#include "stat.h"
 
 
 Cell grid[ROW][COL];

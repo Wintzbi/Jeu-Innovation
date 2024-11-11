@@ -4,13 +4,13 @@ int main(void) {
 
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
-
     InitTexture();
     InitGrid();
     InitMusic();
 
     InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple
     InitBaseCraft();
+    InitStat();
     SetTargetFPS(60);  // Définir la fréquence d'images cible à 60 FPS
 
     setPlayerCamera();
@@ -25,7 +25,7 @@ int main(void) {
 
     while (!WindowShouldClose()) {
 
-        
+        UpdateStat();
         UpdateMusic();
         InitInventoryKeyBiding();
         
