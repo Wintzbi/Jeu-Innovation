@@ -12,12 +12,11 @@ Texture2D rockTexture;
 Texture2D copperLingotTexture;
 Texture2D ironLingotTexture;
 Texture2D defaultTexture;
+Texture2D drillTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
     copperTexture = LoadTexture("assets/copper_item.png");
-    copperVeinTexture= LoadTexture("assets/copper_vein.png");
-    ironVeinTexture= LoadTexture("assets/iron_vein.png");
     ironTexture = LoadTexture("assets/iron_item.png");
     coalTexture = LoadTexture("assets/coal_item.png");
     coalVeinTexture =LoadTexture("assets/coal_vein.png");
@@ -25,13 +24,15 @@ void InitTexture() {
     rockTexture=LoadTexture("assets/rock_item.png");
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
     ironLingotTexture= LoadTexture("assets/iron_lingot.png");
+    copperVeinTexture= LoadTexture("assets/copper_vein.png");
+    ironVeinTexture= LoadTexture("assets/iron_vein.png");
     defaultTexture = LoadTexture("assets/default.png");
+    drillTexture = LoadTexture("assets/drill_texture.png");
+    
 }
 
 void UnloadAllTexture() {
     UnloadTexture(copperTexture);
-    UnloadTexture(copperVeinTexture);
-    UnloadTexture(ironVeinTexture);
     UnloadTexture(ironTexture);
     UnloadTexture(coalTexture);
     UnloadTexture(coalVeinTexture);
@@ -40,4 +41,7 @@ void UnloadAllTexture() {
     UnloadTexture(copperLingotTexture);
     UnloadTexture(ironLingotTexture);
     UnloadTexture(defaultTexture);
+    UnloadTexture(copperVeinTexture);
+    UnloadTexture(ironVeinTexture);
+    UnloadTexture(drillTexture);
 }

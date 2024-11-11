@@ -171,14 +171,6 @@ void MineraiGenerator() {
     }
 }
 
-void InteractForeuse(){
-    for (int k = 0; k < MAX_FOREUSES; k++){
-        if (ListeForeuse[k].placed){
-            continue;
-        }
-    }
-}
-
 void GridDraw() {
     // Calculer les limites visibles de la vue de la caméra
     Vector2 topLeft = GetScreenToWorld2D((Vector2){ 0, 0 }, camera);
