@@ -203,6 +203,7 @@ void DrawStat(){
     DrawRectangle((screenWidth/2)-400, 250, 800, 60, DARKGRAY);
     DrawText(TextFormat("Satistiques"), (screenWidth/2)-390, 250, 60, WHITE);
     DrawText(TextFormat("Craft : %d",craftedObjects), (screenWidth/2)-390, 350, 50, LIGHTGRAY);
-    DrawText(TextFormat("Temps écoulé : %d",elapsed), (screenWidth/2)-390, 420, 50, LIGHTGRAY);
+    DrawText(TextFormat("Objets ramassé : %d",pickedObject), (screenWidth/2)-390, 420, 50, LIGHTGRAY);
+    DrawText(TextFormat("Temps écoulé : %d",elapsed), (screenWidth/2)-390, 490, 50, LIGHTGRAY);
 
 }

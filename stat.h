@@ -5,6 +5,7 @@
 
 extern int craftedObjects;
 extern double elapsed;
+extern int pickedObject;
 extern time_t start_time;
 void InitStat();
 void UpdateStat();
