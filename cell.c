@@ -67,6 +67,7 @@ void InitGrid() {
                 .j = j,
                 .placed = false,
                 .pickable=true,
+                .moveable=true,
                 .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture
                 .up_texture = (Texture2D){ 0 }  
 
@@ -151,7 +152,10 @@ void MineraiGenerator() {
                     grid[newI][newJ].texture = generators[k].texture; // Utiliser la texture du générateur
                     grid[newI][newJ].placed = true; // Marquer la cellule comme occupée
                     mineralsPlaced++;
-                    if(rand()%6 >2) grid[newI][newJ].up_texture = generators[k].up_texture;
+                    if(rand()%6 >2) {
+                        grid[newI][newJ].up_texture = generators[k].up_texture;
+                        grid[newI][newJ].placed=true;
+                    }
                     else {
                         grid[newI][newJ].up_texture = (Texture2D){0};
                         grid[newI][newJ].placed=false;

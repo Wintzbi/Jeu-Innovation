@@ -95,6 +95,7 @@ void leftClic() {
             // Retirer le bloc de la grille
             grid[posX][posY].up_texture=(Texture2D){ 0 };
             grid[posX][posY].placed = false;
+            grid[posX][posY].moveable=false;
             pickedObject+=1;
         }
     }
@@ -110,6 +111,7 @@ void ActionWithName(char ObjectName[20],int i,int j ){
                 ListeConveyor[k].dir[0] = 1;
                 ListeConveyor[k].dir[1] = 0;
                 ListeConveyor[k].placed = true;
+                grid[i][j].moveable=false;
                 break;
             }
 
@@ -123,16 +125,18 @@ void InteractForeuse() {
 
 void Update_Conv(){
     for(int k =0;k<MAX_CONVEYOR;k++){
-        Convey(ListeConveyor[k]);
+        if (ListeConveyor[k].placed) {
+            printf("Tapis %d actif\n",k);
+            Convey(ListeConveyor[k]);
+            }
     }
 }
 
 void Convey(Conveyor conv){
         //vérifie que rien après
-        if (IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed)
-        {
+        
+        if (IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed &&grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable){
             //on déplace l'objet
-
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
             //on supprime l'ancien
