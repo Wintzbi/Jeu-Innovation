@@ -46,7 +46,7 @@ void rightClic() {
             grid[posX][posY].placed = true;
             grid[posX][posY].up_texture = inventory[selectedItem].texture;
             printf("Name: %s\n", inventory[selectedItem].name);
-            ActionWithName(inventory[selectedItem].name);
+            ActionWithName(inventory[selectedItem].name,posX,posY );
             inventory[selectedItem].quantity--;  // Décrémenter la quantité
             // Si la quantité atteint 0, réinitialiser la case de l'inventaire
             if (inventory[selectedItem].quantity == 0) {
@@ -99,13 +99,21 @@ void leftClic() {
         }
     }
 }
-void ActionWithName(char ObjectName[20]){
+void ActionWithName(char ObjectName[20],int i,int j ){
     //action en fonction du nom
-    if (ObjectName== "Tapis"){
-        for(int k = 0;k<MAX_CONVEYOR;k++){
-            if(ListeConveyor[K])
+    if (strcmp(ObjectName, "Tapis") == 0){
+        for (int k = 0; k < MAX_CONVEYOR; k++) {
+            if (!ListeConveyor[k].placed) { // Vérifie si l'emplacement est disponible
+                // Initialisation d'un Conveyor
+                ListeConveyor[k].i = i;
+                ListeConveyor[k].j = j;
+                ListeConveyor[k].dir[0] = 1;
+                ListeConveyor[k].dir[1] = 0;
+                ListeConveyor[k].placed = true;
+                break;
+            }
+
         }
-        
     }
 }
 
@@ -121,13 +129,14 @@ void Update_Conv(){
 
 void Convey(Conveyor conv){
         //vérifie que rien après
-        if(grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id!= defaultTexture.id )
+        if (IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed)
         {
             //on déplace l'objet
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]]= grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]];
+
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
             //on supprime l'ancien
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
-            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].texture = defaultTexture;
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
         }
 

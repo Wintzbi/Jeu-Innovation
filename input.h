@@ -2,7 +2,7 @@
 #define INPUT_H
 #include "raylib.h"
 #include "stat.h"
-
+#include <string.h>
 #include "texture.h"
 #include <stdio.h>
 
@@ -32,7 +32,7 @@ typedef struct Conveyor {
 
 extern Conveyor ListeConveyor[MAX_CONVEYOR];
 
-void ActionWithName(char ObjectName[20]);
+void ActionWithName(char ObjectName[20],int i,int j);
 void Convey(Conveyor conv);
 void Update_Conv();
 
