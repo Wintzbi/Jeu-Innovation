@@ -34,7 +34,7 @@ int main(void) {
 
         if (elapsed >= interval) {
             // Code à exécuter toutes les demi-secondes
-
+            Update_Conv();
             clock_gettime(CLOCK_MONOTONIC, &start); // Réinitialiser le temps de départ
         }
 

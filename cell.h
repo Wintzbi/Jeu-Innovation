@@ -1,6 +1,8 @@
 #ifndef CELL_H
 #define CELL_H
 #include "raylib.h"
+#include <stdlib.h>
+#include <time.h>
 
 #define COL 200
 #define ROW 200

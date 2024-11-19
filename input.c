@@ -46,8 +46,6 @@ void rightClic() {
             grid[posX][posY].placed = true;
             grid[posX][posY].up_texture = inventory[selectedItem].texture;
             inventory[selectedItem].quantity--;  // Décrémenter la quantité
-            printf("ID : %u\n",grid[posX][posY].up_texture.id);
-
             // Si la quantité atteint 0, réinitialiser la case de l'inventaire
             if (inventory[selectedItem].quantity == 0) {
                 inventory[selectedItem].texture = (Texture2D){ 0 };  // Réinitialiser la texture
@@ -101,8 +99,8 @@ void leftClic() {
 }
 
 void InteractForeuse() {
-    return 0;
-}
+    
+    }
 
 void Update_Conv(){
     for(int k =0;k<MAX_CONVEYOR;k++){
