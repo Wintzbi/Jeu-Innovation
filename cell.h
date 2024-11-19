@@ -1,10 +1,6 @@
 #ifndef CELL_H
 #define CELL_H
 #include "raylib.h"
-#include "texture.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
 #define COL 200
 #define ROW 200
@@ -36,6 +32,8 @@ typedef struct Foreuse {
     bool placed;
     Texture2D texture;
 } Foreuse;
+
+
 
 typedef struct Filon {
     int max_number;

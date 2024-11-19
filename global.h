@@ -14,6 +14,8 @@
 #include "craft.h"
 #include "camera.h"
 #include "stat.h"
+#include <time.h>
+
 
 
 Cell grid[ROW][COL];

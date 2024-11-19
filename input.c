@@ -4,7 +4,7 @@
 #include "camera.h"
 #include <stdio.h>
 int MinPlaceableID=11;//liste des id de textures plaçables;
-
+Conveyor ListeConveyor[MAX_CONVEYOR];
 
 void mouseDefault() {
     // Récupérer la position de la souris et la convertir en coordonnées du monde
@@ -124,6 +124,27 @@ void InteractForeuse() {
         }
     }
 }
+
+void Update_Conv(){
+    for(int k =0;k<MAX_CONVEYOR;k++){
+        Convey(ListeConveyor[k]);
+    }
+}
+
+void Convey(Conveyor conv){
+        //vérifie que rien après
+        if(grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id!= defaultTexture.id )
+        {
+            //on déplace l'objet
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]]= grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]];
+            //on supprime l'ancien
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].texture = defaultTexture;
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
+        }
+
+    }
+
 
 
 

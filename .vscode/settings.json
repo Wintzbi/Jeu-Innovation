@@ -4,6 +4,8 @@
         "inventory.h": "c",
         "musique.h": "c",
         "global.h": "c",
-        "cell.h": "c"
+        "cell.h": "c",
+        "menu.h": "c",
+        "texture.h": "c"
     }
 }
