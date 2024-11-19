@@ -45,6 +45,7 @@ void rightClic() {
         if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
             grid[posX][posY].placed = true;
             grid[posX][posY].up_texture = inventory[selectedItem].texture;
+            printf("Name: %s\n", inventory[selectedItem].name);
             inventory[selectedItem].quantity--;  // Décrémenter la quantité
             // Si la quantité atteint 0, réinitialiser la case de l'inventaire
             if (inventory[selectedItem].quantity == 0) {
