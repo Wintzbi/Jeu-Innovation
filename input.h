@@ -9,4 +9,11 @@ void leftClic();
 void rightClic();
 void InteractForeuse();
 
+typedef struct Foreuse {
+    int i;
+    int j;
+    bool placed;
+    Texture2D texture;
+} Foreuse;
+
 #endif

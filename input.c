@@ -101,28 +101,7 @@ void leftClic() {
 }
 
 void InteractForeuse() {
-    for (int k = 0; k < MAX_FOREUSES; k++) {
-        if (ListeForeuse[k].placed) {
-            // Récupérer la position de la foreuse
-            int foreuseI = ListeForeuse[k].i;
-            int foreuseJ = ListeForeuse[k].j;
-
-            // Vérifier si la cellule est valide
-            if (IndexIsValid(foreuseI, foreuseJ)) {
-                // Accéder à la cellule sous la foreuse
-                Cell cell = grid[foreuseI][foreuseJ];
-
-                // Vérifier si la cellule a une texture
-                if (cell.texture.id != 0) {
-                    // Afficher l'ID de la texture dans le terminal
-                    printf("La foreuse est sur une cellule avec la texture ID: %d\n", cell.texture.id);
-                } else {
-                    // Afficher si la cellule n'a pas de texture
-                    printf("La foreuse est sur une cellule sans texture.\n");
-                }
-            }
-        }
-    }
+    return 0;
 }
 
 
