@@ -16,8 +16,6 @@
 #include "stat.h"
 #include <time.h>
 
-
-
 Cell grid[ROW][COL];
 
 #endif

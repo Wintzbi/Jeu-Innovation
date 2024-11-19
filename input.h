@@ -13,12 +13,18 @@ void leftClic();
 void rightClic();
 void InteractForeuse();
 
+#define MAX_FOREUSE 100
+
 typedef struct Foreuse {
     int i;
     int j;
     bool placed;
     Texture2D texture;
 } Foreuse;
+
+extern Foreuse ListeForeuse[MAX_FOREUSE];
+extern int numForeuses;  // Compteur de foreuses
+void Update_Foreuse();
 
 #define MAX_CONVEYOR 100
 

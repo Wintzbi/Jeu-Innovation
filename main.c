@@ -99,6 +99,9 @@ int main(void) {
             mouseDefault();  // Afficher la souris par défaut
 
             moveCamera();
+
+            Update_Foreuse();
+
             
         }
         EndMode2D();
