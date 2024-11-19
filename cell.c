@@ -8,9 +8,7 @@ int offsetX = 0;
 int offsetY = 0;
 
 Generator generators[MAX_GENERATORS];
-Foreuse ListeForeuse[MAX_FOREUSES];
 Filon ListeFilon[4];
-Foreuse foreuse;
 Filon CopperVein;
 Filon IronVein;
 Filon CoalVein;

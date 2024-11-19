@@ -5,7 +5,6 @@
 #define COL 200
 #define ROW 200
 #define MAX_GENERATORS 30
-#define MAX_FOREUSES 8
 
 typedef struct Cell {
     int i;
@@ -26,15 +25,6 @@ typedef struct Generator {
     Texture2D up_texture;
 } Generator;
 
-typedef struct Foreuse {
-    int i;
-    int j;
-    bool placed;
-    Texture2D texture;
-} Foreuse;
-
-
-
 typedef struct Filon {
     int max_number;
     int density;
@@ -43,7 +33,6 @@ typedef struct Filon {
 } Filon;
 
 extern Generator generators[MAX_GENERATORS];
-extern Foreuse ListeForeuse[MAX_FOREUSES];
 extern Filon ListeFilon[4];  
 extern Cell grid[ROW][COL];
 
