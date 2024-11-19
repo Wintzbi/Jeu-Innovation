@@ -141,7 +141,7 @@ void Update_Foreuse() {
     for (int i = 0; i < numForeuses; i++) {
         if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
             // Récupérer l'identifiant de la texture sur laquelle se trouve la foreuse
-            Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].up_texture;
+            Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
             printf("Foreuse active sur la texture ID '%d'\n", texture.id);
         }
     }
