@@ -46,6 +46,7 @@ void rightClic() {
             grid[posX][posY].placed = true;
             grid[posX][posY].up_texture = inventory[selectedItem].texture;
             printf("Name: %s\n", inventory[selectedItem].name);
+            ActionWithName(inventory[selectedItem].name);
             inventory[selectedItem].quantity--;  // Décrémenter la quantité
             // Si la quantité atteint 0, réinitialiser la case de l'inventaire
             if (inventory[selectedItem].quantity == 0) {
@@ -96,6 +97,15 @@ void leftClic() {
             grid[posX][posY].placed = false;
             pickedObject+=1;
         }
+    }
+}
+void ActionWithName(char ObjectName[20]){
+    //action en fonction du nom
+    if (ObjectName== "Tapis"){
+        for(int k = 0;k<MAX_CONVEYOR;k++){
+            if(ListeConveyor[K])
+        }
+        
     }
 }
 

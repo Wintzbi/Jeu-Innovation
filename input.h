@@ -32,6 +32,7 @@ typedef struct Conveyor {
 
 extern Conveyor ListeConveyor[MAX_CONVEYOR];
 
+void ActionWithName(char ObjectName[20]);
 void Convey(Conveyor conv);
 void Update_Conv();
 
