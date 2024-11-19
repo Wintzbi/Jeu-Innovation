@@ -31,7 +31,7 @@ void InitBaseCraft() {
     
     MecaCraftInvent[0] = (Craft) {"Engrenage",ironTexture, 2,1,{{ "Plaque Acier",ironLingotTexture, 1 }}};
 
-    ProdCraftInvent[0] = (Craft) {"Forreuse",ironTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+    ProdCraftInvent[0] = (Craft) {"Foreuse",drillTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
