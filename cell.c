@@ -104,6 +104,7 @@ void InitMineraiGenerator() {
     ListeFilon[1]= IronVein;
     ListeFilon[2]= CoalVein;
     ListeFilon[3]= RockVein;
+    
     // Initialiser chaque générateur
     srand(time(NULL)); // Utilise le temps actuel comme valeur de départ
     for (int k = 0; k < MAX_GENERATORS; k++) {

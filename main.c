@@ -22,8 +22,23 @@ int main(void) {
 
     ButtonPlay();  // Initialiser le bouton Play
 
-
+    const double interval = 0.5; // Intervalle en secondes
+    struct timespec start, current; 
+    clock_gettime(CLOCK_MONOTONIC, &start); // Temps de départ
     while (!WindowShouldClose()) {
+
+        clock_gettime(CLOCK_MONOTONIC, &current); // Temps actuel
+
+        double elapsed = (current.tv_sec - start.tv_sec) +
+                         (current.tv_nsec - start.tv_nsec) / 1e9;
+
+        if (elapsed >= interval) {
+            // Code à exécuter toutes les demi-secondes
+
+            clock_gettime(CLOCK_MONOTONIC, &start); // Réinitialiser le temps de départ
+        }
+
+
 
         UpdateStat();
         UpdateMusic();
