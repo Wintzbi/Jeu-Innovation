@@ -7,5 +7,6 @@ void InitInventoryKeyBiding();
 void mouseDefault();
 void leftClic();
 void rightClic();
+void InteractForeuse();
 
 #endif
