@@ -1,4 +1,5 @@
 #include "cell.h"
+#include "input.h"
 #include "inventory.h"
 #include "camera.h"
 #include <stdio.h>
@@ -94,6 +95,7 @@ void leftClic() {
             // Retirer le bloc de la grille
             grid[posX][posY].up_texture=(Texture2D){ 0 };
             grid[posX][posY].placed = false;
+            pickedObject+=1;
         }
     }
 }

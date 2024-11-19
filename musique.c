@@ -96,6 +96,7 @@ void MusicButton() {
     MusicShuffleButton = (Rectangle) {(screenWidth/2)+250, 150, 100, 50 };
 }
 void DrawMusicMenu() {
+    DrawStat();
     MusicButton();
 
     // Dessiner les bouttons
@@ -196,4 +197,13 @@ void RandomInt() {
     do {
         currentMusicIndex = rand() % NUM_MUSIC_FILES;  // Génération d'un nouvel index
     } while (currentMusicIndex == old);  // Comparer les valeurs pour éviter la répétition
+}
+
+void DrawStat(){
+    DrawRectangle((screenWidth/2)-400, 250, 800, 60, DARKGRAY);
+    DrawText(TextFormat("Satistiques"), (screenWidth/2)-390, 250, 60, WHITE);
+    DrawText(TextFormat("Craft : %d",craftedObjects), (screenWidth/2)-390, 350, 50, LIGHTGRAY);
+    DrawText(TextFormat("Objets ramassé : %d",pickedObject), (screenWidth/2)-390, 420, 50, LIGHTGRAY);
+    DrawText(TextFormat("Temps écoulé : %d",elapsed), (screenWidth/2)-390, 490, 50, LIGHTGRAY);
+
 }

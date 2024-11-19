@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "cell.h"
 #include <unistd.h>  // pour utiliser chdir()
+#include "stat.h"
 
 
 // Déclaration des variables externes
@@ -29,5 +30,6 @@ void DrawMusicMenu();
 void DrawMusic();
 void MusicButton();
 void RandomInt() ;
+void DrawStat();
 
 #endif
