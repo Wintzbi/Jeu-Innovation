@@ -13,6 +13,7 @@ typedef struct Cell {
     int j;
     bool placed;
     bool pickable;
+    bool moveable;
     Texture2D texture; //texture sol
     Texture2D up_texture;//texture suplémentaire
 } Cell;

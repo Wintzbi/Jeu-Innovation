@@ -91,14 +91,13 @@ void leftClic() {
             grid[posX][posY].placed = false;
             pickedObject++;
 
-            // ON désactive la foreuse s'il y en a une
+            // Désactiver une foreuse si elle est présente
             for (int f = 0; f < numForeuses; f++) {
                 if (ListeForeuse[f].i == posX && ListeForeuse[f].j == posY && ListeForeuse[f].placed) {
                     ListeForeuse[f].placed = false;
                     break;
                 }
             }
-
         }
     }
 }
@@ -138,14 +137,12 @@ void Convey(Conveyor conv) {
     }
 }
 
-// La fonction regarde les foreuses dans la liste et print l'id sur laquelle elle a été posée
 void Update_Foreuse() {
     for (int i = 0; i < numForeuses; i++) {
         if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
-            Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
-            const char textureId = texture.id;
-            printf("Foreuse active sur '%d'\n", textureId);
+            // Récupérer l'identifiant de la texture sur laquelle se trouve la foreuse
+            Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].up_texture;
+            printf("Foreuse active sur la texture ID '%d'\n", texture.id);
         }
     }
 }
-
