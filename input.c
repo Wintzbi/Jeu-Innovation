@@ -133,27 +133,45 @@ void Update_Conv() {
     }
 }
 
-void Convey(Conveyor conv) {
-    if (!inMouvement && grid[conv.i - conv.dir[0]][conv.j - conv.dir[1]].moveable &&
-        grid[conv.i - conv.dir[0]][conv.j - conv.dir[1]].up_texture.id != conveyorTexture.id &&
-        grid[conv.i - conv.dir[0]][conv.j - conv.dir[1]].up_texture.id != 0) {
-        textureToMove = grid[conv.i - conv.dir[0]][conv.j - conv.dir[1]].up_texture;
-        grid[conv.i - conv.dir[0]][conv.j - conv.dir[1]].placed = false;
-        grid[conv.i - conv.dir[0]][conv.j - conv.dir[1]].up_texture = (Texture2D){0};
-        inMouvement = true;
-    } else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j + conv.dir[1])) {
-        if (grid[conv.i + conv.dir[0]][conv.j + conv.dir[1]].texture.id == chestTexture.id) {
-            AddInInvent(1, textureToMove);
-            textureToMove = (Texture2D){0};
-            inMouvement = false;
-        } else if (!grid[conv.i + conv.dir[0]][conv.j + conv.dir[1]].placed) {
-            grid[conv.i + conv.dir[0]][conv.j + conv.dir[1]].placed = true;
-            grid[conv.i + conv.dir[0]][conv.j + conv.dir[1]].up_texture = textureToMove;
-            textureToMove = (Texture2D){0};
-            inMouvement = false;
+void Convey(Conveyor conv){
+        // on prend l'objet à déplacer
+        if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=0){
+            textureToMove=grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
+            //on supprime l'objet déplacé
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
+            inMouvement=true;
+        }
+
+        
+        //vérifie le bloc d'apès
+        else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && textureToMove.id !=0){
+            //on déplace l'objet dans l'inventaire
+            printf("id cell %d , chest %d, conv %d\n",grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].texture.id,chestTexture.id,conveyorTexture.id);
+            if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id == chestTexture.id)
+            {
+                
+                printf("lancement de l'ajout dans invent");
+                AddInInvent(1,textureToMove);
+            }
+            //sinon au sol
+            else if (!grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed) {
+                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
+                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
+                printf("au sol\n");
+             
+            }
+            //réinitialise le mouvement
+            textureToMove=(Texture2D){ 0 } ;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            inMouvement=false;
+        }
+        else if(inMouvement && textureToMove.id !=0 ) {
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            
         }
     }
-}
 
 void Update_Foreuse() {
     for (int i = 0; i < numForeuses; i++) {
@@ -176,15 +194,15 @@ int AddInInvent(int q, Texture2D texture) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (texture.id == inventory[i].texture.id) {
             inventory[i].quantity += q;
+            printf("objet add");
             return 0;
         }
     }
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (inventory[i].quantity == 0) {
             inventory[i].quantity = q;
-            inventory[i].texture = texture;
+            inventory[i].texture =texture;
             return 0;
         }
     }
-    return -1; // Si l'inventaire est plein
 }
