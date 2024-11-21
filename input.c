@@ -48,6 +48,7 @@ void rightClic() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         if (isForeuse(posX, posY)) {
             printf("Ceci est une foreuse\n");
+            AddInInvent()
         } else if (inventory[selectedItem].quantity > 0 &&
                    inventory[selectedItem].texture.id >= MinPlaceableID) {
             if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
@@ -121,7 +122,7 @@ void ActionWithName(char ObjectName[20], int i, int j) {
         }
     } else if (strcmp(ObjectName, "Foreuse") == 0) {
         if (numForeuses < MAX_FOREUSE) {
-            ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .placed = true};
+            ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
         }
     }
 }
@@ -181,7 +182,7 @@ void Update_Foreuse() {
             if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
                 Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
                 if (texture.id == copperVeinTexture.id) {
-                    AddInInvent(1,copperTexture);
+                    ListeForeuse[i].q += 1;
                 }
                 printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
             }

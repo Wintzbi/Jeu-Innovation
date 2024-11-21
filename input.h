@@ -20,6 +20,7 @@ typedef struct Foreuse {
     int i;
     int j;
     bool placed;
+    int q;
     Texture2D texture;
 } Foreuse;
 
