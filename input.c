@@ -136,21 +136,21 @@ void Convey(Conveyor conv){
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
             inMouvement=true;
         }
-
         //vérifie que rien après
-        if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed ){
+         if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed ){
             //on déplace l'objet
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
             textureToMove=(Texture2D){ 0 } ;
-            grid[conv.i][conv.j].move_texture=textureToMove;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
             inMouvement=false;
         }
         else if(inMouvement && textureToMove.id !=0 ) {
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
             grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            
         }
-}
+    }
 
 void Update_Foreuse() {
     for (int i = 0; i < numForeuses; i++) {
