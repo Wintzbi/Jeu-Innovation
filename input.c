@@ -50,6 +50,23 @@ void rightClic() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         if (isForeuse(posX, posY)) {
             printf("Ceci est une foreuse\n");
+            for (int i = 0; i < numForeuses; i++) {
+                if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
+                    Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
+                    if (texture.id == copperVeinTexture.id) {
+                        AddInInvent(ListeForeuse[i].q, copperTexture);
+                        ListeForeuse[i].q = 0;
+                    }
+                    else if (texture.id == ironVeinTexture.id) {
+                        AddInInvent(ListeForeuse[i].q, ironTexture);
+                        ListeForeuse[i].q = 0;
+                    }
+                    else if (texture.id == coalVeinTexture.id) {
+                        AddInInvent(ListeForeuse[i].q, coalTexture);
+                        ListeForeuse[i].q = 0;
+                    }
+                }
+            }
 
         } else if (inventory[selectedItem].quantity > 0 &&
                    inventory[selectedItem].texture.id >= MinPlaceableID) {
@@ -67,6 +84,8 @@ void rightClic() {
         }
     }
 }
+
+void RemoveForeuse(int posX, int posY);
 
 void leftClic() {
     Vector2 mousePos = GetMousePosition();
@@ -107,6 +126,7 @@ void leftClic() {
             for (int f = 0; f < numForeuses; f++) {
                 if (ListeForeuse[f].i == posX && ListeForeuse[f].j == posY && ListeForeuse[f].placed) {
                     ListeForeuse[f].placed = false;
+                    RemoveForeuse(ListeForeuse[f].i, ListeForeuse[f].j);
                     break;
                 }
             }
@@ -199,6 +219,12 @@ void Update_Foreuse() {
                 if (texture.id == copperVeinTexture.id) {
                     ListeForeuse[i].q += 1;
                 }
+                else if (texture.id == ironVeinTexture.id) {
+                    ListeForeuse[i].q += 1;
+                }
+                else if (texture.id == coalVeinTexture.id) {
+                    ListeForeuse[i].q += 1;
+                }
                 printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
             }
         }
@@ -217,11 +243,24 @@ bool isForeuse(int posX, int posY) {
     return false;
 }
 
+void RemoveForeuse(int posX, int posY) {
+    for (int i = 0; i < numForeuses; i++) {
+        if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
+            for (int j = i; j < numForeuses - 1; j++) {
+                ListeForeuse[j] = ListeForeuse[j + 1];
+            }
+            numForeuses--;
+            return;
+        }
+    }
+}
+
+
 int AddInInvent(int q, Texture2D texture) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (texture.id == inventory[i].texture.id) {
             inventory[i].quantity += q;
-            printf("objet add");
+            printf("objet add\n");
             return 0;
         }
     }
