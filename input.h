@@ -27,6 +27,7 @@ typedef struct Foreuse {
 extern Foreuse ListeForeuse[MAX_FOREUSE];
 extern int numForeuses;  // Compteur de foreuses
 void Update_Foreuse();
+extern Foreuse* NearForeuse;  // Pointeur vers Foreuse
 
 #define MAX_CONVEYOR 100
 

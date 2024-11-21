@@ -10,6 +10,8 @@ Conveyor ListeConveyor[MAX_CONVEYOR];
 Texture2D textureToMove = (Texture2D){0};
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
+Foreuse* NearForeuse = NULL;  // Pointeur vers Foreuse
+
 int numForeuses = 0;
 float lastForeuseTime;
 
@@ -136,7 +138,7 @@ void Update_Conv() {
 }
 
 void Convey(Conveyor conv){
-        // on prend l'objet à déplacer
+        // on prend l'objet à déplacer qui est au sol
         if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=0){
             textureToMove=grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
             //on supprime l'objet déplacé
@@ -144,24 +146,36 @@ void Convey(Conveyor conv){
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
             inMouvement=true;
         }
+        // si il est dans un objet comme la foreuse
+        else if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id == drillTexture.id) {
+            //textureToMove= grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]]
+            //inMouvement=true;
 
-        
+            for (int i = 0; i < numForeuses; i++) {
+                if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
+                    if ((conv.i - conv.dir[0]) == ListeForeuse[i].i && ListeForeuse[i].j == (conv.j- conv.dir[1])) 
+                    {
+                        Foreuse* NearForeuse = &ListeForeuse[i];
+                        break;
+                        }
+                }
+            }
+            textureToMove= NearForeuse->texture;
+            NearForeuse->quantity -= 1;
+            inMouvement=true;
+        }
         //vérifie le bloc d'apès
         else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && textureToMove.id !=0){
             //on déplace l'objet dans l'inventaire
-            printf("id cell %d , chest %d, conv %d\n",grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id,chestTexture.id,conveyorTexture.id);
             if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id == chestTexture.id)
             {
                 
-                printf("lancement de l'ajout dans invent");
                 AddInInvent(1,textureToMove);
             }
             //sinon au sol
             else if (!grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed) {
                 grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
-                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
-                printf("au sol\n");
-             
+                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;             
             }
             //réinitialise le mouvement
             textureToMove=(Texture2D){ 0 } ;
