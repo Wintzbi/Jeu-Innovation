@@ -47,6 +47,9 @@ void CellDraw(Cell cell) {
         if (cell.up_texture.id != 0) {
             DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, 0.0f, WHITE);
         }
+        if (cell.move_texture.id != 0) {
+            DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.8f, WHITE);
+        }
         
     // Dessiner les contours de la cellule
     DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize * 1.25, cellSize * 1.25, LIGHTGRAY);
@@ -69,7 +72,8 @@ void InitGrid() {
                 .pickable=true,
                 .moveable=true,
                 .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture
-                .up_texture = (Texture2D){ 0 }  
+                .up_texture = (Texture2D){ 0 } ,
+                .move_texture= (Texture2D){ 0 }   
 
             };
         }

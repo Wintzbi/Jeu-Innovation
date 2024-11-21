@@ -16,6 +16,7 @@ typedef struct Cell {
     bool moveable;
     Texture2D texture; //texture sol
     Texture2D up_texture;//texture suplémentaire
+   Texture2D move_texture;
 } Cell;
 
 typedef struct Generator {
