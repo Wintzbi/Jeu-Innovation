@@ -139,26 +139,26 @@ void Convey(Conveyor conv){
 
         
         //vérifie le bloc d'apès
-        else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) ){
+        else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && textureToMove.id !=0){
             //on déplace l'objet dans l'inventaire
-            if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].texture.id == chestTexture.id)
+            printf("id cell %d , chest %d, conv %d\n",grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].texture.id,chestTexture.id,conveyorTexture.id);
+            if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id == chestTexture.id)
             {
+                
+                printf("lancement de l'ajout dans invent");
                 AddInInvent(1,textureToMove);
-            //réinitialise le mouvement
-            textureToMove=(Texture2D){ 0 } ;
-            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
-            inMouvement=false;
             }
             //sinon au sol
             else if (!grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed) {
                 grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
                 grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
-                //réinitialise le mouvement
+                printf("au sol\n");
+             
+            }
+            //réinitialise le mouvement
             textureToMove=(Texture2D){ 0 } ;
             grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
             inMouvement=false;
-            }
-            
         }
         else if(inMouvement && textureToMove.id !=0 ) {
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
@@ -182,6 +182,7 @@ int AddInInvent(int q,Texture2D texture){
         {
 
             inventory[i].quantity += q;
+            printf("objet add");
             return 0;
         }
     }
@@ -190,7 +191,9 @@ int AddInInvent(int q,Texture2D texture){
         {
             inventory[i].quantity = q;
             inventory[i].texture =texture;
+            printf("objet add");
             return 0;
         }
     }
+    return -1;
 }
