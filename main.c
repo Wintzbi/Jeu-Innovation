@@ -22,7 +22,7 @@ int main(void) {
 
     ButtonPlay();  // Initialiser le bouton Play
 
-    const double interval = 0.5; // Intervalle en secondes
+    const double interval = 1; // Intervalle en secondes
     struct timespec start, current; 
     clock_gettime(CLOCK_MONOTONIC, &start); // Temps de départ
     while (!WindowShouldClose()) {

@@ -18,7 +18,7 @@ void InitInventory() {
     inventory[1] = (Item) { "Fer",ironTexture, 20 };    // Bloc de fer avec 2 unités
     inventory[2] = (Item) { "Charbon",coalTexture, 40 };   // Bloc de charbon avec 20 unités
     inventory[3] = (Item) {"Foreuse",drillTexture, 1};
-    inventory[4] = (Item) {"Tapis",drillTexture,10};
+    inventory[4] = (Item) {"Tapis",drillTexture,100};
     inventory[5] = (Item) {};
     inventory[6] = (Item) {};
     inventory[7] = (Item) {};

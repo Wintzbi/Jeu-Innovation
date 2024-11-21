@@ -5,6 +5,8 @@
 #include <stdio.h>
 int MinPlaceableID=11;//liste des id de textures plaçables;
 Conveyor ListeConveyor[MAX_CONVEYOR];
+Texture2D textureToMove = (Texture2D) {0};
+bool inMouvement =false;
 
 void mouseDefault() {
     // Récupérer la position de la souris et la convertir en coordonnées du monde
@@ -126,22 +128,33 @@ void InteractForeuse() {
 void Update_Conv(){
     for(int k =0;k<MAX_CONVEYOR;k++){
         if (ListeConveyor[k].placed) {
-            printf("Tapis %d actif\n",k);
             Convey(ListeConveyor[k]);
             }
     }
 }
 
 void Convey(Conveyor conv){
-        //vérifie que rien après
-        
-        if (IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed &&grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable){
-            //on déplace l'objet
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
-            //on supprime l'ancien
+        // on prend l'objet à déplacer
+        if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=0){
+            textureToMove=grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
+            //on supprime l'objet déplacé
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
+            inMouvement=true;
+        }
+
+        //vérifie que rien après
+        if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed ){
+            //on déplace l'objet
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
+            textureToMove=(Texture2D){ 0 } ;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            inMouvement=false;
+        }
+        else if(inMouvement && textureToMove.id !=0 ) {
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
         }
 
     }

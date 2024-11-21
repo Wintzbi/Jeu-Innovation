@@ -13,6 +13,7 @@ Texture2D copperLingotTexture;
 Texture2D ironLingotTexture;
 Texture2D defaultTexture;
 Texture2D drillTexture;
+Texture2D conveyorTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -28,7 +29,7 @@ void InitTexture() {
     ironVeinTexture= LoadTexture("assets/iron_vein.png");
     defaultTexture = LoadTexture("assets/default.png");
     drillTexture = LoadTexture("assets/drill_texture.png");
-    
+    conveyorTexture= LoadTexture("assets/drill_texture.png");
 }
 
 void UnloadAllTexture() {
@@ -44,4 +45,5 @@ void UnloadAllTexture() {
     UnloadTexture(copperVeinTexture);
     UnloadTexture(ironVeinTexture);
     UnloadTexture(drillTexture);
+    UnloadTexture(conveyorTexture);
 }

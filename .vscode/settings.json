@@ -6,6 +6,7 @@
         "global.h": "c",
         "cell.h": "c",
         "menu.h": "c",
-        "texture.h": "c"
+        "texture.h": "c",
+        "camera.h": "c"
     }
 }
