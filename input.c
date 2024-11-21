@@ -3,21 +3,22 @@
 #include "inventory.h"
 #include "camera.h"
 #include <stdio.h>
-int MinPlaceableID=11;//liste des id de textures plaçables;
+#include <string.h> // Pour strcmp
+
+int MinPlaceableID = 11; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
 Texture2D textureToMove = (Texture2D) {0};
 bool inMouvement =false;
+Foreuse ListeForeuse[MAX_FOREUSE];
+int numForeuses = 0;
 
 void mouseDefault() {
-    // Récupérer la position de la souris et la convertir en coordonnées du monde
     Vector2 mousePos = GetMousePosition();
-    Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);  // Convertir en coordonnées du monde
+    Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);
 
-    // Calculer la position de la cellule sous la souris
     int posX = (int)(worldPos.x / cellSize);
     int posY = (int)(worldPos.y / cellSize);
 
-    // Dessiner une cellule en surbrillance là où la souris est positionnée
     DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
 }
 
@@ -35,58 +36,52 @@ void InitInventoryKeyBiding() {
 }
 
 void rightClic() {
-    // Récupérer la position de la souris et la convertir en coordonnées du monde
     Vector2 mousePos = GetMousePosition();
-    Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);  // Convertir en coordonnées du monde
+    Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);
 
-    // Calculer la position de la cellule sous la souris
     int posX = (int)(worldPos.x / cellSize);
     int posY = (int)(worldPos.y / cellSize);
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id >= MinPlaceableID) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0 &&
+        inventory[selectedItem].texture.id >= MinPlaceableID) {
         if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
             grid[posX][posY].placed = true;
             grid[posX][posY].up_texture = inventory[selectedItem].texture;
             printf("Name: %s\n", inventory[selectedItem].name);
-            ActionWithName(inventory[selectedItem].name,posX,posY );
-            inventory[selectedItem].quantity--;  // Décrémenter la quantité
-            // Si la quantité atteint 0, réinitialiser la case de l'inventaire
+            ActionWithName(inventory[selectedItem].name, posX, posY);
+            inventory[selectedItem].quantity--;
+
             if (inventory[selectedItem].quantity == 0) {
-                inventory[selectedItem].texture = (Texture2D){ 0 };  // Réinitialiser la texture
+                inventory[selectedItem].texture = (Texture2D){0};
             }
         }
     }
 }
 
-
 void leftClic() {
-    // Récupérer la position de la souris et la convertir en coordonnées du monde
     Vector2 mousePos = GetMousePosition();
-    Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);  // Convertir en coordonnées du monde
+    Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);
 
-    // Calculer la position de la cellule sous la souris
     int posX = (int)(worldPos.x / cellSize);
     int posY = (int)(worldPos.y / cellSize);
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable &&grid[posX][posY].up_texture.id != 0 ) {
-                Texture2D brokenTexture = grid[posX][posY].up_texture;  // Texture du bloc cassé
-                bool itemFoundInInventory = false;
+        if (IndexIsValid(posX, posY) && grid[posX][posY].placed && grid[posX][posY].pickable &&
+            grid[posX][posY].up_texture.id != 0) {
+            Texture2D brokenTexture = grid[posX][posY].up_texture;
+            bool itemFoundInInventory = false;
 
-
-            // Chercher l'item correspondant dans l'inventaire
             for (int i = 0; i < INVENTORY_SIZE; i++) {
                 if (inventory[i].texture.id == brokenTexture.id) {
-                    inventory[i].quantity++;  // Incrémenter la quantité dans l'inventaire
+                    inventory[i].quantity++;
                     itemFoundInInventory = true;
                     break;
                 }
             }
 
-            // Si l'item n'est pas dans l'inventaire, l'ajouter dans la première case disponible
             if (!itemFoundInInventory) {
                 for (int i = 0; i < INVENTORY_SIZE; i++) {
-                    if (inventory[i].quantity == 0) {  // Case disponible
+                    if (inventory[i].quantity == 0) {
                         inventory[i].texture = brokenTexture;
                         inventory[i].quantity = 1;
                         break;
@@ -94,73 +89,54 @@ void leftClic() {
                 }
             }
 
-            // Retirer le bloc de la grille
-            grid[posX][posY].up_texture=(Texture2D){ 0 };
+            grid[posX][posY].up_texture = (Texture2D){0};
             grid[posX][posY].placed = false;
-            grid[posX][posY].moveable=false;
-            pickedObject+=1;
+            pickedObject++;
+
+            // Désactiver une foreuse si elle est présente
+            for (int f = 0; f < numForeuses; f++) {
+                if (ListeForeuse[f].i == posX && ListeForeuse[f].j == posY && ListeForeuse[f].placed) {
+                    ListeForeuse[f].placed = false;
+                    break;
+                }
+            }
         }
     }
 }
-void ActionWithName(char ObjectName[20],int i,int j ){
-    //action en fonction du nom
-    if (strcmp(ObjectName, "Tapis") == 0){
+
+void ActionWithName(char ObjectName[20], int i, int j) {
+    if (strcmp(ObjectName, "Tapis") == 0) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
-            if (!ListeConveyor[k].placed) { // Vérifie si l'emplacement est disponible
-                // Initialisation d'un Conveyor
-                ListeConveyor[k].i = i;
-                ListeConveyor[k].j = j;
-                ListeConveyor[k].dir[0] = 1;
-                ListeConveyor[k].dir[1] = 0;
-                ListeConveyor[k].placed = true;
-                grid[i][j].moveable=false;
+            if (!ListeConveyor[k].placed) {
+                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = {1, 0}, .placed = true};
                 break;
             }
-
+        }
+    } else if (strcmp(ObjectName, "Foreuse") == 0) {
+        if (numForeuses < MAX_FOREUSE) {
+            ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .placed = true};
         }
     }
 }
 
-void InteractForeuse() {
-    
-    }
-
-void Update_Conv(){
-    for(int k =0;k<MAX_CONVEYOR;k++){
+void Update_Conv() {
+    for (int k = 0; k < MAX_CONVEYOR; k++) {
         if (ListeConveyor[k].placed) {
             Convey(ListeConveyor[k]);
-            }
+        }
     }
 }
 
 void Convey(Conveyor conv){
-        // on prend l'objet à déplacer
-        if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=0){
-            textureToMove=grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
-            //on supprime l'objet déplacé
-            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
-            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
-            inMouvement=true;
-        }
-
         //vérifie que rien après
-        if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed ){
+        
+        if (IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed &&grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable){
             //on déplace l'objet
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
-            textureToMove=(Texture2D){ 0 } ;
-            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
-            inMouvement=false;
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
+            //on supprime l'ancien
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
+            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
         }
-        else if(inMouvement && textureToMove.id !=0 ) {
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
-            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
-        }
-
     }
-
-
-
-
-
-
+}
