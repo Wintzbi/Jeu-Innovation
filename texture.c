@@ -13,6 +13,9 @@ Texture2D copperLingotTexture;
 Texture2D ironLingotTexture;
 Texture2D defaultTexture;
 Texture2D drillTexture;
+Texture2D convoyTexture;
+Texture2D coffreTexture;
+Texture2D purpleTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -28,6 +31,9 @@ void InitTexture() {
     ironVeinTexture= LoadTexture("assets/iron_vein.png");
     defaultTexture = LoadTexture("assets/default.png");
     drillTexture = LoadTexture("assets/drill_texture.png");
+    convoyTexture = LoadTexture("assets/blue_texture.png");
+    coffreTexture = LoadTexture("assets/red_texture.png");
+    purpleTexture = LoadTexture("assets/purple_texture.png");
     
 }
 
@@ -44,4 +50,7 @@ void UnloadAllTexture() {
     UnloadTexture(copperVeinTexture);
     UnloadTexture(ironVeinTexture);
     UnloadTexture(drillTexture);
+    UnloadTexture(convoyTexture);
+    UnloadTexture(coffreTexture);
+    UnloadTexture(purpleTexture);
 }

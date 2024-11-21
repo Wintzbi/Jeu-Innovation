@@ -33,6 +33,8 @@ void InitInventoryKeyBiding() {
     if (IsKeyPressed(KEY_ZERO)) selectedItem = 9;
 }
 
+bool isForeuse(int posX, int posY);
+
 void rightClic() {
     Vector2 mousePos = GetMousePosition();
     Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);
@@ -40,21 +42,27 @@ void rightClic() {
     int posX = (int)(worldPos.x / cellSize);
     int posY = (int)(worldPos.y / cellSize);
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && inventory[selectedItem].quantity > 0 &&
-        inventory[selectedItem].texture.id >= MinPlaceableID) {
-        if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
-            grid[posX][posY].placed = true;
-            grid[posX][posY].up_texture = inventory[selectedItem].texture;
-            printf("Name: %s\n", inventory[selectedItem].name);
-            ActionWithName(inventory[selectedItem].name, posX, posY);
-            inventory[selectedItem].quantity--;
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+        if (isForeuse(posX, posY)) {
+            printf("Ceci est une foreuse\n");
+        } else if (inventory[selectedItem].quantity > 0 &&
+                   inventory[selectedItem].texture.id >= MinPlaceableID) {
+            if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
+                grid[posX][posY].placed = true;
+                grid[posX][posY].up_texture = inventory[selectedItem].texture;
+                printf("Name: %s\n", inventory[selectedItem].name);
+                ActionWithName(inventory[selectedItem].name, posX, posY);
+                inventory[selectedItem].quantity--;
 
-            if (inventory[selectedItem].quantity == 0) {
-                inventory[selectedItem].texture = (Texture2D){0};
+                if (inventory[selectedItem].quantity == 0) {
+                    inventory[selectedItem].texture = (Texture2D){0};
+                }
             }
         }
     }
 }
+
+
 
 void leftClic() {
     Vector2 mousePos = GetMousePosition();
@@ -142,7 +150,17 @@ void Update_Foreuse() {
         if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
             // Récupérer l'identifiant de la texture sur laquelle se trouve la foreuse
             Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
-            printf("Foreuse active sur la texture ID '%d'\n", texture.id);
+            // printf("Foreuse active sur la texture ID '%d'\n", texture.id);
         }
     }
 }
+
+bool isForeuse(int posX, int posY) {
+    for (int i = 0; i < numForeuses; i++) {
+        if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
+            return true;
+        }
+    }
+    return false;
+}
+
