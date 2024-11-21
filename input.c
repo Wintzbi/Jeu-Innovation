@@ -147,7 +147,7 @@ void Convey(Conveyor conv){
         //vérifie le bloc d'apès
         else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && textureToMove.id !=0){
             //on déplace l'objet dans l'inventaire
-            printf("id cell %d , chest %d, conv %d\n",grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].texture.id,chestTexture.id,conveyorTexture.id);
+            printf("id cell %d , chest %d, conv %d\n",grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id,chestTexture.id,conveyorTexture.id);
             if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id == chestTexture.id)
             {
                 
