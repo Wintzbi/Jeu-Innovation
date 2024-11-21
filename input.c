@@ -10,7 +10,6 @@ Conveyor ListeConveyor[MAX_CONVEYOR];
 Texture2D textureToMove = (Texture2D){0};
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
-Foreuse* NearForeuse = NULL;  // Pointeur vers Foreuse
 
 int numForeuses = 0;
 float lastForeuseTime;
@@ -149,21 +148,27 @@ void Convey(Conveyor conv){
         }
         // si il est dans un objet comme la foreuse
         else if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id == drillTexture.id) {
-            //textureToMove= grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]]
-            //inMouvement=true;
+             Foreuse* NearForeuse = NULL; // Réinitialisation du pointeur avant la recherche
 
-            for (int i = 0; i < numForeuses; i++) {
-                if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
-                    if ((conv.i - conv.dir[0]) == ListeForeuse[i].i && ListeForeuse[i].j == (conv.j- conv.dir[1])) 
-                    {
-                        Foreuse* NearForeuse = &ListeForeuse[i];
-                        break;
-                        }
+            for (int k = 0; k < MAX_FOREUSE; k++) {
+                if (ListeForeuse[k].placed) {
+                    if ((conv.i - conv.dir[0]) == ListeForeuse[k].i && (conv.j - conv.dir[1]) == ListeForeuse[k].j) {
+                        NearForeuse = &ListeForeuse[k]; // Affectation du pointeur
+                        printf("Foreuse identifiée\n");
+                        break; // On arrête la recherche une fois la foreuse trouvée
+                    }
                 }
             }
-            textureToMove= NearForeuse->texture;
-            NearForeuse->q -= 1;
-            inMouvement=true;
+             printf("pointeur : %d",NearForeuse);
+             printf("quanrtité %d\n",NearForeuse->q);
+            if (NearForeuse != NULL && NearForeuse->q >0){
+               
+                printf("Quantité enlevé\n");
+                NearForeuse->q -= 1;
+                textureToMove= NearForeuse->texture;
+                inMouvement=true;
+            }
+            
         }
         //vérifie le bloc d'apès
         else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && textureToMove.id !=0){
