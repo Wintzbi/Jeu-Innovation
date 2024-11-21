@@ -7,13 +7,10 @@
 
 int MinPlaceableID = 11; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
-<<<<<<< HEAD
 Texture2D textureToMove = (Texture2D) {0};
 bool inMouvement =false;
-=======
 Foreuse ListeForeuse[MAX_FOREUSE];
 int numForeuses = 0;
->>>>>>> 77693d8b3eae79cc82174fa3427ba5dd5fa1f671
 
 void mouseDefault() {
     Vector2 mousePos = GetMousePosition();
