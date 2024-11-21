@@ -11,6 +11,7 @@ Texture2D textureToMove = (Texture2D){0};
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
 int numForeuses = 0;
+float lastForeuseTime;
 
 void mouseDefault() {
     Vector2 mousePos = GetMousePosition();
@@ -174,12 +175,22 @@ void Convey(Conveyor conv){
     }
 
 void Update_Foreuse() {
-    for (int i = 0; i < numForeuses; i++) {
-        if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
-            Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
+    float currentTime = GetTime();
+    if (currentTime - lastForeuseTime >= 10.0f) {
+        for (int i = 0; i < numForeuses; i++) {
+            if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
+                Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
+                if (texture.id == copperVeinTexture.id) {
+                    AddInInvent(1,copperTexture);
+                }
+                printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
+            }
         }
+
+        lastForeuseTime = currentTime;
     }
 }
+
 
 bool isForeuse(int posX, int posY) {
     for (int i = 0; i < numForeuses; i++) {
