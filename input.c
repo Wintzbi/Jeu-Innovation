@@ -143,7 +143,7 @@ void Convey(Conveyor conv){
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
             textureToMove=(Texture2D){ 0 } ;
-            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            grid[conv.i][conv.j].move_texture=textureToMove;
             inMouvement=false;
         }
         else if(inMouvement && textureToMove.id !=0 ) {
