@@ -50,7 +50,7 @@ void rightClic() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         if (isForeuse(posX, posY)) {
             printf("Ceci est une foreuse\n");
-            AddInInvent()
+
         } else if (inventory[selectedItem].quantity > 0 &&
                    inventory[selectedItem].texture.id >= MinPlaceableID) {
             if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
@@ -125,6 +125,7 @@ void ActionWithName(char ObjectName[20], int i, int j) {
     } else if (strcmp(ObjectName, "Foreuse") == 0) {
         if (numForeuses < MAX_FOREUSE) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
+            grid[i][j].moveable = false;
         }
     }
 }
@@ -161,7 +162,7 @@ void Convey(Conveyor conv){
                 }
             }
             textureToMove= NearForeuse->texture;
-            NearForeuse->quantity -= 1;
+            NearForeuse->q -= 1;
             inMouvement=true;
         }
         //vérifie le bloc d'apès
