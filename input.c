@@ -7,10 +7,13 @@
 
 int MinPlaceableID = 11; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
+<<<<<<< HEAD
 Texture2D textureToMove = (Texture2D) {0};
 bool inMouvement =false;
+=======
 Foreuse ListeForeuse[MAX_FOREUSE];
 int numForeuses = 0;
+>>>>>>> 77693d8b3eae79cc82174fa3427ba5dd5fa1f671
 
 void mouseDefault() {
     Vector2 mousePos = GetMousePosition();
@@ -128,15 +131,36 @@ void Update_Conv() {
 }
 
 void Convey(Conveyor conv){
-        //vérifie que rien après
-        
-        if (IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed &&grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable){
-            //on déplace l'objet
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
-            //on supprime l'ancien
+        // on prend l'objet à déplacer
+        if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=0){
+            textureToMove=grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
+            //on supprime l'objet déplacé
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
+            inMouvement=true;
+        }
+
+        //vérifie que rien après
+        if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed ){
+            //on déplace l'objet
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
+            textureToMove=(Texture2D){ 0 } ;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            inMouvement=false;
+        }
+        else if(inMouvement && textureToMove.id !=0 ) {
+            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+        }
+}
+
+void Update_Foreuse() {
+    for (int i = 0; i < numForeuses; i++) {
+        if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
+            // Récupérer l'identifiant de la texture sur laquelle se trouve la foreuse
+            Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
+            printf("Foreuse active sur la texture ID '%d'\n", texture.id);
         }
     }
 }
