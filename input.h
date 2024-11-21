@@ -42,5 +42,6 @@ Texture2D textureToMove;
 void ActionWithName(char ObjectName[20],int i,int j);
 void Convey(Conveyor conv);
 void Update_Conv();
+int AddInInvent(int q,Texture2D texture);
 
 #endif

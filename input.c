@@ -136,14 +136,29 @@ void Convey(Conveyor conv){
             grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 } ;
             inMouvement=true;
         }
-        //vérifie que rien après
-         if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && !grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed ){
-            //on déplace l'objet
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
+
+        
+        //vérifie le bloc d'apès
+        else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1]) ){
+            //on déplace l'objet dans l'inventaire
+            if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].texture.id == chestTexture.id)
+            {
+                AddInInvent(1,textureToMove);
+            //réinitialise le mouvement
             textureToMove=(Texture2D){ 0 } ;
             grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
             inMouvement=false;
+            }
+            //sinon au sol
+            else if (!grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed) {
+                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
+                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;
+                //réinitialise le mouvement
+            textureToMove=(Texture2D){ 0 } ;
+            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
+            inMouvement=false;
+            }
+            
         }
         else if(inMouvement && textureToMove.id !=0 ) {
             grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
@@ -158,6 +173,24 @@ void Update_Foreuse() {
             // Récupérer l'identifiant de la texture sur laquelle se trouve la foreuse
             Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
             printf("Foreuse active sur la texture ID '%d'\n", texture.id);
+        }
+    }
+}
+int AddInInvent(int q,Texture2D texture){
+    for (int i=0;i<INVENTORY_SIZE;i++){
+        if (texture.id == inventory[i].texture.id)
+        {
+
+            inventory[i].quantity += q;
+            return 0;
+        }
+    }
+    for (int i=0;i<INVENTORY_SIZE;i++){
+        if (inventory[i].quantity==0)
+        {
+            inventory[i].quantity = q;
+            inventory[i].texture =texture;
+            return 0;
         }
     }
 }

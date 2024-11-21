@@ -14,6 +14,7 @@ Texture2D ironLingotTexture;
 Texture2D defaultTexture;
 Texture2D drillTexture;
 Texture2D conveyorTexture;
+Texture2D chestTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -30,6 +31,7 @@ void InitTexture() {
     defaultTexture = LoadTexture("assets/default.png");
     drillTexture = LoadTexture("assets/drill_texture.png");
     conveyorTexture= LoadTexture("assets/drill_texture.png");
+    chestTexture =LoadTexture("assets/drill_texture.png");
 }
 
 void UnloadAllTexture() {
@@ -46,4 +48,5 @@ void UnloadAllTexture() {
     UnloadTexture(ironVeinTexture);
     UnloadTexture(drillTexture);
     UnloadTexture(conveyorTexture);
+    UnloadTexture(chestTexture);
 }
