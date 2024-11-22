@@ -9,9 +9,17 @@ int MinPlaceableID = 11; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
-
+int conveyor_dir=0;
+int option =0;
 int numForeuses = 0;
 float lastForeuseTime;
+
+int directions[4][2] = {
+    {1, 0},
+    {0, -1},
+    {-1, 0}, 
+    {0, 1}   
+    };
 
 void mouseDefault() {
     Vector2 mousePos = GetMousePosition();
@@ -72,7 +80,7 @@ void rightClic() {
                 grid[posX][posY].placed = true;
                 grid[posX][posY].up_texture = inventory[selectedItem].texture;
                 printf("Name: %s\n", inventory[selectedItem].name);
-                ActionWithName(inventory[selectedItem].name, posX, posY);
+                ActionWithName(inventory[selectedItem].name, posX, posY,option);
                 inventory[selectedItem].quantity--;
 
                 if (inventory[selectedItem].quantity == 0) {
@@ -131,12 +139,18 @@ void leftClic() {
         }
     }
 }
+void UpdateDir(){
+    conveyor_dir=(conveyor_dir+=1)%4;
+    printf("changement de direction, option : %d\n",conveyor_dir);
+}
 
-void ActionWithName(char ObjectName[20], int i, int j) {
+void ActionWithName(char ObjectName[20], int i, int j,int option) {
     if (strcmp(ObjectName, "Tapis") == 0) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = {1, 0}, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
+                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
+                printf("dir = [%d, %d]\n", ListeConveyor[k].dir[0], ListeConveyor[k].dir[1]);
+
                 break;
             }
         }
@@ -224,12 +238,6 @@ void Convey(Conveyor *conv) {
         grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
         conv->textureToMove = (Texture2D){ 0 };
     }
-     else {
-        // La case suivante est occupée par un autre objet
-        printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
-    }
-
-    
 }
 
 void Update_Foreuse() {

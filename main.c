@@ -38,8 +38,7 @@ int main(void) {
             clock_gettime(CLOCK_MONOTONIC, &start); // Réinitialiser le temps de départ
         }
 
-
-
+        if (IsKeyPressed(KEY_R)) UpdateDir();
         UpdateStat();
         UpdateMusic();
         InitInventoryKeyBiding();
