@@ -14,6 +14,7 @@ typedef struct Cell {
     bool placed;
     bool pickable;
     bool moveable;
+    int dir[2];
     Texture2D texture; //texture sol
     Texture2D up_texture;//texture suplémentaire
    Texture2D move_texture;
@@ -50,5 +51,6 @@ void InitGrid();
 void GridDraw();
 void InitMineraiGenerator();
 void MineraiGenerator();
+int GetDirectionAngle(int direction[2]);
 
 #endif
