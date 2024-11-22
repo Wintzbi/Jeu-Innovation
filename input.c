@@ -13,6 +13,9 @@ int conveyor_dir=0;
 int option =0;
 int numForeuses = 0;
 float lastForeuseTime;
+
+Furnace ListeFurnace[MAX_FURNACE];
+int numFurnaces = 0;
 float lastFurnaceTime;
 
 int directions[4][2] = {
