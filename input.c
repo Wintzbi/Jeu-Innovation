@@ -278,7 +278,6 @@ void Update_Furnace(){
                         ListeFurnace[i].energy_q--;
                         ListeFurnace[i].material_q--;
                         ListeFurnace[i].final_q++;
-
                     }
                 }
                 printf("Furnace (%d, %d) mise à jour.\n", ListeFurnace[i].i, ListeFurnace[i].j);
