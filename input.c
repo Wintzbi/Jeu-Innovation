@@ -163,55 +163,40 @@ void Convey(Conveyor *conv) {
     int destJ = conv->j + conv->dir[1]; // Calcul de la case destination
 
     if (!IndexIsValid(srcI, srcJ) || !IndexIsValid(destI, destJ)) {
-        printf("Convoyeur (%d, %d) : indices invalides\n", conv->i, conv->j);
         return; // Eviter l'accès aux indices invalides
     }
 
     // Vérifier si un objet est prêt à être pris (case source)
-    if (!conv->inMouvement && 
-        grid[srcI][srcJ].moveable && 
+    if (grid[srcI][srcJ].moveable && 
         grid[srcI][srcJ].up_texture.id != 0 && 
         grid[srcI][srcJ].up_texture.id != conveyorTexture.id) {
+
         // Prendre l'objet de la case source
         conv->textureToMove = grid[srcI][srcJ].up_texture;
         grid[srcI][srcJ].placed = false;
         grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
-        conv->inMouvement = true;
+        grid[conv->i][conv->j].move_texture=conv->textureToMove;
         printf("Convoyeur (%d, %d) : début de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
     }
-    // Récupérer l'objet d'un convoyeur précédent
-    else if (!conv->inMouvement &&
-        grid[srcI][srcJ].move_texture.id != 0 && 
-        grid[srcI][srcJ].up_texture.id == conveyorTexture.id) {
-        conv->textureToMove = grid[srcI][srcJ].move_texture;
+    // Si en mouvement, vérifier la destination
+    if (grid[srcI][srcJ].move_texture.id != 0 && conv->textureToMove.id == 0) {
+        conv->textureToMove=grid[srcI][srcJ].move_texture;
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
-        conv->inMouvement = true;
-        printf("Convoyeur (%d, %d) : continuité de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
+        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+        if (grid[destI][destJ].up_texture.id !=conveyorTexture.id && !grid[destI][destJ].placed) {
+            // Déposer l'objet au sol
+            grid[destI][destJ].placed = true;
+            grid[destI][destJ].up_texture = conv->textureToMove;
+            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+            printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
+
+            // Réinitialiser l'objet et l'état du convoyeur
+            conv->textureToMove = (Texture2D){ 0 };
+    } else {
+        // La case suivante est occupée par un autre objet
+        printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
     }
 
-    // Si en mouvement, vérifier la destination
-    if (conv->inMouvement && conv->textureToMove.id != 0) {
-        if (IndexIsValid(destI, destJ)) {
-            if (grid[destI][destJ].up_texture.id == conveyorTexture.id) {
-                // Déplacer l'objet visuellement sur le convoyeur suivant
-                grid[destI][destJ].move_texture = conv->textureToMove;
-                grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Effacer la case source visuellement
-                printf("Convoyeur (%d, %d) : l'objet est sur un convoyeur à (%d, %d)\n", conv->i, conv->j, destI, destJ);
-            } else if (!grid[destI][destJ].placed) {
-                // Déposer l'objet au sol
-                grid[destI][destJ].placed = true;
-                grid[destI][destJ].up_texture = conv->textureToMove;
-                grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
-                printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
-
-                // Réinitialiser l'objet et l'état du convoyeur
-                conv->textureToMove = (Texture2D){ 0 };
-                conv->inMouvement = false;
-            } else {
-                // La case suivante est occupée par un autre objet
-                printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
-            }
-        }
     }
 }
 
