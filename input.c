@@ -13,6 +13,9 @@ Foreuse ListeForeuse[MAX_FOREUSE];
 int numForeuses = 0;
 float lastForeuseTime;
 
+int numFurnaces = 0;
+float lastFurnaceTime;
+
 void mouseDefault() {
     Vector2 mousePos = GetMousePosition();
     Vector2 worldPos = GetScreenToWorld2D(mousePos, camera);
@@ -145,6 +148,11 @@ void ActionWithName(char ObjectName[20], int i, int j) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
             grid[i][j].moveable = false;
         }
+    } else if (strcmp(ObjectName, "Furnace") == 0) {
+        if (numForeuses < MAX_FOREUSE) {
+            ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
+            grid[i][j].moveable = false;
+        }
     }
 }
 
@@ -259,6 +267,28 @@ void RemoveForeuse(int posX, int posY) {
         }
     }
 }
+
+void Update_Furnace(){
+    float currentTime = GetTime();
+    if (currentTime - lastFurnaceTime >= 20.0f) {
+        for (int i = 0; i < numFurnaces; i++) {
+            if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
+                if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
+                    if (ListeFurnace[i].matrial_id == copperTexture.id) {
+                        ListeFurnace[i].energy_q--;
+                        ListeFurnace[i].material_q--;
+                        ListeFurnace[i].final_q++;
+
+                    }
+                }
+                printf("Furnace (%d, %d) mise à jour.\n", ListeFurnace[i].i, ListeFurnace[i].j);
+            }
+        }
+
+        lastFurnaceTime = currentTime;
+    }
+}
+
 
 
 int AddInInvent(int q, Texture2D texture) {
