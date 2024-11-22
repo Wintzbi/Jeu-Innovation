@@ -22,7 +22,7 @@ Generator MineraiRockGenerator;
 // Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
 void CellDraw(Cell cell) {
         Texture2D RefTexture;
-        RefTexture = defaultTexture;        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
+        RefTexture = chestTexture;        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
         
 
         float scaleX = (float)cellSize / RefTexture.width;

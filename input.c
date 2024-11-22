@@ -176,7 +176,32 @@ void Convey(Conveyor *conv) {
         grid[srcI][srcJ].placed = false;
         grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
-        printf("Convoyeur (%d, %d) : début de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
+    }
+    else if(grid[srcI][srcJ].up_texture.id == drillTexture.id) {
+        //Trouve la foreuse connecté
+            for (int k = 0; k < numForeuses; k++) {
+                if (ListeForeuse[k].i == srcI && ListeForeuse[k].j == srcJ) {
+                    printf("Foreuse trouvé !\n");
+                    if (ListeForeuse[k].q>0){
+                        printf("Ressource dispo dans foreuse\n");
+                        Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
+                        Texture2D mined_texture =(Texture2D){0};
+                        if (under_texture.id == copperVeinTexture.id) {
+                            mined_texture = copperTexture;
+                        }
+                        else if (under_texture.id == ironVeinTexture.id) {
+                            mined_texture = ironTexture;
+                        }
+                        else if (under_texture.id == coalVeinTexture.id) {
+                            mined_texture = coalTexture;
+                        } 
+                        conv->textureToMove = mined_texture;
+                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+                        ListeForeuse[k].q--;
+                    }
+                    
+                }
+            }
     }
     // Si en mouvement, vérifier la destination
     if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0) {
@@ -190,7 +215,6 @@ void Convey(Conveyor *conv) {
         grid[destI][destJ].placed = true;
         grid[destI][destJ].up_texture = conv->textureToMove;
         grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
-        printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
 
         // Réinitialiser l'objet et l'état du convoyeur
         conv->textureToMove = (Texture2D){ 0 };
