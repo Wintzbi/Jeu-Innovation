@@ -30,9 +30,9 @@ void InitTexture() {
     copperVeinTexture= LoadTexture("assets/copper_vein.png");
     ironVeinTexture= LoadTexture("assets/iron_vein.png");
     defaultTexture = LoadTexture("assets/default.png");
-    drillTexture = LoadTexture("assets/drill_texture.png");
+    drillTexture = LoadTexture("assets/drill.png");
     conveyorTexture= LoadTexture("assets/conveyor.png");
-    chestTexture = LoadTexture("assets/red_texture.png");
+    chestTexture = LoadTexture("assets/crate.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
 }
 

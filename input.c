@@ -9,13 +9,17 @@ int MinPlaceableID = 11; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
-Furnace ListeFurnace[MAX_FURNACE];
-
+int conveyor_dir=0;
+int option =0;
 int numForeuses = 0;
 float lastForeuseTime;
 
-int numFurnaces = 0;
-float lastFurnaceTime;
+int directions[4][2] = {
+    {1, 0},
+    {0, -1},
+    {-1, 0}, 
+    {0, 1}   
+    };
 
 void mouseDefault() {
     Vector2 mousePos = GetMousePosition();
@@ -107,7 +111,7 @@ void rightClic() {
                 grid[posX][posY].placed = true;
                 grid[posX][posY].up_texture = inventory[selectedItem].texture;
                 printf("Name: %s\n", inventory[selectedItem].name);
-                ActionWithName(inventory[selectedItem].name, posX, posY);
+                ActionWithName(inventory[selectedItem].name, posX, posY,option);
                 inventory[selectedItem].quantity--;
 
                 if (inventory[selectedItem].quantity == 0) {
@@ -164,23 +168,21 @@ void leftClic() {
                     break;
                 }
             }
-
-            for (int f = 0; f < numFurnaces; f++) {
-                if (ListeFurnace[f].i == posX && ListeFurnace[f].j == posY && ListeFurnace[f].placed) {
-                    ListeFurnace[f].placed = false;
-                    RemoveFurnace(ListeFurnace[f].i, ListeFurnace[f].j);
-                    break;
-                }
-            }
         }
     }
 }
+void UpdateDir(){
+    conveyor_dir=(conveyor_dir+=1)%4;
+    printf("changement de direction, option : %d\n",conveyor_dir);
+}
 
-void ActionWithName(char ObjectName[20], int i, int j) {
+void ActionWithName(char ObjectName[20], int i, int j,int option) {
     if (strcmp(ObjectName, "Tapis") == 0) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = {1, 0}, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
+                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
+                printf("dir = [%d, %d]\n", ListeConveyor[k].dir[0], ListeConveyor[k].dir[1]);
+
                 break;
             }
         }
@@ -226,27 +228,53 @@ void Convey(Conveyor *conv) {
         grid[srcI][srcJ].placed = false;
         grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
-        printf("Convoyeur (%d, %d) : début de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
+    }
+    else if(grid[srcI][srcJ].up_texture.id == drillTexture.id) {
+        //Trouve la foreuse connecté
+            for (int k = 0; k < numForeuses; k++) {
+                if (ListeForeuse[k].i == srcI && ListeForeuse[k].j == srcJ) {
+                    printf("Foreuse trouvé !\n");
+                    if (ListeForeuse[k].q>0){
+                        printf("Ressource dispo dans foreuse\n");
+                        Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
+                        Texture2D mined_texture =(Texture2D){0};
+                        if (under_texture.id == copperVeinTexture.id) {
+                            mined_texture = copperTexture;
+                        }
+                        else if (under_texture.id == ironVeinTexture.id) {
+                            mined_texture = ironTexture;
+                        }
+                        else if (under_texture.id == coalVeinTexture.id) {
+                            mined_texture = coalTexture;
+                        } 
+                        conv->textureToMove = mined_texture;
+                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+                        ListeForeuse[k].q--;
+                    }
+                    
+                }
+            }
     }
     // Si en mouvement, vérifier la destination
-    if (grid[srcI][srcJ].move_texture.id != 0 && conv->textureToMove.id == 0) {
+    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
-        if (grid[destI][destJ].up_texture.id !=conveyorTexture.id && !grid[destI][destJ].placed) {
-            // Déposer l'objet au sol
-            grid[destI][destJ].placed = true;
-            grid[destI][destJ].up_texture = conv->textureToMove;
-            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
-            printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
+        }
 
-            // Réinitialiser l'objet et l'état du convoyeur
-            conv->textureToMove = (Texture2D){ 0 };
-    } else {
-        // La case suivante est occupée par un autre objet
-        printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
+    if (grid[destI][destJ].up_texture.id !=conveyorTexture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
+        // Déposer l'objet au sol
+        grid[destI][destJ].placed = true;
+        grid[destI][destJ].up_texture = conv->textureToMove;
+        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+
+        // Réinitialiser l'objet et l'état du convoyeur
+        conv->textureToMove = (Texture2D){ 0 };
     }
-
+    else if (grid[destI][destJ].up_texture.id == chestTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+        AddInInvent(1, conv->textureToMove);
+        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+        conv->textureToMove = (Texture2D){ 0 };
     }
 }
 

@@ -58,9 +58,13 @@ typedef struct Conveyor {
     Texture2D textureToMove;
 } Conveyor;
 extern Conveyor ListeConveyor[MAX_CONVEYOR];
-void ActionWithName(char ObjectName[20],int i,int j);
+void ActionWithName(char ObjectName[20],int i,int j,int option);
 void Convey(Conveyor *conv);
+void UpdateDir();
 void Update_Conv();
+extern int conveyor_dir;
+
 int AddInInvent(int q,Texture2D texture);
+extern int directions[4][2] ;
 
 #endif
