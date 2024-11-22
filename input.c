@@ -215,10 +215,6 @@ void Convey(Conveyor *conv) {
     }
 }
 
-
-
-
-
 void Update_Foreuse() {
     float currentTime = GetTime();
     if (currentTime - lastForeuseTime >= 10.0f) {
