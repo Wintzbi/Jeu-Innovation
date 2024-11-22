@@ -13,6 +13,7 @@ int conveyor_dir=0;
 int option =0;
 int numForeuses = 0;
 float lastForeuseTime;
+float lastFurnaceTime;
 
 int directions[4][2] = {
     {1, 0},
