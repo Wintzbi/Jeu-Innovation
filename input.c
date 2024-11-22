@@ -200,23 +200,19 @@ void Convey(Conveyor *conv) {
     }
 }
 
-
-
-
-
 void Update_Foreuse() {
     float currentTime = GetTime();
     if (currentTime - lastForeuseTime >= 10.0f) {
         for (int i = 0; i < numForeuses; i++) {
             if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
                 Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
-                if (texture.id == copperVeinTexture.id) {
+                if (texture.id == copperVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
-                else if (texture.id == ironVeinTexture.id) {
+                else if (texture.id == ironVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
-                else if (texture.id == coalVeinTexture.id) {
+                else if (texture.id == coalVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
                 printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
