@@ -179,25 +179,27 @@ void Convey(Conveyor *conv) {
         printf("Convoyeur (%d, %d) : début de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
     }
     // Si en mouvement, vérifier la destination
-    if (grid[srcI][srcJ].move_texture.id != 0 && conv->textureToMove.id == 0) {
+    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
-        if (grid[destI][destJ].up_texture.id !=conveyorTexture.id && !grid[destI][destJ].placed) {
-            // Déposer l'objet au sol
-            grid[destI][destJ].placed = true;
-            grid[destI][destJ].up_texture = conv->textureToMove;
-            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
-            printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
+        }
 
-            // Réinitialiser l'objet et l'état du convoyeur
-            conv->textureToMove = (Texture2D){ 0 };
+    if (grid[destI][destJ].up_texture.id !=conveyorTexture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
+        // Déposer l'objet au sol
+        grid[destI][destJ].placed = true;
+        grid[destI][destJ].up_texture = conv->textureToMove;
+        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+        printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
+
+        // Réinitialiser l'objet et l'état du convoyeur
+        conv->textureToMove = (Texture2D){ 0 };
     } else {
         // La case suivante est occupée par un autre objet
         printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
     }
 
-    }
+    
 }
 
 void Update_Foreuse() {
