@@ -37,11 +37,12 @@ typedef struct Conveyor {
     int dir[2];
     bool placed;
     Texture2D texture;
+    bool inMouvement;    // Indique si un objet est en mouvement sur ce convoyeur
+    Texture2D textureToMove;
 } Conveyor;
-
 extern Conveyor ListeConveyor[MAX_CONVEYOR];
 void ActionWithName(char ObjectName[20],int i,int j);
-void Convey(Conveyor conv);
+void Convey(Conveyor *conv);
 void Update_Conv();
 int AddInInvent(int q,Texture2D texture);
 

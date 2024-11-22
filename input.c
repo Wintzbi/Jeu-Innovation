@@ -7,7 +7,6 @@
 
 int MinPlaceableID = 11; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
-Texture2D textureToMove = (Texture2D){0};
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
 
@@ -137,7 +136,7 @@ void ActionWithName(char ObjectName[20], int i, int j) {
     if (strcmp(ObjectName, "Tapis") == 0) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = {1, 0}, .placed = true};
+                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = {1, 0}, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
                 break;
             }
         }
@@ -152,68 +151,73 @@ void ActionWithName(char ObjectName[20], int i, int j) {
 void Update_Conv() {
     for (int k = 0; k < MAX_CONVEYOR; k++) {
         if (ListeConveyor[k].placed) {
-            Convey(ListeConveyor[k]);
+            Convey(&ListeConveyor[k]);
         }
     }
 }
 
-void Convey(Conveyor conv){
-        // on prend l'objet à déplacer qui est au sol
-        if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].moveable && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=conveyorTexture.id && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id !=0){
-            textureToMove=grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture;
-            //on supprime l'objet déplacé
-            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].placed=false;
-            grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture = (Texture2D){ 0 };
-            inMouvement=true;
-        }
-        // si il est dans un objet comme la foreuse
-        else if(!inMouvement && grid[conv.i - conv.dir[0]][conv.j- conv.dir[1]].up_texture.id == drillTexture.id) {
-             Foreuse* NearForeuse = NULL; // Réinitialisation du pointeur avant la recherche
+void Convey(Conveyor *conv) {
+    int srcI = conv->i - conv->dir[0];  // Calcul de la case source
+    int srcJ = conv->j - conv->dir[1];  // Calcul de la case source
+    int destI = conv->i + conv->dir[0]; // Calcul de la case destination
+    int destJ = conv->j + conv->dir[1]; // Calcul de la case destination
 
-            for (int k = 0; k < MAX_FOREUSE; k++) {
-                if (ListeForeuse[k].placed) {
-                    if ((conv.i - conv.dir[0]) == ListeForeuse[k].i && (conv.j - conv.dir[1]) == ListeForeuse[k].j) {
-                        NearForeuse = &ListeForeuse[k]; // Affectation du pointeur
-                        printf("Foreuse identifiée\n");
-                        break; // On arrête la recherche une fois la foreuse trouvée
-                    }
-                }
+    if (!IndexIsValid(srcI, srcJ) || !IndexIsValid(destI, destJ)) {
+        printf("Convoyeur (%d, %d) : indices invalides\n", conv->i, conv->j);
+        return; // Eviter l'accès aux indices invalides
+    }
+
+    // Vérifier si un objet est prêt à être pris (case source)
+    if (!conv->inMouvement && 
+        grid[srcI][srcJ].moveable && 
+        grid[srcI][srcJ].up_texture.id != 0 && 
+        grid[srcI][srcJ].up_texture.id != conveyorTexture.id) {
+        // Prendre l'objet de la case source
+        conv->textureToMove = grid[srcI][srcJ].up_texture;
+        grid[srcI][srcJ].placed = false;
+        grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
+        conv->inMouvement = true;
+        printf("Convoyeur (%d, %d) : début de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
+    }
+    // Récupérer l'objet d'un convoyeur précédent
+    else if (!conv->inMouvement &&
+        grid[srcI][srcJ].move_texture.id != 0 && 
+        grid[srcI][srcJ].up_texture.id == conveyorTexture.id) {
+        conv->textureToMove = grid[srcI][srcJ].move_texture;
+        grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+        conv->inMouvement = true;
+        printf("Convoyeur (%d, %d) : continuité de mouvement, texture %d\n", conv->i, conv->j, conv->textureToMove.id);
+    }
+
+    // Si en mouvement, vérifier la destination
+    if (conv->inMouvement && conv->textureToMove.id != 0) {
+        if (IndexIsValid(destI, destJ)) {
+            if (grid[destI][destJ].up_texture.id == conveyorTexture.id) {
+                // Déplacer l'objet visuellement sur le convoyeur suivant
+                grid[destI][destJ].move_texture = conv->textureToMove;
+                grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Effacer la case source visuellement
+                printf("Convoyeur (%d, %d) : l'objet est sur un convoyeur à (%d, %d)\n", conv->i, conv->j, destI, destJ);
+            } else if (!grid[destI][destJ].placed) {
+                // Déposer l'objet au sol
+                grid[destI][destJ].placed = true;
+                grid[destI][destJ].up_texture = conv->textureToMove;
+                grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+                printf("Convoyeur (%d, %d) : objet déplacé à (%d, %d)\n", conv->i, conv->j, destI, destJ);
+
+                // Réinitialiser l'objet et l'état du convoyeur
+                conv->textureToMove = (Texture2D){ 0 };
+                conv->inMouvement = false;
+            } else {
+                // La case suivante est occupée par un autre objet
+                printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
             }
-             printf("pointeur : %d",NearForeuse);
-             printf("quanrtité %d\n",NearForeuse->q);
-            if (NearForeuse != NULL && NearForeuse->q >0){
-               
-                printf("Quantité enlevé\n");
-                NearForeuse->q -= 1;
-                textureToMove= NearForeuse->texture;
-                inMouvement=true;
-            }
-            
-        }
-        //vérifie le bloc d'apès
-        else if (inMouvement && IndexIsValid(conv.i + conv.dir[0], conv.j+ conv.dir[1])  && textureToMove.id !=0){
-            //on déplace l'objet dans l'inventaire
-            if (grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture.id == chestTexture.id)
-            {
-                
-                AddInInvent(1,textureToMove);
-            }
-            //sinon au sol
-            else if (!grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed) {
-                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].placed = true;
-                grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].up_texture =textureToMove;             
-            }
-            //réinitialise le mouvement
-            textureToMove=(Texture2D){ 0 } ;
-            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
-            inMouvement=false;
-        }
-        else if(inMouvement && textureToMove.id !=0 ) {
-            grid[conv.i + conv.dir[0]][conv.j+ conv.dir[1]].move_texture =textureToMove;
-            grid[conv.i][conv.j].move_texture=(Texture2D){ 0 };
-            
         }
     }
+}
+
+
+
+
 
 void Update_Foreuse() {
     float currentTime = GetTime();
