@@ -18,42 +18,64 @@ Generator MineraiFerGenerator;
 Generator MineraiCoalGenerator;
 Generator MineraiRockGenerator;
 
+
+int GetDirectionAngle(int direction[2]) {
+    if (direction[0] == 1 && direction[1] == 0) return 0;   // Droite
+    if (direction[0] == 0 && direction[1] == -1) return 270; // Bas
+    if (direction[0] == -1 && direction[1] == 0) return 180; // Gauche
+    if (direction[0] == 0 && direction[1] == 1) return 90;    // Haut
+    return 0; // Erreur si la direction ne correspond pas
+}
+
 // Fonction pour dessiner une cellule avec texture ajustée et centrée
 // Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
 void CellDraw(Cell cell) {
-        Texture2D RefTexture;
-        RefTexture = chestTexture;        // Définir la texture de référence (RefTexture) en fonction de la validité de up_texture
-        
+    float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
+    Texture2D RefTexture;
+    RefTexture = chestTexture; // Définir la texture de référence en fonction de la cellule
 
-        float scaleX = (float)cellSize / RefTexture.width;
-        float scaleY = (float)cellSize / RefTexture.height;
-        float scale = (scaleX < scaleY) ? scaleX : scaleY; // Choisir le plus petit pour garder les proportions
+    // Calcul de l'échelle pour garder les proportions de la texture
+    float scaleX = (float)cellSize / RefTexture.width;
+    float scaleY = (float)cellSize / RefTexture.height;
+    float scale = (scaleX < scaleY) ? scaleX : scaleY; // Choisir le plus petit pour garder les proportions
 
-        Rectangle destRec = { 
-            cell.i * cellSize + (cellSize - RefTexture.width * scale) / 2, 
-            cell.j * cellSize + (cellSize - RefTexture.height * scale) / 2, 
-            RefTexture.width * scale, 
-            RefTexture.height * scale 
-        };
-
-        Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
-        Vector2 origin = { 0, 0 };
-
-        DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
-        
-
+    // Définir le rectangle de destination pour la texture
+    // On calcule la position de la texture de manière à la centrer dans la case
+    float offsetX = (cellSize - RefTexture.width * scale) / 2;
+    float offsetY = (cellSize - RefTexture.height * scale) / 2;
     
-        // Dessine la texture supplémentaire si elle est valide (id != 0)
-        if (cell.up_texture.id != 0) {
-            DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, 0.0f, WHITE);
-        }
-        if (cell.move_texture.id != 0) {
-            DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.8f, WHITE);
-        }
-        
+    Rectangle destRec = { 
+        cell.i * cellSize + offsetX, 
+        cell.j * cellSize + offsetY, 
+        RefTexture.width * scale, 
+        RefTexture.height * scale
+    };
+
+    // Définir le rectangle source de la texture (portion à dessiner)
+    Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
+
+    // Calculer l'origine pour la rotation (ici on prend le centre du rectangle de destination)
+    Vector2 origin = { destRec.width / 2, destRec.height / 2 };
+
+    // Dessiner la texture principale de la cellule
+    DrawTexturePro(cell.texture, sourceRec, destRec, origin, rotation, WHITE);
+
+    // Dessiner la texture "up" si elle est valide (id != 0)
+    if (cell.up_texture.id != 0) {
+        DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, rotation, WHITE);
+    }
+
+    // Dessiner la texture en mouvement si elle est valide (id != 0)
+    if (cell.move_texture.id != 0) {
+        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.8f, WHITE);
+    }
+
     // Dessiner les contours de la cellule
     DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize * 1.25, cellSize * 1.25, LIGHTGRAY);
 }
+
+
+
 
 
 
@@ -71,6 +93,7 @@ void InitGrid() {
                 .placed = false,
                 .pickable=true,
                 .moveable=true,
+                .dir={0,0},
                 .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture
                 .up_texture = (Texture2D){ 0 } ,
                 .move_texture= (Texture2D){ 0 }   

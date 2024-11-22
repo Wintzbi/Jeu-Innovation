@@ -16,9 +16,9 @@ float lastForeuseTime;
 
 int directions[4][2] = {
     {1, 0},
+    {-1, 0},
     {0, -1},
-    {-1, 0}, 
-    {0, 1}   
+    {0, 1} 
     };
 
 void mouseDefault() {
@@ -148,6 +148,8 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
     if (strcmp(ObjectName, "Tapis") == 0) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
+                grid[i][j].dir[0] = directions[conveyor_dir][0];
+                grid[i][j].dir[1] = directions[conveyor_dir][1];
                 ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
                 printf("dir = [%d, %d]\n", ListeConveyor[k].dir[0], ListeConveyor[k].dir[1]);
 
