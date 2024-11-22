@@ -12,9 +12,9 @@ void InitInventoryKeyBiding();
 void mouseDefault();
 void leftClic();
 void rightClic();
-void InteractForeuse();
 
 #define MAX_FOREUSE 100
+#define MAX_FURNACE 100
 
 typedef struct Foreuse {
     int i;
@@ -24,10 +24,27 @@ typedef struct Foreuse {
     Texture2D texture;
 } Foreuse;
 
+typedef struct Furnace {
+    int i;
+    int j;
+    bool placed;
+    int energy_q;
+    int energy_id;
+    int material_q;
+    int material_id;
+    int final_q;
+    int final_id;
+    Texture2D texture;
+} Furnace;
+
 extern Foreuse ListeForeuse[MAX_FOREUSE];
 extern int numForeuses;  // Compteur de foreuses
 void Update_Foreuse();
 extern Foreuse* NearForeuse;  // Pointeur vers Foreuse
+
+extern Furnace ListeFurnace[MAX_FURNACE];
+extern int numFurnaces;  // Compteur de foreuses
+void Update_Furnace();
 
 #define MAX_CONVEYOR 100
 
