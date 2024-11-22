@@ -194,7 +194,13 @@ void Convey(Conveyor *conv) {
 
         // Réinitialiser l'objet et l'état du convoyeur
         conv->textureToMove = (Texture2D){ 0 };
-    } else {
+    }
+    else if (grid[destI][destJ].up_texture.id == chestTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+        AddInInvent(1, conv->textureToMove);
+        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+        conv->textureToMove = (Texture2D){ 0 };
+    }
+     else {
         // La case suivante est occupée par un autre objet
         printf("Convoyeur (%d, %d) : en attente, case (%d, %d) occupée\n", conv->i, conv->j, destI, destJ);
     }

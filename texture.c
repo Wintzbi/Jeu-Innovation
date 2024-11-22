@@ -32,7 +32,7 @@ void InitTexture() {
     defaultTexture = LoadTexture("assets/default.png");
     drillTexture = LoadTexture("assets/drill_texture.png");
     conveyorTexture= LoadTexture("assets/blue_texture.png");
-    chestTexture = LoadTexture("assets/red_texture.png");
+    chestTexture = LoadTexture("assets/create.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
 }
 
