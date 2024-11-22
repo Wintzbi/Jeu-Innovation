@@ -12,7 +12,6 @@ void InitInventoryKeyBiding();
 void mouseDefault();
 void leftClic();
 void rightClic();
-void InteractForeuse();
 
 #define MAX_FOREUSE 100
 #define MAX_FURNACE 100
@@ -32,8 +31,9 @@ typedef struct Furnace {
     int energy_q;
     int energy_id;
     int material_q;
-    int matrial_id;
+    int material_id;
     int final_q;
+    int final_id;
     Texture2D texture;
 } Furnace;
 

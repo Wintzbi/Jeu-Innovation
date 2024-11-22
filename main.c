@@ -102,6 +102,8 @@ int main(void) {
 
             Update_Foreuse();
 
+            Update_Furnace();
+
             
         }
         EndMode2D();
