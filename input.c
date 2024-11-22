@@ -14,6 +14,10 @@ int option =0;
 int numForeuses = 0;
 float lastForeuseTime;
 
+Furnace ListeFurnace[MAX_FURNACE];
+int numFurnaces = 0;
+float lastFurnaceTime;
+
 int directions[4][2] = {
     {1, 0},
     {-1, 0},
@@ -45,6 +49,7 @@ void InitInventoryKeyBiding() {
 }
 
 bool isForeuse(int posX, int posY);
+bool isFurnace(int posX, int poxY);
 
 void rightClic() {
     Vector2 mousePos = GetMousePosition();
@@ -74,6 +79,36 @@ void rightClic() {
                 }
             }
 
+        } else if (isFurnace(posX, posY)) {
+            printf("Ceci est un four\n");
+            for (int i = 0; i < numFurnaces; i++) {
+                if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY) {
+                    if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == coalTexture.id) {
+                        inventory[selectedItem].quantity--;
+                        ListeFurnace[i].energy_q++;
+                        ListeFurnace[i].energy_id = coalTexture.id;
+                        printf("Charbon: %d\n",ListeFurnace[i].energy_q);
+                    }
+                    else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == copperTexture.id) {
+                        inventory[selectedItem].quantity--;
+                        ListeFurnace[i].material_q++;
+                        ListeFurnace[i].material_id = copperTexture.id;
+                        printf("Copper: %d\n",ListeFurnace[i].material_q);
+                    }
+                    else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == ironTexture.id) {
+                        inventory[selectedItem].quantity--;
+                        ListeFurnace[i].material_q++;
+                        ListeFurnace[i].material_id = ironTexture.id;
+                        printf("Copper: %d\n",ListeFurnace[i].material_q);
+                    }
+                    else {
+                        AddInInvent(ListeFurnace[i].final_q, copperLingotTexture);
+                        ListeFurnace[i].final_q = 0;
+                    }
+
+                }
+            }
+
         } else if (inventory[selectedItem].quantity > 0 &&
                    inventory[selectedItem].texture.id >= MinPlaceableID) {
             if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
@@ -92,6 +127,7 @@ void rightClic() {
 }
 
 void RemoveForeuse(int posX, int posY);
+void RemoveFurnace(int posX, int posY);
 
 void leftClic() {
     Vector2 mousePos = GetMousePosition();
@@ -161,7 +197,13 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
             grid[i][j].moveable = false;
         }
-    }
+
+    } else if (strcmp(ObjectName, "Furnace") == 0) {
+        if (numForeuses < MAX_FURNACE) {
+            ListeFurnace[numFurnaces++] = (Furnace){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_id = 0, .final_q = 0, .placed = true};
+            grid[i][j].moveable = false;
+        }
+    } 
 }
 
 void Update_Conv() {
@@ -275,6 +317,15 @@ bool isForeuse(int posX, int posY) {
     return false;
 }
 
+bool isFurnace(int posX, int posY) {
+    for (int i = 0; i < numFurnaces; i++) {
+        if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void RemoveForeuse(int posX, int posY) {
     for (int i = 0; i < numForeuses; i++) {
         if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
@@ -286,6 +337,44 @@ void RemoveForeuse(int posX, int posY) {
         }
     }
 }
+
+void RemoveFurnace(int posX, int posY) {
+    for (int i = 0; i < numFurnaces; i++) {
+        if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY) {
+            for (int j = i; j < numFurnaces - 1; j++) {
+                ListeFurnace[j] = ListeFurnace[j + 1];
+            }
+            numFurnaces--;
+            return;
+        }
+    }
+}
+
+void Update_Furnace() {
+    float currentTime = GetTime();
+    if (currentTime - lastFurnaceTime >= 20.0f) { // Vérifie le délai global
+        for (int i = 0; i < numFurnaces; i++) {
+            if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
+                if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
+                    if (ListeFurnace[i].material_id == copperTexture.id) {
+                        ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
+                        ListeFurnace[i].material_q--;      // Consomme une unité de matériau
+                        ListeFurnace[i].final_q++;         // Produit une unité de lingot
+                        ListeFurnace[i].final_id = copperLingotTexture.id;
+                        printf("Four (%d, %d) : production de lingot de cuivre. Quantité : %d\n", 
+                               ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
+                    }
+                } else {
+                    printf("Four (%d, %d) : pas assez de ressources ou d'énergie\n", 
+                           ListeFurnace[i].i, ListeFurnace[i].j);
+                }
+            }
+        }
+        lastFurnaceTime = currentTime; // Mise à jour du temps pour la prochaine itération
+    }
+}
+
+
 
 
 int AddInInvent(int q, Texture2D texture) {
