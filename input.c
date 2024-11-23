@@ -177,7 +177,7 @@ void Convey(Conveyor *conv) {
     }
 
     // Vérifier si un objet est prêt à être pris (case source)
-    if (grid[srcI][srcJ].moveable && 
+    if (grid[srcI][srcJ].moveable && grid[srcI][srcJ].isSolid &&
         grid[srcI][srcJ].up_texture.id != 0 && 
         grid[srcI][srcJ].up_texture.id != conveyorTexture.id) {
 

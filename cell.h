@@ -14,6 +14,7 @@ typedef struct Cell {
     bool placed;
     bool pickable;
     bool moveable;
+    bool isSolid;
     int dir[2];
     Texture2D texture; //texture sol
     Texture2D up_texture;//texture suplémentaire
@@ -26,6 +27,7 @@ typedef struct Generator {
     int max_number;
     int density;
     bool placed;
+    bool isSolid;
     Texture2D texture;
     Texture2D up_texture;
 } Generator;
@@ -33,6 +35,7 @@ typedef struct Generator {
 typedef struct Filon {
     int max_number;
     int density;
+    bool isSolid;
     Texture2D texture;
     Texture2D up_texture;
 } Filon;

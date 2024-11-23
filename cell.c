@@ -98,6 +98,7 @@ void InitGrid() {
                 .placed = false,
                 .pickable=true,
                 .moveable=true,
+                .isSolid=true,
                 .dir={0,0},
                 .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture
                 .up_texture = (Texture2D){ 0 } ,
@@ -113,43 +114,50 @@ void InitMineraiGenerator() {
         .max_number=5,
         .density=15,
         .texture =copperVeinTexture,
-        .up_texture=copperTexture
+        .up_texture=copperTexture,
+        .isSolid=true
     };
     IronVein=(Filon) {
         .max_number=10,
         .density=10,
         .texture =ironVeinTexture,
-        .up_texture=ironTexture
+        .up_texture=ironTexture,
+        .isSolid=true
     };
     CoalVein=(Filon) {
         .max_number=5,
         .density=20,
         .texture =coalVeinTexture,
-        .up_texture=coalTexture
+        .up_texture=coalTexture,
+        .isSolid=true
     };
     RockVein=(Filon) {
         .max_number=15,
         .density=20,
         .texture =rockVeinTexture,
-        .up_texture=rockTexture
+        .up_texture=rockTexture,
+        .isSolid=true
     };
     SandVein=(Filon) {
         .max_number=15,
         .density=20,
         .texture =sandVeinTexture,
-        .up_texture=sandVeinTexture
+        .up_texture=sandVeinTexture,
+        .isSolid=true
     };
     WaterVein=(Filon) {
         .max_number=15,
         .density=10,
         .texture =waterVeinTexture,
-        .up_texture=waterVeinTexture
+        .up_texture=waterVeinTexture,
+        .isSolid=false
     };
     OilVein=(Filon) {
         .max_number=15,
         .density=20,
         .texture =oilVeinTexture,
-        .up_texture=oilVeinTexture
+        .up_texture=oilVeinTexture,
+        .isSolid=false
     };
     ListeFilon[0]= CopperVein;
     ListeFilon[1]= IronVein;
@@ -170,6 +178,7 @@ void InitMineraiGenerator() {
                 .i = rand()%((screenWidth-100)/cellSize) , // Position x initiale
                 .j = rand()%((screenWidth-100)/cellSize), // Position y initiale
                 .placed = false, // Initialisé comme placé
+                .isSolid=ListeFilon[ore_type].isSolid,
                 .texture = ListeFilon[ore_type].texture,
                 .up_texture =ListeFilon[ore_type].up_texture};
 
@@ -205,6 +214,8 @@ void MineraiGenerator() {
                     // Placer le minerai
                     grid[newI][newJ].texture = generators[k].texture; // Utiliser la texture du générateur
                     grid[newI][newJ].placed = true; // Marquer la cellule comme occupée
+                    //marque la case comme liquide
+                    grid[newI][newJ].isSolid = generators[k].isSolid;
                     mineralsPlaced++;
                     if(rand()%6 >2) {
                         grid[newI][newJ].up_texture = generators[k].up_texture;
