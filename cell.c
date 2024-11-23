@@ -31,53 +31,46 @@ int GetDirectionAngle(int direction[2]) {
     if (direction[0] == 0 && direction[1] == 1) return 90;    // Haut
     return 0; // Erreur si la direction ne correspond pas
 }
-
-// Fonction pour dessiner une cellule avec texture ajustée et centrée
-// Fonction pour dessiner une cellule avec texture ajustée et centrée, y compris la texture supplémentaire
 void CellDraw(Cell cell) {
     float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
-    Texture2D RefTexture;
-    RefTexture = chestTexture; // Définir la texture de référence en fonction de la cellule
+    Texture2D RefTexture = chestTexture; // Définir la texture de référence
 
-    // Calcul de l'échelle pour garder les proportions de la texture
-    float scaleX = (float)cellSize / RefTexture.width;
-    float scaleY = (float)cellSize / RefTexture.height;
-    float scale = (scaleX < scaleY) ? scaleX : scaleY; // Choisir le plus petit pour garder les proportions
+    // Calcul de l'échelle pour adapter la texture à la taille de la cellule
+    float scaleX = (float)cellSize*1.05 / RefTexture.width;
+    float scaleY = (float)cellSize*1.05 / RefTexture.height;
+    float scale = (scaleX < scaleY) ? scaleX : scaleY; // Garder les proportions
 
-    // Définir le rectangle de destination pour la texture
-    // On calcule la position de la texture de manière à la centrer dans la case
-    float offsetX = (cellSize - RefTexture.width * scale) / 2;
-    float offsetY = (cellSize - RefTexture.height * scale) / 2;
-    
+    // Rectangle de destination : position centrée dans la cellule
     Rectangle destRec = { 
-        cell.i * cellSize + offsetX, 
-        cell.j * cellSize + offsetY, 
-        RefTexture.width * scale, 
-        RefTexture.height * scale
+        cell.i * cellSize + cellSize / 2.0f, // Centre de la cellule en X
+        cell.j * cellSize + cellSize / 2.0f, // Centre de la cellule en Y
+        RefTexture.width * scale,           // Largeur ajustée avec l'échelle
+        RefTexture.height * scale           // Hauteur ajustée avec l'échelle
     };
 
-    // Définir le rectangle source de la texture (portion à dessiner)
+    // Rectangle source de la texture (portion de la texture à dessiner)
     Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
 
-    // Calculer l'origine pour la rotation (ici on prend le centre du rectangle de destination)
-    Vector2 origin = { destRec.width / 2, destRec.height / 2 };
+    // Origine pour la rotation (centre du rectangle de destination)
+    Vector2 origin = { destRec.width / 2.0f, destRec.height / 2.0f };
 
-    // Dessiner la texture principale de la cellule
+    // Dessiner la texture principale
     DrawTexturePro(cell.texture, sourceRec, destRec, origin, rotation, WHITE);
 
-    // Dessiner la texture "up" si elle est valide (id != 0)
+    // Dessiner la texture "up" si elle est valide
     if (cell.up_texture.id != 0) {
         DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, rotation, WHITE);
     }
 
-    // Dessiner la texture en mouvement si elle est valide (id != 0)
+    // Dessiner la texture en mouvement si elle est valide
     if (cell.move_texture.id != 0) {
-        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.8f, WHITE);
+        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, rotation, WHITE);
     }
 
     // Dessiner les contours de la cellule
-    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize * 1.25, cellSize * 1.25, LIGHTGRAY);
+    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, LIGHTGRAY);
 }
+
 
 
 

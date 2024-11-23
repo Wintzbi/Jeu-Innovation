@@ -191,9 +191,7 @@ void Convey(Conveyor *conv) {
         //Trouve la foreuse connecté
             for (int k = 0; k < numForeuses; k++) {
                 if (ListeForeuse[k].i == srcI && ListeForeuse[k].j == srcJ) {
-                    printf("Foreuse trouvé !\n");
                     if (ListeForeuse[k].q>0){
-                        printf("Ressource dispo dans foreuse\n");
                         Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
                         Texture2D mined_texture =(Texture2D){0};
                         if (under_texture.id == copperVeinTexture.id) {
