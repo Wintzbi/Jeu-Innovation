@@ -8,15 +8,20 @@ int offsetX = 0;
 int offsetY = 0;
 
 Generator generators[MAX_GENERATORS];
-Filon ListeFilon[4];
+Filon ListeFilon[7];
 Filon CopperVein;
 Filon IronVein;
 Filon CoalVein;
 Filon RockVein;
+Filon SandVein;
+Filon WaterVein;
+Filon OilVein;
 Generator MineraiCuivreGenerator;
 Generator MineraiFerGenerator;
 Generator MineraiCoalGenerator;
 Generator MineraiRockGenerator;
+Generator MineraiSandGenerator;
+
 
 
 int GetDirectionAngle(int direction[2]) {
@@ -128,20 +133,42 @@ void InitMineraiGenerator() {
         .texture =rockVeinTexture,
         .up_texture=rockTexture
     };
+    SandVein=(Filon) {
+        .max_number=15,
+        .density=20,
+        .texture =sandVeinTexture,
+        .up_texture=sandVeinTexture
+    };
+    WaterVein=(Filon) {
+        .max_number=15,
+        .density=10,
+        .texture =waterVeinTexture,
+        .up_texture=waterVeinTexture
+    };
+    OilVein=(Filon) {
+        .max_number=15,
+        .density=20,
+        .texture =oilVeinTexture,
+        .up_texture=oilVeinTexture
+    };
     ListeFilon[0]= CopperVein;
     ListeFilon[1]= IronVein;
     ListeFilon[2]= CoalVein;
     ListeFilon[3]= RockVein;
+    ListeFilon[4]= SandVein;
+    ListeFilon[5]= WaterVein;
+    ListeFilon[6]= OilVein;
     
     // Initialiser chaque générateur
     srand(time(NULL)); // Utilise le temps actuel comme valeur de départ
+    
     for (int k = 0; k < MAX_GENERATORS; k++) {
         int ore_type = (rand() % (sizeof(ListeFilon) / sizeof(ListeFilon[0])));
             generators[k] = (Generator){
                 .max_number=ListeFilon[ore_type].max_number,
                 .density=ListeFilon[ore_type].density,
-                .i = rand()%60, // Position x initiale
-                .j = 10 +rand()%40, // Position y initiale
+                .i = rand()%((screenWidth-100)/cellSize) , // Position x initiale
+                .j = rand()%((screenWidth-100)/cellSize), // Position y initiale
                 .placed = false, // Initialisé comme placé
                 .texture = ListeFilon[ore_type].texture,
                 .up_texture =ListeFilon[ore_type].up_texture};

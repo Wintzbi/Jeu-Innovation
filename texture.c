@@ -9,6 +9,11 @@ Texture2D coalTexture;
 Texture2D coalVeinTexture;
 Texture2D rockVeinTexture;
 Texture2D rockTexture;
+
+Texture2D sandVeinTexture;
+Texture2D waterVeinTexture;
+Texture2D oilVeinTexture;
+
 Texture2D copperLingotTexture;
 Texture2D ironLingotTexture;
 Texture2D defaultTexture;
@@ -25,6 +30,10 @@ void InitTexture() {
     coalVeinTexture =LoadTexture("assets/coal_vein.png");
     rockVeinTexture=LoadTexture("assets/rock_vein.png");
     rockTexture=LoadTexture("assets/rock_item.png");
+    sandVeinTexture =LoadTexture("assets/red_texture.png");
+    waterVeinTexture=LoadTexture("assets/blue_texture.png");
+    oilVeinTexture=LoadTexture("assets/purple_texture.png");
+
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
     ironLingotTexture= LoadTexture("assets/iron_lingot.png");
     copperVeinTexture= LoadTexture("assets/copper_vein.png");
