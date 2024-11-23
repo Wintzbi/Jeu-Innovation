@@ -114,6 +114,8 @@ void leftClic() {
 
             grid[posX][posY].up_texture = (Texture2D){0};
             grid[posX][posY].placed = false;
+            grid[posX][posY].dir[0] = 0;
+            grid[posX][posY].dir[1] = 0;
             pickedObject++;
 
             // Désactiver une foreuse si elle est présente
@@ -128,7 +130,7 @@ void leftClic() {
     }
 }
 void UpdateDir(){
-    conveyor_dir=(conveyor_dir+=1)%4;
+    conveyor_dir = (conveyor_dir + 1) % 4;
     printf("changement de direction, option : %d\n",conveyor_dir);
 }
 
@@ -222,7 +224,7 @@ void Convey(Conveyor *conv) {
             }
     }
     // Si en mouvement, vérifier la destination
-    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0) {
+    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0  ) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
@@ -366,6 +368,7 @@ int AddInInvent(int q, Texture2D texture) {
             return 0;
         }
     }
+    return -1;
 }
 
 void interraction(int posX, int posY) {

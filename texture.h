@@ -24,7 +24,7 @@ extern Texture2D purpleTexture;
 extern Texture2D conveyorTexture;
 extern Texture2D pipeTexture;
 extern Texture2D chestTexture;
-
+extern Texture2D furnaceTexture;
 void InitTexture();
 void UnloadAllTexture();
 

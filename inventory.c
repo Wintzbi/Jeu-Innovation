@@ -20,8 +20,8 @@ void InitInventory() {
     inventory[3] = (Item) {"Foreuse",drillTexture, 5};
     inventory[4] = (Item) {"Tapis",conveyorTexture,100};
     inventory[5] = (Item) {"Coffre",chestTexture,10};
-    inventory[6] = (Item) {"Furnace",purpleTexture,10};
-    inventory[7] = (Item) {"Tuyau",conveyorTexture,100};
+    inventory[6] = (Item) {"Furnace",furnaceTexture,10};
+    inventory[7] = (Item) {"Tuyau",pipeTexture,100};
     inventory[8] = (Item) {};
     inventory[9] = (Item) {"Charbon",coalTexture, 10};
 }

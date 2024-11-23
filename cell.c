@@ -1,6 +1,7 @@
 #include "cell.h"
 #include "inventory.h"
 #include "camera.h"
+#include "stdio.h"
 const int screenWidth = 1920;
 const int screenHeight = 1200;
 const int cellSize = screenWidth / COL;
@@ -8,7 +9,7 @@ int offsetX = 0;
 int offsetY = 0;
 
 Generator generators[MAX_GENERATORS];
-Filon ListeFilon[7];
+Filon ListeFilon[NB_FILON];
 Filon CopperVein;
 Filon IronVein;
 Filon CoalVein;
