@@ -48,6 +48,7 @@ void Update_Furnace();
 
 #define MAX_CONVEYOR 100
 
+
 typedef struct Conveyor {
     int i;
     int j;

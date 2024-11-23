@@ -21,6 +21,7 @@ Texture2D drillTexture;
 Texture2D purpleTexture;
 Texture2D conveyorTexture;
 Texture2D chestTexture;
+Texture2D pipeTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -41,6 +42,7 @@ void InitTexture() {
     defaultTexture = LoadTexture("assets/default.png");
     drillTexture = LoadTexture("assets/drill.png");
     conveyorTexture= LoadTexture("assets/conveyor.png");
+    pipeTexture =LoadTexture("assets/conveyor.png");
     chestTexture = LoadTexture("assets/crate.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
 }
@@ -52,6 +54,10 @@ void UnloadAllTexture() {
     UnloadTexture(coalVeinTexture);
     UnloadTexture(rockVeinTexture);
     UnloadTexture(rockTexture);
+
+    UnloadTexture(sandVeinTexture);
+    UnloadTexture(waterVeinTexture);
+    UnloadTexture(oilVeinTexture);
     UnloadTexture(copperLingotTexture);
     UnloadTexture(ironLingotTexture);
     UnloadTexture(defaultTexture);
@@ -60,5 +66,6 @@ void UnloadAllTexture() {
     UnloadTexture(drillTexture);
     UnloadTexture(purpleTexture);
     UnloadTexture(conveyorTexture);
+    UnloadTexture(pipeTexture);
     UnloadTexture(chestTexture);
 }

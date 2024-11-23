@@ -133,18 +133,27 @@ void UpdateDir(){
 }
 
 void ActionWithName(char ObjectName[20], int i, int j,int option) {
-    if (strcmp(ObjectName, "Tapis") == 0) {
+    if (strcmp(ObjectName, "Tapis") == 0  ) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
                 grid[i][j].dir[0] = directions[conveyor_dir][0];
                 grid[i][j].dir[1] = directions[conveyor_dir][1];
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
-                printf("dir = [%d, %d]\n", ListeConveyor[k].dir[0], ListeConveyor[k].dir[1]);
-
+                ListeConveyor[k] = (Conveyor){.i = i, .j = j,.texture=conveyorTexture, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
                 break;
             }
         }
-    } else if (strcmp(ObjectName, "Foreuse") == 0) {
+    } 
+    else if (strcmp(ObjectName, "Tuyau") == 0  ) {
+        for (int k = 0; k < MAX_CONVEYOR; k++) {
+            if (!ListeConveyor[k].placed) {
+                grid[i][j].dir[0] = directions[conveyor_dir][0];
+                grid[i][j].dir[1] = directions[conveyor_dir][1];
+                ListeConveyor[k] = (Conveyor){.i = i, .j = j,.texture=pipeTexture, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
+                break;
+            }
+        }
+    }
+    else if (strcmp(ObjectName, "Foreuse") == 0) {
         if (numForeuses < MAX_FOREUSE) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
             grid[i][j].moveable = false;
@@ -177,15 +186,16 @@ void Convey(Conveyor *conv) {
     }
 
     // Vérifier si un objet est prêt à être pris (case source)
-    if (grid[srcI][srcJ].moveable && grid[srcI][srcJ].isSolid &&
+    if (grid[srcI][srcJ].moveable &&
         grid[srcI][srcJ].up_texture.id != 0 && 
-        grid[srcI][srcJ].up_texture.id != conveyorTexture.id) {
-
-        // Prendre l'objet de la case source
-        conv->textureToMove = grid[srcI][srcJ].up_texture;
-        grid[srcI][srcJ].placed = false;
-        grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
-        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+        grid[srcI][srcJ].up_texture.id != conv->texture.id) {
+        if((grid[srcI][srcJ].isSolid && conv->texture.id==conveyorTexture.id) || (!grid[srcI][srcJ].isSolid && conv->texture.id==pipeTexture.id)){
+            // Prendre l'objet de la case source
+            conv->textureToMove = grid[srcI][srcJ].up_texture;
+            grid[srcI][srcJ].placed = false;
+            grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
+            grid[conv->i][conv->j].move_texture=conv->textureToMove;
+        }
     }
     else if(grid[srcI][srcJ].up_texture.id == drillTexture.id) {
         //Trouve la foreuse connecté
@@ -218,7 +228,7 @@ void Convey(Conveyor *conv) {
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
         }
 
-    if (grid[destI][destJ].up_texture.id !=conveyorTexture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
+    if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
         // Déposer l'objet au sol
         grid[destI][destJ].placed = true;
         grid[destI][destJ].up_texture = conv->textureToMove;
