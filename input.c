@@ -223,6 +223,28 @@ void Convey(Conveyor *conv) {
                 }
             }
     }
+    else if(grid[srcI][srcJ].up_texture.id == furnaceTexture.id) {
+        //Trouve le four connecté
+            for (int k = 0; k < numForeuses; k++) {
+                if (ListeFurnace[k].i == srcI && ListeFurnace[k].j == srcJ) {
+                    if (ListeFurnace[k].final_q>0){
+                        int crafted_textureId = ListeFurnace[k].final_id;
+                        Texture2D crafted_texture =(Texture2D){0};
+                        if (crafted_textureId == copperLingotTexture.id) {
+                            crafted_texture = copperLingotTexture;
+                        }
+                        else if (crafted_textureId == copperLingotTexture.id) {
+                            crafted_texture = copperLingotTexture;
+                        }
+                       
+                        conv->textureToMove = crafted_texture;
+                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+                        ListeFurnace[k].final_q--;
+                    }
+                    
+                }
+            }
+    }
     // Si en mouvement, vérifier la destination
     if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0  ) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
@@ -239,10 +261,42 @@ void Convey(Conveyor *conv) {
         // Réinitialiser l'objet et l'état du convoyeur
         conv->textureToMove = (Texture2D){ 0 };
     }
+    //Ajoute à l'inventaire
     else if (grid[destI][destJ].up_texture.id == chestTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
         AddInInvent(1, conv->textureToMove);
         grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
         conv->textureToMove = (Texture2D){ 0 };
+    }
+    //ajoute au four
+    else if (grid[destI][destJ].up_texture.id == furnaceTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+        for (int k = 0; k < numForeuses; k++) {
+                if (ListeFurnace[k].i == destI && ListeFurnace[k].j == destJ) {
+                    //ajoute du matériau si il correspond
+                        if (ListeFurnace[k].material_id == conv->textureToMove.id) {
+                            ListeFurnace[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }
+                        //si pas de matériaux on l'ajoute
+                        else if (ListeFurnace[k].material_q ==0) {
+                            ListeFurnace[k].material_id = conv->textureToMove.id;
+                            ListeFurnace[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }
+                        else if (ListeFurnace[k].energy_id == conv->textureToMove.id) {
+                            ListeFurnace[k].energy_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        } 
+                        else if (ListeFurnace[k].energy_q == 0) {
+                            ListeFurnace[k].energy_id= conv->textureToMove.id;
+                            ListeFurnace[k].energy_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        } 
+                }
+            }
     }
 }
 
