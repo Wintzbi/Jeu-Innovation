@@ -677,8 +677,9 @@ int IsEnergieNear(int x, int y,int range) {
                     grid[nx][ny].move_texture=(Texture2D) {0};
                     return 1;
                     }
+                else if(FindNearestSteam(nx, ny)) return 1;
                 else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
-                else if(FindNearestCentral(nx,ny)) return 1; //centrale allumée
+                
         }
     }
     }
@@ -687,6 +688,7 @@ int IsEnergieNear(int x, int y,int range) {
 
 int FindNearestBattery(int x, int y){
     //Trouve la battery connecté
+    if (IndexIsValid(x-1,y-1) && IndexIsValid(x+1,y+1)){
     for (int k = 0; k < MAX_BATTERY; k++) {
         if ((ListeBattery[k].i > x-1) && (ListeBattery[k].i < x+1) &&
     (ListeBattery[k].j > y-1) && (ListeBattery[k].j < y+1)) {
@@ -696,21 +698,16 @@ int FindNearestBattery(int x, int y){
             }
             
         }
-    }
+    }}
     return 0;
 }
-int FindNearestCentral(int x, int y){
-    //Trouve la battery connecté
-    for (int k = 0; k < MAX_STEAM; k++) {
-        if ((ListeSteam[k].i > x-1) && (ListeSteam[k].i < x+1) &&
-    (ListeSteam[k].j > y-1) && (ListeSteam[k].j < y+1)) {
-            if (ListeSteam[k].final_q>0){
-                ListeSteam[k].final_q--;
-                return 1;
-            }
-            
+
+int FindNearestSteam(int x,int y){
+    for (int i = 0; i < numSteams; i++) {
+        if (ListeSteam[i].i == x && ListeSteam[i].j == y &&ListeSteam[i].final_q>0) {
+            ListeSteam[i].final_q--;
+            return 1;
         }
     }
     return 0;
 }
-
