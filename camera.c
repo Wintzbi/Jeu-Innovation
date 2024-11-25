@@ -3,7 +3,7 @@
 #include "camera.h"
 #include <stdio.h>
 
-const float cameraSpeed = 200.0f;
+const float cameraSpeed = 100.0f;
 Camera2D camera;
 
 float minX;
@@ -20,10 +20,10 @@ void InitBounds(int screenWidth, int screenHeight) {
     }
 
     if (screenWidth == 1920 && screenHeight == 1200) {
-        minX = 320.0f;           // Bord gauche
-        maxX = 1480;        // Bord droit
-        minY = 200.0f;           // Bord en haut
-        maxY = 1600;        // Bord en bas
+        minX = 160.0f;           // Bord gauche
+        maxX = 1640;        // Bord droit
+        minY = 100.0f;           // Bord en haut
+        maxY = 1720;        // Bord en bass
     }
 
     if (screenWidth == 1920*0.75 && screenHeight == 1200*0.75) {
@@ -38,7 +38,7 @@ void setPlayerCamera() {
     camera.target = (Vector2){ 0.0f, 0.0f }; // Position de la cible (initialement à l'origine)
     camera.offset = (Vector2){ screenWidth / 2.0f, screenHeight / 2.0f }; // Centre la caméra au milieu de l'écran
     camera.rotation = 0.0f;
-    camera.zoom = 3.0f;
+    camera.zoom = 6.0f;
     InitBounds(screenWidth,screenHeight);
 }
 
@@ -55,12 +55,12 @@ void moveCamera() {
 
     //float mouseWheelMove = GetMouseWheelMove();
     //if (mouseWheelMove != 0) {
-        //camera.zoom += mouseWheelMove * 0.1f;
+    //    camera.zoom += mouseWheelMove * 0.1f;
     //}
 
     // Limite le zoom
-    if (camera.zoom < 1.2f) camera.zoom = 1.2f; // Min zoom
-    if (camera.zoom > 3.0f) camera.zoom = 3.0f; // Max zoom
+    //if (camera.zoom < 1.2f) camera.zoom = 1.2f; // Min zoom
+    //if (camera.zoom > 3.0f) camera.zoom = 3.0f; // Max zoom
 
     // Limiter la caméra
     if (camera.target.x < minX) camera.target.x = minX;
@@ -69,5 +69,5 @@ void moveCamera() {
     if (camera.target.y > maxY) camera.target.y = maxY;
 
     // Debug
-    //printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
+    printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
 }
