@@ -43,7 +43,7 @@ void InitTexture() {
     ironLingotTexture= LoadTexture("assets/iron_lingot.png");
     copperVeinTexture= LoadTexture("assets/copper_vein.png");
     ironVeinTexture= LoadTexture("assets/iron_vein.png");
-    defaultTexture = LoadTexture("assets/default.png");
+    defaultTexture = LoadTexture("assets/grass_texture.png");
     drillTexture = LoadTexture("assets/drill.png");
     conveyorTexture= LoadTexture("assets/conveyor.png");
     pipeTexture =LoadTexture("assets/pipe.png");

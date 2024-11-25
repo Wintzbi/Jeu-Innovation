@@ -37,8 +37,8 @@ void CellDraw(Cell cell) {
     Texture2D RefTexture = chestTexture; // Définir la texture de référence
 
     // Calcul de l'échelle pour adapter la texture à la taille de la cellule
-    float scaleX = (float)cellSize*1.05 / RefTexture.width;
-    float scaleY = (float)cellSize*1.05 / RefTexture.height;
+    float scaleX = (float)cellSize*1.0 / RefTexture.width;
+    float scaleY = (float)cellSize*1.0 / RefTexture.height;
     float scale = (scaleX < scaleY) ? scaleX : scaleY; // Garder les proportions
 
     // Rectangle de destination : position centrée dans la cellule
@@ -69,7 +69,7 @@ void CellDraw(Cell cell) {
     }
 
     // Dessiner les contours de la cellule
-    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
+   // DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
 }
 
 // Fonction pour vérifier si les indices de la grille sont valides
