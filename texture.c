@@ -83,5 +83,5 @@ void UnloadAllTexture() {
     UnloadTexture(steamcentralTexture);
     UnloadTexture(piloneTexture);
     UnloadTexture(batteryTexture);
-    
+
 }

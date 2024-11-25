@@ -62,6 +62,7 @@ void Update_Furnace();
 extern Steam ListeSteam[MAX_STEAM];
 extern int numSteams;  // Compteur de foreuses
 void Update_Steam();
+int FindNearestSteam(int x,int y);
 
 #define MAX_CONVEYOR 400
 

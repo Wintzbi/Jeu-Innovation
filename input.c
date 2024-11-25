@@ -277,15 +277,25 @@ void Convey(Conveyor *conv) {
                     if (ListeForeuse[k].q>0){
                         Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
                         Texture2D mined_texture =(Texture2D){0};
-                        if (under_texture.id == copperVeinTexture.id) {
-                            mined_texture = copperTexture;
+                        if(conv->texture.id == conveyorTexture.id){ //solid
+                            if (under_texture.id == copperVeinTexture.id) {
+                                mined_texture = copperTexture;
+                            }
+                            else if (under_texture.id == ironVeinTexture.id) {
+                                mined_texture = ironTexture;
+                            }
+                            else if (under_texture.id == coalVeinTexture.id) {
+                                mined_texture = coalTexture;
+                            } 
                         }
-                        else if (under_texture.id == ironVeinTexture.id) {
-                            mined_texture = ironTexture;
-                        }
-                        else if (under_texture.id == coalVeinTexture.id) {
-                            mined_texture = coalTexture;
-                        } 
+                        else if(conv->texture.id == pipeTexture.id){ //liquide
+                            if (under_texture.id == waterVeinTexture.id) {
+                                mined_texture = waterVeinTexture;
+                            }
+                            else if (under_texture.id == oilVeinTexture.id) {
+                                mined_texture = oilVeinTexture;
+                            }
+                            }
                         conv->textureToMove = mined_texture;
                         grid[conv->i][conv->j].move_texture=conv->textureToMove;
                         ListeForeuse[k].q--;
@@ -672,11 +682,14 @@ int IsEnergieNear(int x, int y,int range) {
             if (IndexIsValid(nx, ny) ) {
                 // Vérifie si la texture correspond à un panneau solaire
                 if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) return 1;// source elec                
-                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
+                
                 else if(grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) {
                     grid[nx][ny].move_texture=(Texture2D) {0};
                     return 1;
-            }
+                    }
+                else if(FindNearestSteam(nx, ny)) return 1;
+                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
+                
         }
     }
     }
@@ -685,6 +698,7 @@ int IsEnergieNear(int x, int y,int range) {
 
 int FindNearestBattery(int x, int y){
     //Trouve la battery connecté
+    if (IndexIsValid(x-1,y-1) && IndexIsValid(x+1,y+1)){
     for (int k = 0; k < MAX_BATTERY; k++) {
         if ((ListeBattery[k].i > x-1) && (ListeBattery[k].i < x+1) &&
     (ListeBattery[k].j > y-1) && (ListeBattery[k].j < y+1)) {
@@ -694,7 +708,16 @@ int FindNearestBattery(int x, int y){
             }
             
         }
-    }
+    }}
     return 0;
 }
 
+int FindNearestSteam(int x,int y){
+    for (int i = 0; i < numSteams; i++) {
+        if (ListeSteam[i].i == x && ListeSteam[i].j == y &&ListeSteam[i].final_q>0) {
+            ListeSteam[i].final_q--;
+            return 1;
+        }
+    }
+    return 0;
+}
