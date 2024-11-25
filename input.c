@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h> // Pour strcmp
 
-int MinPlaceableID = 11; // Liste des ID de textures plaçables
+int MinPlaceableID = 17; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
@@ -17,6 +17,10 @@ float lastForeuseTime;
 Furnace ListeFurnace[MAX_FURNACE];
 int numFurnaces = 0;
 float lastFurnaceTime;
+
+Steam ListeSteam[MAX_STEAM];
+int numSteams = 0;  // Compteur de foreuses
+float lastSteamTime;
 
 
 Battery ListeBattery[MAX_BATTERY];
@@ -69,7 +73,7 @@ void rightClic() {
             if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
                 grid[posX][posY].placed = true;
                 grid[posX][posY].up_texture = inventory[selectedItem].texture;
-                //printf("Name: %s\n", inventory[selectedItem].name);
+                printf("Name: %s | Texture: %d\n", inventory[selectedItem].name, inventory[selectedItem].texture.id);
                 ActionWithName(inventory[selectedItem].name, posX, posY,option);
                 inventory[selectedItem].quantity--;
 
@@ -196,12 +200,18 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
         }
 
     } else if (strcmp(ObjectName, "Furnace") == 0) {
-        if (numForeuses < MAX_FURNACE) {
+        if (numFurnaces < MAX_FURNACE) {
             ListeFurnace[numFurnaces++] = (Furnace){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_id = 0, .final_q = 0, .placed = true};
+            grid[i][j].moveable = false;
+        }
+    } else if (strcmp(ObjectName, "Centrale Vapeur") == 0) {
+        if (numSteams < MAX_STEAM) {
+            ListeSteam[numSteams++] = (Steam){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_q = 0, .placed = true};
             grid[i][j].moveable = false;
         }
     } 
 }
+
 
 void Update_Conv() {
     for (int k = 0; k < MAX_CONVEYOR; k++) {
@@ -399,6 +409,15 @@ bool isFurnace(int posX, int posY) {
     return false;
 }
 
+bool isSteam(int posX, int posY) {
+    for (int i = 0; i < numSteams; i++) {
+        if (ListeSteam[i].i == posX && ListeSteam[i].j == posY) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void RemoveForeuse(int posX, int posY) {
     for (int i = 0; i < numForeuses; i++) {
         if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
@@ -418,6 +437,18 @@ void RemoveFurnace(int posX, int posY) {
                 ListeFurnace[j] = ListeFurnace[j + 1];
             }
             numFurnaces--;
+            return;
+        }
+    }
+}
+
+void RemoveSteam(int posX, int posY) {
+    for (int i = 0; i < numSteams; i++) {
+        if (ListeSteam[i].i == posX && ListeSteam[i].j == posY) {
+            for (int j = i; j < numSteams - 1; j++) {
+                ListeSteam[j] = ListeSteam[j + 1];
+            }
+            numSteams--;
             return;
         }
     }
@@ -477,6 +508,40 @@ void Update_Furnace() {
     }
 }
 
+void Update_Steam() {
+    float currentTime = GetTime();
+    if (currentTime - lastSteamTime >= 5.0f) {
+        for (int i = 0; i < numSteams; i++) {
+            if (ListeSteam[i].placed && IndexIsValid(ListeSteam[i].i, ListeSteam[i].j)) {
+                if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
+                    if (ListeSteam[i].material_id == waterVeinTexture.id) {
+                        if (ListeSteam[i].final_q < 20) {
+                            ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
+                            ListeSteam[i].material_q--;      // Consomme une unité d'eau
+                            ListeSteam[i].final_q += 4;      // Produit de l'énergie
+                            printf("Steam (%d, %d) : production. Énergie produite : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                        } else {
+                            printf("Steam (%d, %d) : réservoir plein. Énergie stockée : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                        }
+                        if (ListeSteam[i].energy_q == 0) {
+                            ListeSteam[i].energy_id = 0;
+                        }
+                        if (ListeSteam[i].material_q == 0) {
+                            ListeSteam[i].material_id = 0;
+                        }
+                    }
+                } else {
+                    printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
+                }
+            }
+            printf("DEBUG: Steam (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].energy_q, ListeSteam[i].material_q,ListeSteam[i].energy_id, ListeSteam[i].material_id);
+        }
+        lastSteamTime = currentTime;
+    }
+}
+
+
+
 int AddInInvent(int q, Texture2D texture) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (texture.id == inventory[i].texture.id) {
@@ -522,7 +587,6 @@ void interraction(int posX, int posY) {
                     inventory[selectedItem].quantity--;
                     ListeFurnace[i].energy_q++;
                     ListeFurnace[i].energy_id = coalTexture.id;
-                    //printf("Charbon: %d\n", ListeFurnace[i].energy_q);
                 }
                 // Ajout de copper dans le four
                 else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == copperTexture.id) {
@@ -530,9 +594,6 @@ void interraction(int posX, int posY) {
                         inventory[selectedItem].quantity--;
                         ListeFurnace[i].material_q++;
                         ListeFurnace[i].material_id = copperTexture.id;
-                        //printf("Copper: %d\n", ListeFurnace[i].material_q);
-                    } else {
-                        //printf("Four occupé\n");
                     }
                 }
                 // Ajout de iron dans le four
@@ -541,9 +602,6 @@ void interraction(int posX, int posY) {
                         inventory[selectedItem].quantity--;
                         ListeFurnace[i].material_q++;
                         ListeFurnace[i].material_id = ironTexture.id;
-                        //printf("Iron: %d\n", ListeFurnace[i].material_q);
-                    } else {
-                        //printf("Four occupé\n");
                     }
                 }
                 // Récupération des produits finis (lingots de cuivre)
@@ -560,8 +618,29 @@ void interraction(int posX, int posY) {
                 }
             }
         }
+    } else if (isSteam(posX, posY)) {
+        // Interaction avec un générateur de vapeur
+        for (int i = 0; i < numSteams; i++) {
+            if (ListeSteam[i].i == posX && ListeSteam[i].j == posY) {
+                // Ajout de charbon dans le générateur
+                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == coalTexture.id) {
+                    inventory[selectedItem].quantity--;
+                    ListeSteam[i].energy_q++;
+                    ListeSteam[i].energy_id = coalTexture.id;
+                }
+                // Ajout de l'eau dans le générateur
+                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == waterVeinTexture.id) {
+                    if (ListeSteam[i].material_id == 0 || ListeSteam[i].material_id == waterVeinTexture.id) {
+                        inventory[selectedItem].quantity--;
+                        ListeSteam[i].material_q++;
+                        ListeSteam[i].material_id = waterVeinTexture.id;
+                    }
+                }
+            }
+        }
     }
 }
+
 
 int IsEnergieNear(int x, int y,int range) {
     for (int i = -1*range; i <= 1*range; i++) {

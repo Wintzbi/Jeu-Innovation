@@ -100,6 +100,8 @@ int main(void) {
             Update_Foreuse();
 
             Update_Furnace();
+
+            Update_Steam();
             
         }
         EndMode2D();
