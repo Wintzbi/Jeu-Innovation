@@ -704,8 +704,8 @@ int FindNearestCentral(int x, int y){
     for (int k = 0; k < MAX_STEAM; k++) {
         if ((ListeSteam[k].i > x-1) && (ListeSteam[k].i < x+1) &&
     (ListeSteam[k].j > y-1) && (ListeSteam[k].j < y+1)) {
-            if (ListeSteam[k].q>0){
-                ListeSteam[k].q--;
+            if (ListeSteam[k].final_q>0){
+                ListeSteam[k].final_q--;
                 return 1;
             }
             
