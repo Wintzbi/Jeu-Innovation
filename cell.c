@@ -69,14 +69,8 @@ void CellDraw(Cell cell) {
     }
 
     // Dessiner les contours de la cellule
-    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, LIGHTGRAY);
+    DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
 }
-
-
-
-
-
-
 
 // Fonction pour vérifier si les indices de la grille sont valides
 bool IndexIsValid(int i, int j) {
