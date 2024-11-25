@@ -669,11 +669,13 @@ int IsEnergieNear(int x, int y,int range) {
             if (IndexIsValid(nx, ny) ) {
                 // Vérifie si la texture correspond à un panneau solaire
                 if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) return 1;// source elec                
-                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
+                
                 else if(grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) {
                     grid[nx][ny].move_texture=(Texture2D) {0};
                     return 1;
-            }
+                    }
+                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
+                else if(FindNearestCentral(nx,ny)) return 1; //centrale allumée
         }
     }
     }
@@ -687,6 +689,20 @@ int FindNearestBattery(int x, int y){
     (ListeBattery[k].j > y-1) && (ListeBattery[k].j < y+1)) {
             if (ListeBattery[k].q>0){
                 ListeBattery[k].q--;
+                return 1;
+            }
+            
+        }
+    }
+    return 0;
+}
+int FindNearestCentral(int x, int y){
+    //Trouve la battery connecté
+    for (int k = 0; k < MAX_STEAM; k++) {
+        if ((ListeSteam[k].i > x-1) && (ListeSteam[k].i < x+1) &&
+    (ListeSteam[k].j > y-1) && (ListeSteam[k].j < y+1)) {
+            if (ListeSteam[k].q>0){
+                ListeSteam[k].q--;
                 return 1;
             }
             
