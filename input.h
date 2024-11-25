@@ -46,7 +46,7 @@ extern Furnace ListeFurnace[MAX_FURNACE];
 extern int numFurnaces;  // Compteur de foreuses
 void Update_Furnace();
 
-#define MAX_CONVEYOR 100
+#define MAX_CONVEYOR 400
 
 
 typedef struct Conveyor {
@@ -68,5 +68,5 @@ extern int conveyor_dir;
 int AddInInvent(int q,Texture2D texture);
 extern int directions[4][2] ;
 void RemoveConveyor(int posX, int posY);
-int IsEnergieNear(int x,int y);
+int IsEnergieNear(int x,int y,int range);
 #endif

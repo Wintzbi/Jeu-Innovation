@@ -27,7 +27,7 @@ extern Texture2D chestTexture;
 extern Texture2D furnaceTexture;
 extern Texture2D solarpanelTexture;
 extern Texture2D steamcentralTexture;
-
+extern Texture2D piloneTexture;
 void InitTexture();
 void UnloadAllTexture();
 

@@ -14,7 +14,7 @@ bool RightClick=false;
 
 
 void InitInventory() {
-    inventory[0] = (Item) { "Cuivre",copperTexture, 20 };  // Bloc de cuivre avec 2 unités
+    inventory[0] = (Item) { "Pilone",piloneTexture, 20 };  
     inventory[1] = (Item) { "Fer",ironTexture, 20 };    // Bloc de fer avec 2 unités
     inventory[2] = (Item) { "Charbon",coalTexture, 40 };   // Bloc de charbon avec 20 unités
     inventory[3] = (Item) {"Foreuse",drillTexture, 5};
@@ -24,6 +24,7 @@ void InitInventory() {
     inventory[7] = (Item) {"Tuyau",pipeTexture,100};
     inventory[8] = (Item) {"Panneau solaire",solarpanelTexture,10};
     inventory[9] = (Item) {"Charbon",coalTexture, 10};
+    
 }
 
 // Fonction pour dessiner l'inventaire avec des images agrandies
