@@ -69,4 +69,18 @@ int AddInInvent(int q,Texture2D texture);
 extern int directions[4][2] ;
 void RemoveConveyor(int posX, int posY);
 int IsEnergieNear(int x,int y,int range);
+
+#define MAX_BATTERY 100
+
+typedef struct Battery {
+    int i;
+    int j;
+    int q;
+    bool placed;
+    Texture2D texture;
+}Battery;
+
+extern Battery ListeBattery[MAX_BATTERY];
+void UpdateBattery();
+int FindNearestBattery(int x, int y);
 #endif

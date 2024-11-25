@@ -15,7 +15,7 @@ bool RightClick=false;
 
 void InitInventory() {
     inventory[0] = (Item) { "Pilone",piloneTexture, 20 };  
-    inventory[1] = (Item) { "Fer",ironTexture, 20 };    // Bloc de fer avec 2 unités
+    inventory[1] = (Item) { "Batterie",batteryTexture, 20 };    // Bloc de fer avec 2 unités
     inventory[2] = (Item) { "Charbon",coalTexture, 40 };   // Bloc de charbon avec 20 unités
     inventory[3] = (Item) {"Foreuse",drillTexture, 5};
     inventory[4] = (Item) {"Tapis",conveyorTexture,100};

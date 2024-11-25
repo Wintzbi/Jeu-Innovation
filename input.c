@@ -18,6 +18,9 @@ Furnace ListeFurnace[MAX_FURNACE];
 int numFurnaces = 0;
 float lastFurnaceTime;
 
+
+Battery ListeBattery[MAX_BATTERY];
+
 int directions[4][2] = {
     {1, 0},
     {-1, 0},
@@ -178,6 +181,14 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
             }
         }
     }
+    else if (strcmp(ObjectName, "Batterie") == 0  ) {
+        for (int k = 0; k < MAX_BATTERY; k++) {
+            if (!ListeBattery[k].placed) {
+                ListeBattery[k] = (Battery){.i = i, .j = j,.texture=batteryTexture, .q=0, .placed = true};
+                break;
+            }
+        }
+    }
     else if (strcmp(ObjectName, "Foreuse") == 0) {
         if (numForeuses < MAX_FOREUSE) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
@@ -209,6 +220,16 @@ void Update_Conv() {
     }
 }
 
+void UpdateBattery(){
+    for (int k = 0; k < MAX_BATTERY; k++) {
+        if (ListeBattery[k].placed) {
+                if(IsEnergieNear(ListeBattery[k].i, ListeBattery[k].j,1) && ListeBattery[k].q<=100){
+                    ListeBattery[k].q++;
+                    printf("Batterie chargée à %d\n",ListeBattery[k].q);
+                }
+        }
+}
+}
 void Convey(Conveyor *conv) {
     int srcI = conv->i - conv->dir[0];  // Calcul de la case source
     int srcJ = conv->j - conv->dir[1];  // Calcul de la case source
@@ -549,9 +570,8 @@ int IsEnergieNear(int x, int y,int range) {
             int ny = y + j;          
             if (IndexIsValid(nx, ny) ) {
                 // Vérifie si la texture correspond à un panneau solaire
-                if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) {
-                    return 1;
-                }
+                if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) return 1;// source elec                
+                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
                 else if(grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) {
                     grid[nx][ny].move_texture=(Texture2D) {0};
                     return 1;
@@ -561,3 +581,19 @@ int IsEnergieNear(int x, int y,int range) {
     }
     return 0;
 }
+
+int FindNearestBattery(int x, int y){
+    //Trouve la battery connecté
+    for (int k = 0; k < MAX_BATTERY; k++) {
+        if ((ListeBattery[k].i > x-1) && (ListeBattery[k].i < x+1) &&
+    (ListeBattery[k].j > y-1) && (ListeBattery[k].j < y+1)) {
+            if (ListeBattery[k].q>0){
+                ListeBattery[k].q--;
+                return 1;
+            }
+            
+        }
+    }
+    return 0;
+}
+
