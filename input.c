@@ -136,10 +136,12 @@ void leftClic() {
                     ListeConveyor[f].placed = false;
                     grid[posX][posY].dir[0] = 0;
                     grid[posX][posY].dir[1] = 0;
+                    grid[posX][posY].move_texture=(Texture2D){0};
                     RemoveConveyor(ListeConveyor[f].i, ListeConveyor[f].j);
                     break;
                 }
             }
+            
         }
     }
 }
@@ -205,11 +207,12 @@ void Update_Conv() {
         if (ListeConveyor[k].placed) {
             if (ListeConveyor[k].texture.id==piloneTexture.id){
                 // pilone d'énergie
-                if(IsEnergieNear(ListeConveyor[k].i, ListeConveyor[k].j,2)){
+                if(IsEnergieNear(ListeConveyor[k].i, ListeConveyor[k].j,3)){
                     ListeConveyor[k].textureToMove = coalTexture;
+                    ListeConveyor[k].placed=true;
                     grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture= ListeConveyor[k].textureToMove;
-                    
                 }
+                
             }
             else Convey(&ListeConveyor[k]);
         }
@@ -625,11 +628,15 @@ int IsEnergieNear(int x, int y,int range) {
             int ny = y + j;          
             if (IndexIsValid(nx, ny) ) {
                 // Vérifie si la texture correspond à un panneau solaire
-                if (grid[nx][ny].up_texture.id == solarpanelTexture.id || (grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) ) {
+                if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) {
                     return 1;
                 }
+                else if(grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) {
+                    grid[nx][ny].move_texture=(Texture2D) {0};
+                    return 1;
             }
         }
+    }
     }
     return 0;
 }
