@@ -133,6 +133,14 @@ void leftClic() {
                     break;
                 }
             }
+            // Désactiver une foreuse si elle est présente
+            for (int f = 0; f < MAX_BATTERY; f++) {
+                if (ListeBattery[f].i == posX && ListeBattery[f].j == posY && ListeBattery[f].placed) {
+                    ListeBattery[f].placed = false;
+                    RemoveBattery(ListeBattery[f].i, ListeBattery[f].j);
+                    break;
+                }
+            }
             // Désactiver un tapis si il est présent
             for (int f = 0; f < MAX_CONVEYOR; f++) {
                 if (ListeConveyor[f].i == posX && ListeConveyor[f].j == posY && ListeConveyor[f].placed) {
@@ -459,6 +467,17 @@ void RemoveConveyor(int posX, int posY){
         if (ListeConveyor[i].i == posX && ListeConveyor[i].j == posY) {
             for (int j = i; j < MAX_CONVEYOR - 1; j++) {
                 ListeConveyor[j] = ListeConveyor[j + 1];
+            }
+            return;
+        }
+    }
+}
+
+void RemoveBattery(int posX, int posY){
+    for (int i = 0; i < MAX_BATTERY; i++) {
+        if (ListeBattery[i].i == posX && ListeBattery[i].j == posY) {
+            for (int j = i; j < MAX_BATTERY - 1; j++) {
+                ListeBattery[j] = ListeBattery[j + 1];
             }
             return;
         }

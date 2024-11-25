@@ -100,4 +100,5 @@ typedef struct Battery {
 extern Battery ListeBattery[MAX_BATTERY];
 void UpdateBattery();
 int FindNearestBattery(int x, int y);
+void RemoveBattery(int posX, int posY);
 #endif
