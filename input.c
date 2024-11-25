@@ -126,6 +126,16 @@ void leftClic() {
                     break;
                 }
             }
+            // Désactiver un tapis si il est présent
+            for (int f = 0; f < MAX_CONVEYOR; f++) {
+                if (ListeConveyor[f].i == posX && ListeConveyor[f].j == posY && ListeConveyor[f].placed) {
+                    ListeConveyor[f].placed = false;
+                    grid[posX][posY].dir[0] = 0;
+                    grid[posX][posY].dir[1] = 0;
+                    RemoveConveyor(ListeConveyor[f].i, ListeConveyor[f].j);
+                    break;
+                }
+            }
         }
     }
 }
@@ -261,6 +271,10 @@ void Convey(Conveyor *conv) {
         // Réinitialiser l'objet et l'état du convoyeur
         conv->textureToMove = (Texture2D){ 0 };
     }
+    else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed){
+         conv->textureToMove=grid[srcI][srcJ].move_texture;
+         grid[conv->i][conv->j].move_texture=conv->textureToMove;
+    }
     //Ajoute à l'inventaire
     else if (grid[destI][destJ].up_texture.id == chestTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
         AddInInvent(1, conv->textureToMove);
@@ -365,6 +379,18 @@ void RemoveFurnace(int posX, int posY) {
         }
     }
 }
+
+void RemoveConveyor(int posX, int posY){
+    for (int i = 0; i < MAX_CONVEYOR; i++) {
+        if (ListeConveyor[i].i == posX && ListeConveyor[i].j == posY) {
+            for (int j = i; j < MAX_CONVEYOR - 1; j++) {
+                ListeConveyor[j] = ListeConveyor[j + 1];
+            }
+            return;
+        }
+    }
+}
+
 
 void Update_Furnace() {
     float currentTime = GetTime();

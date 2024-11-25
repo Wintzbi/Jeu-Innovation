@@ -67,5 +67,5 @@ extern int conveyor_dir;
 
 int AddInInvent(int q,Texture2D texture);
 extern int directions[4][2] ;
-
+void RemoveConveyor(int posX, int posY);
 #endif
