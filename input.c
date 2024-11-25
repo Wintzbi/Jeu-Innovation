@@ -272,24 +272,24 @@ void Convey(Conveyor *conv) {
         for (int k = 0; k < numForeuses; k++) {
                 if (ListeFurnace[k].i == destI && ListeFurnace[k].j == destJ) {
                     //ajoute du matériau si il correspond
-                        if (ListeFurnace[k].material_id == conv->textureToMove.id) {
+                        if (ListeFurnace[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
                             ListeFurnace[k].material_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         }
                         //si pas de matériaux on l'ajoute
-                        else if (ListeFurnace[k].material_q ==0) {
+                        else if (ListeFurnace[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
                             ListeFurnace[k].material_id = conv->textureToMove.id;
                             ListeFurnace[k].material_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         }
-                        else if (ListeFurnace[k].energy_id == conv->textureToMove.id) {
+                        else if (ListeFurnace[k].energy_id == conv->textureToMove.id && conv->textureToMove.id == coalTexture.id ) {
                             ListeFurnace[k].energy_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         } 
-                        else if (ListeFurnace[k].energy_q == 0) {
+                        else if (ListeFurnace[k].energy_q == 0 && conv->textureToMove.id == coalTexture.id ) {
                             ListeFurnace[k].energy_id= conv->textureToMove.id;
                             ListeFurnace[k].energy_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
