@@ -13,9 +13,9 @@ float maxY;
 
 void InitBounds(int screenWidth, int screenHeight) {
     if (screenWidth == 1920*0.5 && screenHeight == 1200*0.5) {
-        minX = 320.0f*0.5;           // Bord gauche
+        minX = 160.0f*0.5;           // Bord gauche
         maxX = 640.0f;        // Bord droit
-        minY = 200.0f*0.5;           // Bord en haut
+        minY = 100.0f*0.5;           // Bord en haut
         maxY = 700.0f;        // Bord en bas
     }
 
@@ -27,12 +27,13 @@ void InitBounds(int screenWidth, int screenHeight) {
     }
 
     if (screenWidth == 1920*0.75 && screenHeight == 1200*0.75) {
-        minX = 320.0f*0.75;           // Bord gauche
-        maxX = 1160.0f;        // Bord droit
-        minY = 200.0f*0.75;           // Bord en haut
-        maxY = 1250.0f;        // Bord en bas
+        minX = 160.0f*0.75;           // Bord gauche
+        maxX = 1280.0f;        // Bord droit
+        minY = 100.0f*0.75;           // Bord en haut
+        maxY = 1325.0f;        // Bord en bas
     }
 }
+
 
 void setPlayerCamera() {
     camera.target = (Vector2){ 0.0f, 0.0f }; // Position de la cible (initialement à l'origine)
@@ -55,8 +56,8 @@ void moveCamera() {
 
     //float mouseWheelMove = GetMouseWheelMove();
     //if (mouseWheelMove != 0) {
-    //    camera.zoom += mouseWheelMove * 0.1f;
-    //}
+    //  cameraSpeed += mouseWheelMove * 0.1f;
+   // }
 
     // Limite le zoom
     //if (camera.zoom < 1.2f) camera.zoom = 1.2f; // Min zoom
@@ -69,5 +70,5 @@ void moveCamera() {
     if (camera.target.y > maxY) camera.target.y = maxY;
 
     // Debug
-    printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
+    //printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
 }
