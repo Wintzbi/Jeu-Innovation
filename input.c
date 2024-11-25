@@ -318,7 +318,7 @@ void Update_Foreuse() {
     float currentTime = GetTime();
     if (currentTime - lastForeuseTime >= 10.0f) {
         for (int i = 0; i < numForeuses; i++) {
-            if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j)) {
+            if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j) && IsEnergieNear(ListeForeuse[i].i,ListeForeuse[i].j)) {
                 Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
                 if (texture.id == copperVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
@@ -397,6 +397,7 @@ void Update_Furnace() {
     if (currentTime - lastFurnaceTime >= 20.0f) { // Vérifie le délai global
         for (int i = 0; i < numFurnaces; i++) {
             if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
+                if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j)) ListeFurnace[i].energy_q++ ;// source d'énergie pas loin
                 if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
                     if (ListeFurnace[i].material_id == copperTexture.id) {
                         ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
@@ -517,4 +518,15 @@ void interraction(int posX, int posY) {
             }
         }
     }
+}
+
+int IsEnergieNear(int x,int y){
+    for (int i=-1;i<2;i++){
+        for (int j=-1;j<2;j++){
+            if (grid[x+i][j+j].up_texture.id==solarpanelTexture.id || grid[x+i][j+j].up_texture.id==steamcentralTexture.id){
+                return 1;
+            }
+    }
+    }
+    return 0;
 }

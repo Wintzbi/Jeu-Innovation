@@ -25,6 +25,9 @@ extern Texture2D conveyorTexture;
 extern Texture2D pipeTexture;
 extern Texture2D chestTexture;
 extern Texture2D furnaceTexture;
+extern Texture2D solarpanelTexture;
+extern Texture2D steamcentralTexture;
+
 void InitTexture();
 void UnloadAllTexture();
 

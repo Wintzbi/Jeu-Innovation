@@ -23,6 +23,8 @@ Texture2D conveyorTexture;
 Texture2D chestTexture;
 Texture2D pipeTexture;
 Texture2D furnaceTexture;
+Texture2D solarpanelTexture;
+Texture2D steamcentralTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -47,6 +49,8 @@ void InitTexture() {
     chestTexture = LoadTexture("assets/crate.png");
     furnaceTexture=LoadTexture("assets/furnace.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
+    solarpanelTexture = LoadTexture("assets/purple_texture.png");
+    steamcentralTexture = LoadTexture("assets/red_texture.png");
 }
 
 void UnloadAllTexture() {
@@ -71,5 +75,7 @@ void UnloadAllTexture() {
     UnloadTexture(pipeTexture);
     UnloadTexture(chestTexture);
     UnloadTexture(furnaceTexture);
+    UnloadTexture(solarpanelTexture);
+    UnloadTexture(steamcentralTexture);
     
 }
