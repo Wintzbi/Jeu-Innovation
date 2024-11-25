@@ -304,7 +304,7 @@ void Convey(Conveyor *conv) {
                 }
             }
     }
-    else if(grid[srcI][srcJ].up_texture.id == furnaceTexture.id) {
+    else if(grid[srcI][srcJ].up_texture.id == furnaceTexture.id ) {
         //Trouve le four connecté
             for (int k = 0; k < numForeuses; k++) {
                 if (ListeFurnace[k].i == srcI && ListeFurnace[k].j == srcJ) {
@@ -326,6 +326,8 @@ void Convey(Conveyor *conv) {
                 }
             }
     }
+
+    
     // Si en mouvement, vérifier la destination
     if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0  ) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
@@ -377,6 +379,37 @@ void Convey(Conveyor *conv) {
                         else if (ListeFurnace[k].energy_q == 0 && conv->textureToMove.id == coalTexture.id ) {
                             ListeFurnace[k].energy_id= conv->textureToMove.id;
                             ListeFurnace[k].energy_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        } 
+                }
+            }
+    }
+    //ajoute a la centrale
+    else if (grid[destI][destJ].up_texture.id == steamcentralTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+        for (int k = 0; k < numSteams; k++) {
+                if (ListeSteam[k].i == destI && ListeSteam[k].j == destJ) {
+                    //ajoute du matériau si il correspond
+                        if (ListeSteam[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
+                            ListeSteam[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }
+                        //si pas de matériaux on l'ajoute
+                        else if (ListeSteam[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
+                            ListeSteam[k].material_id = conv->textureToMove.id;
+                            ListeSteam[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }
+                        else if (ListeSteam[k].energy_id == conv->textureToMove.id && conv->textureToMove.id == coalTexture.id ) {
+                            ListeSteam[k].energy_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        } 
+                        else if (ListeSteam[k].energy_q == 0 && conv->textureToMove.id == coalTexture.id ) {
+                            ListeSteam[k].energy_id= conv->textureToMove.id;
+                            ListeSteam[k].energy_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         } 
