@@ -277,15 +277,25 @@ void Convey(Conveyor *conv) {
                     if (ListeForeuse[k].q>0){
                         Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
                         Texture2D mined_texture =(Texture2D){0};
-                        if (under_texture.id == copperVeinTexture.id) {
-                            mined_texture = copperTexture;
+                        if(conv->texture.id == conveyorTexture.id){ //solid
+                            if (under_texture.id == copperVeinTexture.id) {
+                                mined_texture = copperTexture;
+                            }
+                            else if (under_texture.id == ironVeinTexture.id) {
+                                mined_texture = ironTexture;
+                            }
+                            else if (under_texture.id == coalVeinTexture.id) {
+                                mined_texture = coalTexture;
+                            } 
                         }
-                        else if (under_texture.id == ironVeinTexture.id) {
-                            mined_texture = ironTexture;
-                        }
-                        else if (under_texture.id == coalVeinTexture.id) {
-                            mined_texture = coalTexture;
-                        } 
+                        else if(conv->texture.id == pipeTexture.id){ //liquide
+                            if (under_texture.id == waterVeinTexture.id) {
+                                mined_texture = waterVeinTexture;
+                            }
+                            else if (under_texture.id == oilVeinTexture.id) {
+                                mined_texture = oilVeinTexture;
+                            }
+                            }
                         conv->textureToMove = mined_texture;
                         grid[conv->i][conv->j].move_texture=conv->textureToMove;
                         ListeForeuse[k].q--;
