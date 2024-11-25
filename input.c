@@ -22,6 +22,9 @@ Steam ListeSteam[MAX_STEAM];
 int numSteams = 0;  // Compteur de foreuses
 float lastSteamTime;
 
+
+Battery ListeBattery[MAX_BATTERY];
+
 int directions[4][2] = {
     {1, 0},
     {-1, 0},
@@ -130,6 +133,14 @@ void leftClic() {
                     break;
                 }
             }
+            // Désactiver une foreuse si elle est présente
+            for (int f = 0; f < MAX_BATTERY; f++) {
+                if (ListeBattery[f].i == posX && ListeBattery[f].j == posY && ListeBattery[f].placed) {
+                    ListeBattery[f].placed = false;
+                    RemoveBattery(ListeBattery[f].i, ListeBattery[f].j);
+                    break;
+                }
+            }
             // Désactiver un tapis si il est présent
             for (int f = 0; f < MAX_CONVEYOR; f++) {
                 if (ListeConveyor[f].i == posX && ListeConveyor[f].j == posY && ListeConveyor[f].placed) {
@@ -182,6 +193,14 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
             }
         }
     }
+    else if (strcmp(ObjectName, "Batterie") == 0  ) {
+        for (int k = 0; k < MAX_BATTERY; k++) {
+            if (!ListeBattery[k].placed) {
+                ListeBattery[k] = (Battery){.i = i, .j = j,.texture=batteryTexture, .q=0, .placed = true};
+                break;
+            }
+        }
+    }
     else if (strcmp(ObjectName, "Foreuse") == 0) {
         if (numForeuses < MAX_FOREUSE) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
@@ -219,6 +238,16 @@ void Update_Conv() {
     }
 }
 
+void UpdateBattery(){
+    for (int k = 0; k < MAX_BATTERY; k++) {
+        if (ListeBattery[k].placed) {
+                if(IsEnergieNear(ListeBattery[k].i, ListeBattery[k].j,1) && ListeBattery[k].q<=100){
+                    ListeBattery[k].q++;
+                    printf("Batterie chargée à %d\n",ListeBattery[k].q);
+                }
+        }
+}
+}
 void Convey(Conveyor *conv) {
     int srcI = conv->i - conv->dir[0];  // Calcul de la case source
     int srcJ = conv->j - conv->dir[1];  // Calcul de la case source
@@ -447,6 +476,17 @@ void RemoveConveyor(int posX, int posY){
     }
 }
 
+void RemoveBattery(int posX, int posY){
+    for (int i = 0; i < MAX_BATTERY; i++) {
+        if (ListeBattery[i].i == posX && ListeBattery[i].j == posY) {
+            for (int j = i; j < MAX_BATTERY - 1; j++) {
+                ListeBattery[j] = ListeBattery[j + 1];
+            }
+            return;
+        }
+    }
+}
+
 
 void Update_Furnace() {
     float currentTime = GetTime();
@@ -631,9 +671,8 @@ int IsEnergieNear(int x, int y,int range) {
             int ny = y + j;          
             if (IndexIsValid(nx, ny) ) {
                 // Vérifie si la texture correspond à un panneau solaire
-                if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) {
-                    return 1;
-                }
+                if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) return 1;// source elec                
+                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
                 else if(grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) {
                     grid[nx][ny].move_texture=(Texture2D) {0};
                     return 1;
@@ -643,3 +682,19 @@ int IsEnergieNear(int x, int y,int range) {
     }
     return 0;
 }
+
+int FindNearestBattery(int x, int y){
+    //Trouve la battery connecté
+    for (int k = 0; k < MAX_BATTERY; k++) {
+        if ((ListeBattery[k].i > x-1) && (ListeBattery[k].i < x+1) &&
+    (ListeBattery[k].j > y-1) && (ListeBattery[k].j < y+1)) {
+            if (ListeBattery[k].q>0){
+                ListeBattery[k].q--;
+                return 1;
+            }
+            
+        }
+    }
+    return 0;
+}
+

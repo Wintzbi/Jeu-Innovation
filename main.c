@@ -40,7 +40,7 @@ int main(void) {
         if (IsKeyPressed(KEY_R)) UpdateDir();
         UpdateMusic();
         InitInventoryKeyBiding();
-        
+        UpdateBattery();
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
