@@ -398,6 +398,7 @@ void Update_Furnace() {
         for (int i = 0; i < numFurnaces; i++) {
             if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
                 if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j)) ListeFurnace[i].energy_q++ ;// source d'énergie pas loin
+                
                 if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
                     if (ListeFurnace[i].material_id == copperTexture.id) {
                         ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
@@ -523,7 +524,7 @@ void interraction(int posX, int posY) {
 int IsEnergieNear(int x,int y){
     for (int i=-1;i<2;i++){
         for (int j=-1;j<2;j++){
-            if (grid[x+i][j+j].up_texture.id==solarpanelTexture.id || grid[x+i][j+j].up_texture.id==steamcentralTexture.id){
+            if (grid[x+i][x+j].up_texture.id==solarpanelTexture.id || grid[x+i][j+j].up_texture.id==steamcentralTexture.id){
                 return 1;
             }
     }
