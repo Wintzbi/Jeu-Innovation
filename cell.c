@@ -105,21 +105,21 @@ void InitGrid() {
 }
 void InitMineraiGenerator() {
      CopperVein=(Filon) {
-        .max_number=5,
+        .max_number=15,
         .density=15,
         .texture =copperVeinTexture,
         .up_texture=copperTexture,
         .isSolid=true
     };
     IronVein=(Filon) {
-        .max_number=10,
+        .max_number=20,
         .density=10,
         .texture =ironVeinTexture,
         .up_texture=ironTexture,
         .isSolid=true
     };
     CoalVein=(Filon) {
-        .max_number=5,
+        .max_number=50,
         .density=20,
         .texture =coalVeinTexture,
         .up_texture=coalTexture,
@@ -133,15 +133,15 @@ void InitMineraiGenerator() {
         .isSolid=true
     };
     SandVein=(Filon) {
-        .max_number=15,
+        .max_number=100,
         .density=20,
         .texture =sandVeinTexture,
         .up_texture=sandVeinTexture,
         .isSolid=true
     };
     WaterVein=(Filon) {
-        .max_number=15,
-        .density=10,
+        .max_number=150,
+        .density=150,
         .texture =waterVeinTexture,
         .up_texture=waterVeinTexture,
         .isSolid=false

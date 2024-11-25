@@ -6,7 +6,7 @@
 
 #define COL 200
 #define ROW 200
-#define MAX_GENERATORS 100
+#define MAX_GENERATORS 200
 #define NB_FILON 7
 
 typedef struct Cell {

@@ -43,7 +43,7 @@ void InitTexture() {
     defaultTexture = LoadTexture("assets/default.png");
     drillTexture = LoadTexture("assets/drill.png");
     conveyorTexture= LoadTexture("assets/conveyor.png");
-    pipeTexture =LoadTexture("assets/conveyor.png");
+    pipeTexture =LoadTexture("assets/pipe.png");
     chestTexture = LoadTexture("assets/crate.png");
     furnaceTexture=LoadTexture("assets/furnace.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
