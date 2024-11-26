@@ -124,7 +124,7 @@ void DrawInventorySlot() {
             // Vérifier si la nouvelle position n'est pas la même que l'ancienne et qu'elle est valide
             if (NewindTexture != -1 && NewindTexture != indTexture) {
                 // Si la case contient déjà un objet du même type (même texture), additionner les quantités
-                if (strcmp(inventory[NewindTexture].name, inventory[indTexture].name ) ==0) {
+                if (inventory[NewindTexture].texture.id == inventory[indTexture].texture.id) {
                     inventory[NewindTexture].quantity += inventory[indTexture].quantity;
                     inventory[indTexture] = (Item) {};  // Vider l'ancienne case
                     
