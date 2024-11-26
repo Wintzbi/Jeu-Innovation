@@ -30,8 +30,16 @@ void InitBaseCraft() {
     StructCraftInvent[3] = (Craft) {"Plaque cuivre",copperTexture, 2,1,{{ "Lingot Acier",copperLingotTexture, 2 }}};
     
     MecaCraftInvent[0] = (Craft) {"Engrenage",ironTexture, 2,1,{{ "Plaque Acier",ironLingotTexture, 1 }}};
+    MecaCraftInvent[1] = (Craft) {"Tuyau",pipeTexture, 2,2,{{ "Lingot Cuivre",copperLingotTexture, 1 },{ "Plaque cuivre",copperLingotTexture, 1 }}};
 
-    ProdCraftInvent[0] = (Craft) {"Foreuse",drillTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+
+    ProdCraftInvent[0] = (Craft) {"Tapis",conveyorTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+    ProdCraftInvent[1] = (Craft) {"Foreuse",drillTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+    ProdCraftInvent[2] = (Craft) {"Furnace",furnaceTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+    ProdCraftInvent[3] = (Craft) {"Centrale Vapeur",steamcentralTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+    ProdCraftInvent[3] = (Craft) {"Coffre",chestTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+    ProdCraftInvent[4] = (Craft) {"Batterie",batteryTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};
+
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
@@ -150,7 +158,7 @@ void DrawCraftItem(CraftMenu OldMenu){
 
     DrawText(TextFormat("%s",currentInventory[CraftSelectedItem].name), 400, 180, 30, DARKGRAY);
     Vector2 pos = { 400, 200 };
-    DrawTextureEx(currentInventory[CraftSelectedItem].texture, pos,  0.0f,  8.0f, WHITE);
+    DrawTextureEx(currentInventory[CraftSelectedItem].texture, pos,  0.0f,  4.0f, WHITE);
 
     for (int i =0;i<currentInventory[CraftSelectedItem].ComponentCount;i++)
     {
@@ -166,7 +174,7 @@ void DrawCraftItem(CraftMenu OldMenu){
         }
         DrawText(TextFormat("%d %s",currentInventory[CraftSelectedItem].components[i].quantity,currentInventory[CraftSelectedItem].components[i].name), screenWidth-200, 210+70*i, 15, WHITE);
         Vector2 pos = { screenWidth-100, 200+70*i};
-        DrawTextureEx(currentInventory[CraftSelectedItem].components[i].texture, pos,  0.0f,  3.0f, WHITE);
+        DrawTextureEx(currentInventory[CraftSelectedItem].components[i].texture, pos,  0.0f,  2.0f, WHITE);
 
     }
 
