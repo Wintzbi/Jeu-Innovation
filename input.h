@@ -2,6 +2,7 @@
 #define INPUT_H
 #include "raylib.h"
 #include "stat.h"
+#include "craft.h"
 #include <string.h>
 #include "texture.h"
 #include <stdio.h>
@@ -84,6 +85,7 @@ void Update_Conv();
 extern int conveyor_dir;
 
 int AddInInvent(int q,Texture2D texture);
+const char* FindName(Texture2D textureRef);
 extern int directions[4][2] ;
 void RemoveConveyor(int posX, int posY);
 int IsEnergieNear(int x,int y,int range);
