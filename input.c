@@ -575,7 +575,7 @@ void Update_Furnace() {
 
 void Update_Steam() {
     float currentTime = GetTime();
-    if (currentTime - lastSteamTime >= 5.0f) {
+    if (currentTime - lastSteamTime >= 40.0f) {
         for (int i = 0; i < numSteams; i++) {
             if (ListeSteam[i].placed && IndexIsValid(ListeSteam[i].i, ListeSteam[i].j)) {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
@@ -584,9 +584,9 @@ void Update_Steam() {
                             ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
                             ListeSteam[i].material_q--;      // Consomme une unité d'eau
                             ListeSteam[i].final_q += 4;      // Produit de l'énergie
-                            printf("Steam (%d, %d) : production. Énergie produite : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                            //printf("Steam (%d, %d) : production. Énergie produite : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
                         } else {
-                            printf("Steam (%d, %d) : réservoir plein. Énergie stockée : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                            //printf("Steam (%d, %d) : réservoir plein. Énergie stockée : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
                         }
                         if (ListeSteam[i].energy_q == 0) {
                             ListeSteam[i].energy_id = 0;
@@ -596,10 +596,10 @@ void Update_Steam() {
                         }
                     }
                 } else {
-                    printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
+                    //printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
                 }
             }
-            printf("DEBUG: Steam (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].energy_q, ListeSteam[i].material_q,ListeSteam[i].energy_id, ListeSteam[i].material_id);
+            //printf("DEBUG: Steam (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].energy_q, ListeSteam[i].material_q,ListeSteam[i].energy_id, ListeSteam[i].material_id);
         }
         lastSteamTime = currentTime;
     }
