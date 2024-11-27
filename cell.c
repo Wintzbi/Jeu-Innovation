@@ -56,7 +56,7 @@ void CellDraw(Cell cell) {
     Vector2 origin = { destRec.width / 2.0f, destRec.height / 2.0f };
 
     // Dessiner la texture principale
-    DrawTexturePro(cell.texture, sourceRec, destRec, origin, rotation, WHITE);
+    DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
 
     // Dessiner la texture "up" si elle est valide
     if (cell.up_texture.id != 0) {
