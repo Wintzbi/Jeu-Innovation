@@ -55,7 +55,7 @@ int main(void) {
             }
         }
 
-        if (IsKeyPressed(KEY_TAB)) {
+        if (IsKeyPressed(KEY_ESCAPE)) {
             isOptionOpen = !isOptionOpen;
             if (!isOptionOpen) {
                 currentScreen = GAME;
@@ -69,7 +69,9 @@ int main(void) {
                     currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
                 }
             }
-
+        if (IsKeyPressed(KEY_TAB)) {
+            selectedItem=(selectedItem+1)%10;
+        }
         if (isInventoryOpen) {
             currentScreen = INVENT;
             DrawInventoryPage();
