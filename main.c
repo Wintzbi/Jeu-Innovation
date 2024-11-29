@@ -105,9 +105,12 @@ int main(void) {
             Update_Furnace();
 
             Update_Steam();
-            
+
+            DrawMiniMap();
+
         }
         EndMode2D();
+
         if (currentScreen == GAME) {
         DrawInventoryBar();  // Dessiner la barre de l'inventaire
         }
