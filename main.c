@@ -107,6 +107,7 @@ int main(void) {
         EndMode2D();
         if (currentScreen == GAME) {
         DrawInventoryBar();  // Dessiner la barre de l'inventaire
+        miniMap(screenWidth, screenHeight);
         }
         EndDrawing();
     }
