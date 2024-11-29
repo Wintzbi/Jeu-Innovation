@@ -26,6 +26,7 @@ Texture2D furnaceTexture;
 Texture2D solarpanelTexture;
 Texture2D steamcentralTexture;
 Texture2D piloneTexture;
+Texture2D piloneEffectTexture;
 Texture2D batteryTexture;
 
 void InitTexture() {
@@ -53,7 +54,8 @@ void InitTexture() {
     purpleTexture = LoadTexture("assets/purple_texture.png");
     solarpanelTexture = LoadTexture("assets/purple_texture.png");
     steamcentralTexture = LoadTexture("assets/red_texture.png");
-    piloneTexture = LoadTexture("assets/blue_texture.png");
+    piloneTexture = LoadTexture("assets/coil.png");
+    piloneEffectTexture = LoadTexture("assets/coil_effect.png");
     batteryTexture = LoadTexture("assets/blue_texture.png");
 }
 
@@ -83,5 +85,7 @@ void UnloadAllTexture() {
     UnloadTexture(steamcentralTexture);
     UnloadTexture(piloneTexture);
     UnloadTexture(batteryTexture);
+    UnloadTexture(piloneEffectTexture);
+
 
 }

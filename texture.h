@@ -29,6 +29,7 @@ extern Texture2D solarpanelTexture;
 extern Texture2D steamcentralTexture;
 extern Texture2D piloneTexture;
 extern Texture2D batteryTexture;
+extern Texture2D piloneEffectTexture;
 void InitTexture();
 void UnloadAllTexture();
 

@@ -8,6 +8,7 @@
         "menu.h": "c",
         "texture.h": "c",
         "camera.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stdlib.h": "c"
     }
 }

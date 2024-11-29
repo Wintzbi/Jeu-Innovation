@@ -237,7 +237,7 @@ void Update_Conv() {
             if (ListeConveyor[k].texture.id==piloneTexture.id){
                 // pilone d'énergie
                 if(IsEnergieNear(ListeConveyor[k].i, ListeConveyor[k].j,3)){
-                    ListeConveyor[k].textureToMove = coalTexture;
+                    ListeConveyor[k].textureToMove = piloneEffectTexture;
                     ListeConveyor[k].placed=true;
                     grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture= ListeConveyor[k].textureToMove;
                 }
@@ -826,10 +826,18 @@ int IsEnergieNear(int x, int y,int range) {
                 // Vérifie si la texture correspond à un panneau solaire
                 if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) return 1;// source elec                
                 
-                else if(grid[nx][ny].up_texture.id==piloneTexture.id &&grid[nx][ny].move_texture.id !=0 ) {
-                    grid[nx][ny].move_texture=(Texture2D) {0};
-                    return 1;
+                else if (grid[nx][ny].up_texture.id == piloneTexture.id && grid[nx][ny].move_texture.id == piloneEffectTexture.id) {
+                    // Vérifie si la cellule source (x, y) est elle-même alimentée
+                    if (grid[x][y].move_texture.id == piloneEffectTexture.id) {
+                        // NE SUPPRIME PAS la move_texture de nx, ny si elle est déjà alimentée
+                        return 1; // Pas besoin de faire d'autres modifications
                     }
+
+                    // Si la cellule source n'est pas alimentée, supprimer l'effet de la cellule cible
+                    grid[nx][ny].move_texture = (Texture2D){0};
+                    return 1;
+                }
+
                 else if(FindNearestSteam(nx, ny)) return 1;
                 else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
                 
