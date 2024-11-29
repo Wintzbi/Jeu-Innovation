@@ -182,6 +182,7 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
                 grid[i][j].dir[0] = directions[conveyor_dir][0];
                 grid[i][j].dir[1] = directions[conveyor_dir][1];
                 ListeConveyor[k] = (Conveyor){.i = i, .j = j,.texture=pipeTexture, .dir = { directions[conveyor_dir][0], directions[conveyor_dir][1] }, .placed = true,.inMouvement = false, .textureToMove=(Texture2D){0} };
+                grid[i][j].moveable = false;
                 break;
             }
         }
@@ -242,7 +243,9 @@ void Update_Conv() {
                 }
                 
             }
-            else Convey(&ListeConveyor[k]);
+            else {
+                Convey(&ListeConveyor[k]);
+            } 
         }
     }
 }
@@ -258,6 +261,7 @@ void UpdateBattery(){
 }
 }
 void Convey(Conveyor *conv) {
+    
     int srcI = conv->i - conv->dir[0];  // Calcul de la case source
     int srcJ = conv->j - conv->dir[1];  // Calcul de la case source
     int destI = conv->i + conv->dir[0]; // Calcul de la case destination
@@ -286,7 +290,7 @@ void Convey(Conveyor *conv) {
                     if (ListeForeuse[k].q>0){
                         Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
                         Texture2D mined_texture =(Texture2D){0};
-                        if(conv->texture.id == conveyorTexture.id){ //solid
+                        if(conv->texture.id == conveyorTexture.id && grid[srcI][srcJ].isSolid){ //solid
                             if (under_texture.id == copperVeinTexture.id) {
                                 mined_texture = copperTexture;
                             }
@@ -297,7 +301,7 @@ void Convey(Conveyor *conv) {
                                 mined_texture = coalTexture;
                             } 
                         }
-                        else if(conv->texture.id == pipeTexture.id){ //liquide
+                        else if(conv->texture.id == pipeTexture.id ){ //liquide
                             if (under_texture.id == waterVeinTexture.id) {
                                 mined_texture = waterVeinTexture;
                             }
@@ -534,6 +538,7 @@ void RemoveOil(int posX, int posY) {
             }
             numOils--;
             return;
+            grid[posX][posY].moveable = true;
         }
     }
 }
@@ -544,6 +549,7 @@ void RemoveConveyor(int posX, int posY){
             for (int j = i; j < MAX_CONVEYOR - 1; j++) {
                 ListeConveyor[j] = ListeConveyor[j + 1];
             }
+            grid[posX][posY].moveable = true;
             return;
         }
     }
@@ -555,6 +561,7 @@ void RemoveBattery(int posX, int posY){
             for (int j = i; j < MAX_BATTERY - 1; j++) {
                 ListeBattery[j] = ListeBattery[j + 1];
             }
+            grid[posX][posY].moveable = true;
             return;
         }
     }

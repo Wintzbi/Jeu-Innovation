@@ -72,6 +72,7 @@ int main(void) {
         if (IsKeyPressed(KEY_TAB)) {
             selectedItem=(selectedItem+1)%10;
         }
+        
         if (isInventoryOpen) {
             currentScreen = INVENT;
             DrawInventoryPage();

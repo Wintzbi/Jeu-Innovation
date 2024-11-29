@@ -90,6 +90,7 @@ typedef struct Conveyor {
     int j;
     int dir[2];
     bool placed;
+    bool power;
     Texture2D texture;
     bool inMouvement;    // Indique si un objet est en mouvement sur ce convoyeur
     Texture2D textureToMove;

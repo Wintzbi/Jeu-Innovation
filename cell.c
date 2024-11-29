@@ -137,14 +137,14 @@ void InitMineraiGenerator() {
         .max_number=150,
         .density=150,
         .texture =waterVeinTexture,
-        .up_texture=waterVeinTexture,
+        .up_texture=(Texture){0},
         .isSolid=false
     };
     OilVein=(Filon) {
         .max_number=15,
         .density=20,
         .texture =oilVeinTexture,
-        .up_texture=oilVeinTexture,
+        .up_texture=(Texture){0},
         .isSolid=false
     };
     ListeFilon[0]= CopperVein;
@@ -201,18 +201,16 @@ void MineraiGenerator() {
                 {
                     // Placer le minerai
                     grid[newI][newJ].texture = generators[k].texture; // Utiliser la texture du générateur
-                    grid[newI][newJ].placed = true; // Marquer la cellule comme occupée
-                    //marque la case comme liquide
+                    //marque la case comme liquide ou non
                     grid[newI][newJ].isSolid = generators[k].isSolid;
                     mineralsPlaced++;
                     if(rand()%6 >2) {
                         grid[newI][newJ].up_texture = generators[k].up_texture;
-                        grid[newI][newJ].placed=true;
                     }
                     else {
                         grid[newI][newJ].up_texture = (Texture2D){0};
-                        grid[newI][newJ].placed=false;
                         }
+                    if(grid[newI][newJ].up_texture.id != 0)grid[newI][newJ].placed=true;
     
                 }
                 dirIndex = rand() % 4 ;
