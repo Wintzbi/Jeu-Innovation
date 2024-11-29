@@ -22,6 +22,10 @@ Steam ListeSteam[MAX_STEAM];
 int numSteams = 0;  // Compteur de foreuses
 float lastSteamTime;
 
+Oil ListeOil[MAX_OIL];
+int numOils = 0;  // Compteur de foreuses
+float lastOilTime;
+
 
 Battery ListeBattery[MAX_BATTERY];
 
@@ -215,6 +219,11 @@ void ActionWithName(char ObjectName[20], int i, int j,int option) {
     } else if (strcmp(ObjectName, "Centrale Vapeur") == 0) {
         if (numSteams < MAX_STEAM) {
             ListeSteam[numSteams++] = (Steam){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_q = 0, .placed = true};
+            grid[i][j].moveable = false;
+        }
+    } else if (strcmp(ObjectName, "Centrale Pétrole") == 0) {
+        if (numOils < MAX_OIL) {
+            ListeOil[numOils++] = (Oil){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_q = 0, .placed = true};
             grid[i][j].moveable = false;
         }
     } 
@@ -472,6 +481,15 @@ bool isSteam(int posX, int posY) {
     return false;
 }
 
+bool isOil(int posX, int posY) {
+    for (int i = 0; i < numOils; i++) {
+        if (ListeOil[i].i == posX && ListeOil[i].j == posY) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void RemoveForeuse(int posX, int posY) {
     for (int i = 0; i < numForeuses; i++) {
         if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
@@ -503,6 +521,18 @@ void RemoveSteam(int posX, int posY) {
                 ListeSteam[j] = ListeSteam[j + 1];
             }
             numSteams--;
+            return;
+        }
+    }
+}
+
+void RemoveOil(int posX, int posY) {
+    for (int i = 0; i < numOils; i++) {
+        if (ListeOil[i].i == posX && ListeOil[i].j == posY) {
+            for (int j = i; j < numOils - 1; j++) {
+                ListeOil[j] = ListeOil[j + 1];
+            }
+            numOils--;
             return;
         }
     }
@@ -605,6 +635,37 @@ void Update_Steam() {
     }
 }
 
+void Update_Oil() {
+    float currentTime = GetTime();
+    if (currentTime - lastOilTime >= 40.0f) {
+        for (int i = 0; i < numOils; i++) {
+            if (ListeOil[i].placed && IndexIsValid(ListeOil[i].i, ListeOil[i].j)) {
+                if (ListeOil[i].energy_q > 0 && ListeOil[i].material_q > 0) {
+                    if (ListeOil[i].material_id == waterVeinTexture.id) {
+                        if (ListeSteam[i].final_q < 50) {
+                            ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
+                            ListeSteam[i].material_q--;      // Consomme une unité d'eau
+                            ListeSteam[i].final_q += 8;      // Produit de l'énergie
+                            //printf("Steam (%d, %d) : production. Énergie produite : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                        } else {
+                            //printf("Steam (%d, %d) : réservoir plein. Énergie stockée : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                        }
+                        if (ListeOil[i].energy_q == 0) {
+                            ListeOil[i].energy_id = 0;
+                        }
+                        if (ListeOil[i].material_q == 0) {
+                            ListeOil[i].material_id = 0;
+                        }
+                    }
+                } else {
+                    //printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
+                }
+            }
+            //printf("DEBUG: Steam (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].energy_q, ListeSteam[i].material_q,ListeSteam[i].energy_id, ListeSteam[i].material_id);
+        }
+        lastOilTime = currentTime;
+    }
+}
 
 
 int AddInInvent(int q, Texture2D texture) {
@@ -703,9 +764,28 @@ void interraction(int posX, int posY) {
                 }
             }
         }
+    } else if (isOil(posX, posY)) {
+        // Interaction avec un générateur de vapeur
+        for (int i = 0; i < numOils; i++) {
+            if (ListeOil[i].i == posX && ListeOil[i].j == posY) {
+                // Ajout de charbon dans le générateur
+                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == oilVeinTexture.id) {
+                    inventory[selectedItem].quantity--;
+                    ListeSteam[i].energy_q++;
+                    ListeSteam[i].energy_id = oilVeinTexture.id;
+                }
+                // Ajout de l'eau dans le générateur
+                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == waterVeinTexture.id) {
+                    if (ListeSteam[i].material_id == 0 || ListeSteam[i].material_id == waterVeinTexture.id) {
+                        inventory[selectedItem].quantity--;
+                        ListeSteam[i].material_q++;
+                        ListeSteam[i].material_id = waterVeinTexture.id;
+                    }
+                }
+            }
+        }
     }
 }
-
 
 int IsEnergieNear(int x, int y,int range) {
     for (int i = -1*range; i <= 1*range; i++) {

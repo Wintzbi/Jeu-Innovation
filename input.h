@@ -16,6 +16,7 @@ void rightClic();
 #define MAX_FOREUSE 100
 #define MAX_FURNACE 100
 #define MAX_STEAM 100
+#define MAX_OIL 100
 
 typedef struct Foreuse {
     int i;
@@ -50,6 +51,18 @@ typedef struct Steam {
     Texture2D texture;
 } Steam;
 
+typedef struct Oil {
+    int i;
+    int j;
+    bool placed;
+    int energy_q;
+    int energy_id;
+    int material_q;
+    int material_id;
+    int final_q;
+    Texture2D texture;
+} Oil;
+
 extern Foreuse ListeForeuse[MAX_FOREUSE];
 extern int numForeuses;  // Compteur de foreuses
 void Update_Foreuse();
@@ -63,6 +76,10 @@ extern Steam ListeSteam[MAX_STEAM];
 extern int numSteams;  // Compteur de foreuses
 void Update_Steam();
 int FindNearestSteam(int x,int y);
+
+extern Oil ListeOil[MAX_OIL];
+extern int numOils;  // Compteur de foreuses
+void Update_Oil();
 
 #define MAX_CONVEYOR 400
 
