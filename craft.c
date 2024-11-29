@@ -22,15 +22,17 @@ void InitBaseCraft() {
     BaseCraftInvent[0] = (Craft) {"Lingot Cuivre",copperLingotTexture, 2,2,{{ "Cuivre",copperTexture, 2 },{ "Charbon",coalTexture, 2 }}};
     BaseCraftInvent[1] = (Craft) {"Lingot Fer",ironLingotTexture, 2,2,{{ "Fer",ironTexture, 2 },{ "Charbon",coalTexture, 2 }}};
     BaseCraftInvent[2] = (Craft) {"Lingot Acier",ironLingotTexture, 2,2,{{ "Lingot Fer",ironLingotTexture, 1 },{ "Charbon",coalTexture, 2 }}};
-
+    
 
     StructCraftInvent[0] = (Craft) {"Barre Acier",ironTexture, 2,1,{{ "Lingot Acier",ironLingotTexture, 2 }}};
     StructCraftInvent[1] = (Craft) {"Plaque Acier",ironTexture, 2,1,{{ "Lingot Acier",ironLingotTexture, 2 }}};
     StructCraftInvent[2] = (Craft) {"Barre cuivre",copperTexture, 2,1,{{ "Lingot Acier",copperLingotTexture, 2 }}};
     StructCraftInvent[3] = (Craft) {"Plaque cuivre",copperTexture, 2,1,{{ "Lingot Acier",copperLingotTexture, 2 }}};
     
+    
     MecaCraftInvent[0] = (Craft) {"Engrenage",ironTexture, 2,1,{{ "Plaque Acier",ironLingotTexture, 1 }}};
-    MecaCraftInvent[1] = (Craft) {"Tuyau",pipeTexture, 2,2,{{ "Lingot Cuivre",copperLingotTexture, 1 },{ "Plaque cuivre",copperLingotTexture, 1 }}};
+    MecaCraftInvent[1] = (Craft) {"Tuyau",pipeTexture, 2,2,{{ "Barre cuivre",copperLingotTexture, 1 },{ "Plaque cuivre",copperLingotTexture, 1 }}};
+    MecaCraftInvent[2] = (Craft) {"cable",pipeTexture, 2,1,{{ "Barre cuivre",copperLingotTexture, 1 }}};
 
 
     ProdCraftInvent[0] = (Craft) {"Tapis",conveyorTexture, 2,3,{{ "Plaque Acier",ironLingotTexture, 1 },{ "Barre cuivre",ironLingotTexture, 1 },{ "Engrenage",ironLingotTexture, 1 }}};

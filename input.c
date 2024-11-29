@@ -679,12 +679,35 @@ int AddInInvent(int q, Texture2D texture) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (inventory[i].quantity == 0) {
             inventory[i].quantity = q;
-            inventory[i].texture =texture;
-            return 0;
+            inventory[i].texture = texture;
+
+            const char* name = FindName(texture);
+            printf("Nom associé : %s",name);
+            if (name != NULL) {
+                strncpy(inventory[i].name, name, sizeof(inventory[i].name) - 1);
+                inventory[i].name[sizeof(inventory[i].name) - 1] = '\0'; // Ensure null-termination
+            } else {
+                inventory[i].name[0] = '\0'; // Handle missing name
+            }
+            return 0; // Success
         }
     }
     return -1;
 }
+
+const char* FindName(Texture2D textureRef)
+{
+    for (int k=0;k< MaxBaseCraft;k++){
+        if(BaseCraftInvent[k].texture.id==textureRef.id) return BaseCraftInvent[k].name;
+        if(StructCraftInvent[k].texture.id==textureRef.id) return StructCraftInvent[k].name;
+        if(MecaCraftInvent[k].texture.id==textureRef.id) return MecaCraftInvent[k].name;
+        if(ProdCraftInvent[k].texture.id==textureRef.id) return ProdCraftInvent[k].name;
+
+    }
+
+    return " ";
+}
+
 
 void interraction(int posX, int posY) {
     if (isForeuse(posX, posY)) {
