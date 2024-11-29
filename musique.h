@@ -32,4 +32,6 @@ void MusicButton();
 void RandomInt() ;
 void DrawStat();
 
+extern bool shouldClose;
+
 #endif

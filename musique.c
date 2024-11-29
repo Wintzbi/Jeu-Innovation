@@ -8,6 +8,7 @@ bool currentChange = false;
 bool MusicPlay=true;
 bool MusicLoop=false;
 bool MusicShuffle=false;
+bool shouldClose=false;
 
 
 void DrawEscapePage(){
@@ -85,7 +86,7 @@ void DrawMusic(){
     DrawRectangle((screenWidth/2)-400, 80, 800, 60, DARKGRAY);
     DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
 }
-Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton;
+Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton,CloseButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
@@ -94,6 +95,7 @@ void MusicButton() {
     MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
     MusicNextButton = (Rectangle) {(screenWidth/2)+100, 150, 100, 50 };
     MusicShuffleButton = (Rectangle) {(screenWidth/2)+250, 150, 100, 50 };
+    CloseButton=(Rectangle) {(screenWidth/2)-100, 560, 200, 50 };
 }
 void DrawMusicMenu() {
     DrawStat();
@@ -190,6 +192,20 @@ if (CheckCollisionPointRec(GetMousePosition(), MusicPlayButton)) {
 
     if (MusicLoop) DrawText(TextFormat("Loop "), MusicLoopButton.x+10, 150, 20, BLUE);
     else DrawText(TextFormat("Loop "), MusicLoopButton.x+10, 150, 20, WHITE);
+
+    if (CheckCollisionPointRec(GetMousePosition(),CloseButton )) {
+        DrawRectangleRec(CloseButton, LIGHTGRAY);  // Couleur survolée
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ) {
+            shouldClose=true;
+            }
+        
+        } 
+    else {
+        DrawRectangleRec(CloseButton, GRAY);  // Couleur normale
+    }
+
+DrawText(TextFormat("/!\\QUIT AND KILL"), CloseButton.x + 10, CloseButton.y + (CloseButton.height / 2) - 10, 19, WHITE);
+
 }
 
 void RandomInt() {
