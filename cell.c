@@ -27,9 +27,9 @@ Generator MineraiSandGenerator;
 
 int GetDirectionAngle(int direction[2]) {
     if (direction[0] == 1 && direction[1] == 0) return 0;   // Droite
-    if (direction[0] == 0 && direction[1] == -1) return 270; // Bas
+    if (direction[0] == 0 && direction[1] == -1) return 90; // Bas
     if (direction[0] == -1 && direction[1] == 0) return 180; // Gauche
-    if (direction[0] == 0 && direction[1] == 1) return 90;    // Haut
+    if (direction[0] == 0 && direction[1] == 1) return 270;    // Haut
     return 0; // Erreur si la direction ne correspond pas
 }
 void CellDraw(Cell cell) {
