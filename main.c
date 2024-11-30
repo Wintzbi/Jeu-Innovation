@@ -1,5 +1,18 @@
 #include "global.h"
-
+GameScreen currentScreen = MENU;
+bool isInventoryScreenOpen = false;
+bool isOptionScreenOpen = false;
+bool isCraftScreenOpen=false;
+bool isMapScreenOpen=false;
+void CurrentScreenFix(){
+    if(currentScreen == GAME)
+    {
+        isInventoryScreenOpen = false;
+        isOptionScreenOpen = false;
+        isCraftScreenOpen=false;
+        isMapScreenOpen=false;
+        }
+}
 int main(void) {
 
     InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");   // Initialisation de la fenêtre
@@ -14,10 +27,7 @@ int main(void) {
 
     setPlayerCamera();
 
-    GameScreen currentScreen = MENU;
-    bool isInventoryOpen = false;
-    bool isOptionOpen = false;
-    bool isCraftOpen=false;
+    
 
     ButtonPlay();  // Initialiser le bouton Play
 
@@ -46,49 +56,63 @@ int main(void) {
 
         if (currentScreen == MENU) {
             DrawMenu(&currentScreen);
+            
         }
 
         if (IsKeyPressed(KEY_E)) {
-            isInventoryOpen = !isInventoryOpen;
-            if (!isInventoryOpen) {
-                currentScreen = GAME;
+            isInventoryScreenOpen = !isInventoryScreenOpen;
+            if (isInventoryScreenOpen) {
+                currentScreen = INVENT;
             }
+            else currentScreen = GAME;
         }
 
-        if (IsKeyPressed(KEY_ESCAPE)) {
-            isOptionOpen = !isOptionOpen;
-            if (!isOptionOpen) {
-                currentScreen = GAME;
+
+        if (IsKeyPressed(KEY_F)) {
+                isMapScreenOpen = !isMapScreenOpen;  
+                if (!isMapScreenOpen) {
+                    currentScreen = MAP;  // Revenir à l'état GAME si l'inventaire est fermé
+                }
+                else currentScreen = GAME;
             }
+
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            isOptionScreenOpen = !isOptionScreenOpen;
+            if (isOptionScreenOpen) {
+                currentScreen = OPTION;
+            }
+            else currentScreen = GAME;
         }
 
         if (IsKeyPressed(KEY_C)) {
-                isCraftOpen = !isCraftOpen;  // Ouvrir/fermer l'inventaire avec la touche E
+                isCraftScreenOpen = !isCraftScreenOpen;  // Ouvrir/fermer l'inventaire avec la touche E
 
-                if (!isCraftOpen) {
-                    currentScreen = GAME;  // Revenir à l'état GAME si l'inventaire est fermé
+                if (isCraftScreenOpen) {
+                    currentScreen = CRAFT;  // Revenir à l'état GAME si l'inventaire est fermé
                 }
+                else currentScreen = GAME;
             }
         if (IsKeyPressed(KEY_TAB)) {
             selectedItem=(selectedItem+1)%10;
         }
         
-        if (isInventoryOpen) {
-            currentScreen = INVENT;
+        if (currentScreen == INVENT) {
             DrawInventoryPage();
-        } else if (isOptionOpen) {
-            currentScreen = OPTION;
+        } else if (currentScreen ==OPTION) {
             DrawEscapePage();
         } 
 
-        else if (isCraftOpen) {
-            currentScreen = CRAFT;  // Passer à l'état ESCAPE si l'inventaire est ouvert
+        else if (currentScreen == CRAFT) {
             DrawCraftPage();
+        }
+        else if (currentScreen == MAP) {
+            DrawMap();
         }
 
         BeginMode2D(camera); 
 
         if (currentScreen == GAME) {
+            CurrentScreenFix();
             GridDraw();  // Dessiner la grille de jeu
             
 
