@@ -70,7 +70,7 @@ int main(void) {
 
         if (IsKeyPressed(KEY_F)) {
                 isMapScreenOpen = !isMapScreenOpen;  
-                if (!isMapScreenOpen) {
+                if (isMapScreenOpen) {
                     currentScreen = MAP;  // Revenir à l'état GAME si l'inventaire est fermé
                 }
                 else currentScreen = GAME;

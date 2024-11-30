@@ -60,6 +60,14 @@ void DrawMap(){
             Vector2 origin = { destRec.width / 2.0f, destRec.height / 2.0f };
 
             DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+            if (cell.up_texture.id != 0) {
+                DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, rotation, WHITE);
+            }
+
+            // Dessiner la texture en mouvement si elle est valide
+            if (cell.move_texture.id != 0) {
+                DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, rotation, WHITE);
+            }
         }
         
     }
