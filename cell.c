@@ -33,8 +33,7 @@ int GetDirectionAngle(int direction[2]) {
     return 0; // Erreur si la direction ne correspond pas
 }
 void DrawMap(){
-    DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
-    DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, WHITE);
+    
     for(int r=0;r<ROW;r++){
         for (int c = 0; c < COL; c++)
         {
@@ -71,6 +70,10 @@ void DrawMap(){
         }
         
     }
+    DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
+    DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, WHITE);
+    DrawRectangleLines(camera.target.x-120, camera.target.y-80, screenWidth/camera.zoom, screenHeight/camera.zoom, RED);
+
     
 
 }
@@ -286,16 +289,11 @@ void GridDraw() {
     endX = endX >= COL ? COL - 1 : endX;
     endY = endY >= ROW ? ROW - 1 : endY;
 
-    // // Dessiner uniquement les cases visibles
-    // for (int i = startX; i <= endX; i++) {
-    //     for (int j = startY; j <= endY; j++) {
-    //         CellDraw(grid[i][j]);
-    //     }
-    // }
     // Dessiner uniquement les cases visibles
-    for (int i = startX; i <= endX*2; i++) {
-        for (int j = startY; j <= endY*2; j++) {
+    for (int i = startX; i <= endX; i++) {
+        for (int j = startY; j <= endY; j++) {
             CellDraw(grid[i][j]);
         }
     }
+    
 }
