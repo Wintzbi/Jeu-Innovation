@@ -43,8 +43,17 @@ void mouseDefault() {
     int posX = (int)(worldPos.x / cellSize);
     int posY = (int)(worldPos.y / cellSize);
 
-    DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
+    if (inventory[selectedItem].texture.id != 0 && inventory[selectedItem].texture.id >= MinPlaceableID) {
+        Rectangle destRect = { posX * cellSize + cellSize / 2, posY * cellSize + cellSize / 2, cellSize, cellSize };
+        Rectangle srcRect = { 0, 0, inventory[selectedItem].texture.width, inventory[selectedItem].texture.height };
+        Vector2 origin = { cellSize / 2, cellSize / 2 };
+
+        DrawTexturePro(inventory[selectedItem].texture, srcRect, destRect, origin, 0.0f, Fade(WHITE, 0.3f));
+    }
+    else DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
 }
+    
+
 
 void InitInventoryKeyBiding() {
     if (IsKeyPressed(KEY_ONE)) selectedItem = 0;
@@ -162,7 +171,7 @@ void leftClic() {
 }
 void UpdateDir(){
     conveyor_dir = (conveyor_dir + 1) % 4;
-    printf("changement de direction, option : %d\n",conveyor_dir);
+    printf("changement de direction, option : %d\n", conveyor_dir);
 }
 
 void ActionWithName(char ObjectName[20], int i, int j,int option) {
