@@ -85,14 +85,12 @@ void DrawMiniMap() {
     int miniMapX = screenWidth - miniMapWidth - 5;
     int miniMapY = screenHeight - miniMapHeight - 10;
 
-    // Dessine la vue de la mini-carte
-
     BeginScissorMode(miniMapX, miniMapY, miniMapWidth, miniMapHeight);
     BeginMode2D(miniMapCamera);
-    GridDraw();  // Dessiner la grille de jeu
+    GridDraw();
     EndMode2D();
     EndScissorMode();
-
-    // Dessiner un cadre autour de la mini-carte
     DrawRectangleLines(miniMapX, miniMapY, miniMapWidth, miniMapHeight, BLACK);
+
+  
 }
