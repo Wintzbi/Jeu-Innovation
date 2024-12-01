@@ -17,5 +17,9 @@
 #include <time.h>
 
 Cell grid[ROW][COL];
-
+extern GameScreen currentScreen ;
+extern bool isInventoryScreenOpen;
+extern bool isOptionScreenOpen;
+extern bool isCraftScreenOpen;
+extern bool isMapScreenOpen;
 #endif

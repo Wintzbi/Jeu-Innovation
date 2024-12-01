@@ -32,6 +32,51 @@ int GetDirectionAngle(int direction[2]) {
     if (direction[0] == 0 && direction[1] == 1) return 270;    // Haut
     return 0; // Erreur si la direction ne correspond pas
 }
+void DrawMap(){
+    
+    for(int r=0;r<ROW;r++){
+        for (int c = 0; c < COL; c++)
+        {
+            Cell cell=grid[r][c];
+            float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
+            Texture2D RefTexture = chestTexture; // Définir la texture de référence
+            // Calcul de l'échelle pour adapter la texture à la taille de la cellule
+            float scaleX = (float)cellSize*1.0 / RefTexture.width;
+            float scaleY = (float)cellSize*1.0 / RefTexture.height;
+            float scale = (scaleX < scaleY) ? scaleX : scaleY; // Garder les proportions
+
+            // Rectangle de destination : position centrée dans la cellule
+            Rectangle destRec = { 
+                cell.i * cellSize + cellSize / 2.0f, // Centre de la cellule en X
+                cell.j * cellSize + cellSize / 2.0f, // Centre de la cellule en Y
+                RefTexture.width * scale,           // Largeur ajustée avec l'échelle
+                RefTexture.height * scale           // Hauteur ajustée avec l'échelle
+            };
+            // Rectangle source de la texture (portion de la texture à dessiner)
+            Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
+
+            // Origine pour la rotation (centre du rectangle de destination)
+            Vector2 origin = { destRec.width / 2.0f, destRec.height / 2.0f };
+
+            DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+            if (cell.up_texture.id != 0) {
+                DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, rotation, WHITE);
+            }
+
+            // Dessiner la texture en mouvement si elle est valide
+            if (cell.move_texture.id != 0) {
+                DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, rotation, WHITE);
+            }
+        }
+        
+    }
+    DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
+    DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, WHITE);
+    DrawRectangleLines(camera.target.x-120, camera.target.y-80, screenWidth/camera.zoom, screenHeight/camera.zoom, RED);
+
+    
+
+}
 void CellDraw(Cell cell) {
     float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
     Texture2D RefTexture = chestTexture; // Définir la texture de référence
@@ -48,6 +93,7 @@ void CellDraw(Cell cell) {
         RefTexture.width * scale,           // Largeur ajustée avec l'échelle
         RefTexture.height * scale           // Hauteur ajustée avec l'échelle
     };
+
 
     // Rectangle source de la texture (portion de la texture à dessiner)
     Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
@@ -67,10 +113,11 @@ void CellDraw(Cell cell) {
     if (cell.move_texture.id != 0) {
         DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, rotation, WHITE);
     }
-
+    //DrawMiniMapVersion(cell);
     // Dessiner les contours de la cellule
    // DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
 }
+
 
 // Fonction pour vérifier si les indices de la grille sont valides
 bool IndexIsValid(int i, int j) {
@@ -248,4 +295,5 @@ void GridDraw() {
             CellDraw(grid[i][j]);
         }
     }
+    
 }

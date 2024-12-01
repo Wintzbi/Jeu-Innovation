@@ -56,5 +56,8 @@ void GridDraw();
 void InitMineraiGenerator();
 void MineraiGenerator();
 int GetDirectionAngle(int direction[2]);
+void DrawMap();
+
+
 
 #endif
