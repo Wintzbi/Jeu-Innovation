@@ -51,10 +51,10 @@ void InitTexture() {
 
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
     ironLingotTexture = LoadTexture("assets/iron_lingot.png");
-    copperPlateTexture =LoadTexture("assets/iron_lingot.png");
-    copperRodTexture =LoadTexture("assets/iron_lingot.png");
-    ironPlateTexture =LoadTexture("assets/iron_lingot.png");
-    ironRodTexture =LoadTexture("assets/iron_lingot.png");
+    copperPlateTexture =LoadTexture("assets/plaque_texture.png");
+    copperRodTexture =LoadTexture("assets/barre_texture.png");
+    ironPlateTexture =LoadTexture("assets/plaque_texture.png");
+    ironRodTexture =LoadTexture("assets/barre_texture.png");
 
 
 
@@ -72,8 +72,8 @@ void InitTexture() {
     piloneTexture = LoadTexture("assets/coil.png");
     piloneEffectTexture = LoadTexture("assets/coil_effect.png");
     batteryTexture = LoadTexture("assets/blue_texture.png");
-    pressTexture = LoadTexture("assets/furnace.png");
-    stretchTexture = LoadTexture("assets/furnace.png");
+    pressTexture = LoadTexture("assets/presse_hydrau_texture.png");
+    stretchTexture = LoadTexture("assets/etireuse_texture.png");
 }
 
 void UnloadAllTexture() {

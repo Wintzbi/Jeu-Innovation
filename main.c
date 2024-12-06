@@ -129,6 +129,8 @@ int main(void) {
             Update_Furnace();
 
             Update_Steam();
+            Update_Hydraulic();
+            Update_Ettireuse();
 
             DrawMiniMap();
 
