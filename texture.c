@@ -42,7 +42,7 @@ void InitTexture() {
     copperTexture = LoadTexture("assets/copper_item.png");
     ironTexture = LoadTexture("assets/iron_item.png");
     coalTexture = LoadTexture("assets/coal_item.png");
-    coalVeinTexture =LoadTexture("assets/coal_vein.png");
+    coalVeinTexture =LoadTexture("assets/coalVeinTexture.png");
     rockVeinTexture=LoadTexture("assets/rockVeinTexture.png");
     rockTexture=LoadTexture("assets/rock_item.png");
     sandVeinTexture =LoadTexture("assets/sand_texture.png");
