@@ -16,6 +16,12 @@ Texture2D oilVeinTexture;
 
 Texture2D copperLingotTexture;
 Texture2D ironLingotTexture;
+Texture2D copperPlateTexture;
+Texture2D copperRodTexture;
+Texture2D ironPlateTexture;
+Texture2D ironRodTexture;
+
+
 Texture2D defaultTexture;
 Texture2D drillTexture;
 Texture2D purpleTexture;
@@ -28,6 +34,8 @@ Texture2D steamcentralTexture;
 Texture2D piloneTexture;
 Texture2D piloneEffectTexture;
 Texture2D batteryTexture;
+Texture2D pressTexture;
+Texture2D stretchTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -42,7 +50,14 @@ void InitTexture() {
     oilVeinTexture=LoadTexture("assets/purple_texture.png");
 
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
-    ironLingotTexture= LoadTexture("assets/iron_lingot.png");
+    ironLingotTexture = LoadTexture("assets/iron_lingot.png");
+    copperPlateTexture =LoadTexture("assets/iron_lingot.png");
+    copperRodTexture =LoadTexture("assets/iron_lingot.png");
+    ironPlateTexture =LoadTexture("assets/iron_lingot.png");
+    ironRodTexture =LoadTexture("assets/iron_lingot.png");
+
+
+
     copperVeinTexture= LoadTexture("assets/copperVeinTexture.png");
     ironVeinTexture= LoadTexture("assets/ironVeinTexture.png");
     defaultTexture = LoadTexture("assets/grass_texture.png");
@@ -57,6 +72,8 @@ void InitTexture() {
     piloneTexture = LoadTexture("assets/coil.png");
     piloneEffectTexture = LoadTexture("assets/coil_effect.png");
     batteryTexture = LoadTexture("assets/blue_texture.png");
+    pressTexture = LoadTexture("assets/furnace.png");
+    stretchTexture = LoadTexture("assets/furnace.png");
 }
 
 void UnloadAllTexture() {
@@ -70,8 +87,14 @@ void UnloadAllTexture() {
     UnloadTexture(sandVeinTexture);
     UnloadTexture(waterVeinTexture);
     UnloadTexture(oilVeinTexture);
+
     UnloadTexture(copperLingotTexture);
     UnloadTexture(ironLingotTexture);
+    UnloadTexture(copperPlateTexture);
+    UnloadTexture(copperRodTexture);
+    UnloadTexture(ironPlateTexture);
+    UnloadTexture(ironRodTexture);
+
     UnloadTexture(defaultTexture);
     UnloadTexture(copperVeinTexture);
     UnloadTexture(ironVeinTexture);
@@ -86,6 +109,8 @@ void UnloadAllTexture() {
     UnloadTexture(piloneTexture);
     UnloadTexture(batteryTexture);
     UnloadTexture(piloneEffectTexture);
+    UnloadTexture(pressTexture);
+    UnloadTexture(stretchTexture);
 
 
 }
