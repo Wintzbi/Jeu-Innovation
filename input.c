@@ -364,6 +364,56 @@ void Convey(Conveyor *conv) {
             }
     }
 
+
+else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
+        //Trouve la presse connecté
+            for (int k = 0; k < numHydraulics; k++) {
+                if (ListeHydraulic[k].i == srcI && ListeHydraulic[k].j == srcJ) {
+                    if (ListeHydraulic[k].final_q>0){
+                        int crafted_textureId = ListeHydraulic[k].final_id;
+                        Texture2D crafted_texture =(Texture2D){0};
+
+                        if (crafted_textureId == copperLingotTexture.id) {
+                            crafted_texture = copperLingotTexture;
+                        }
+                        else if (crafted_textureId == copperLingotTexture.id) {
+                            crafted_texture = copperLingotTexture;
+                        }
+                       
+                        conv->textureToMove = crafted_texture;
+                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+                        ListeHydraulic[k].final_q--;
+                    }
+                    
+                }
+            }
+    }
+    
+    else if(grid[srcI][srcJ].up_texture.id == stretchTexture.id ) {
+        //Trouve l'étireuse connecté
+            for (int k = 0; k < numEttireuses; k++) {
+                if (ListeEttireuse[k].i == srcI && ListeEttireuse[k].j == srcJ) {
+                    if (ListeEttireuse[k].final_q>0){
+                        int crafted_textureId = ListeEttireuse[k].final_id;
+                        Texture2D crafted_texture =(Texture2D){0};
+
+                        if (crafted_textureId == copperLingotTexture.id) {
+                            crafted_texture = copperLingotTexture;
+                        }
+                        else if (crafted_textureId == copperLingotTexture.id) {
+                            crafted_texture = copperLingotTexture;
+                        }
+                       
+                        conv->textureToMove = crafted_texture;
+                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
+                        ListeEttireuse[k].final_q--;
+                    }
+                    
+                }
+            }
+    }
+
+
     
     // Si en mouvement, vérifier la destination
     if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0  ) {
@@ -419,6 +469,46 @@ void Convey(Conveyor *conv) {
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         } 
+                }
+            }
+    }
+    //ajoute a la presse
+    else if (grid[destI][destJ].up_texture.id == pressTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+        for (int k = 0; k < numHydraulics; k++) {
+                if (ListeHydraulic[k].i == destI && ListeHydraulic[k].j == destJ) {
+                    //ajoute du matériau si il correspond
+                        if (ListeHydraulic[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
+                            ListeHydraulic[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }
+                        //si pas de matériaux on l'ajoute
+                        else if (ListeHydraulic[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
+                            ListeHydraulic[k].material_id = conv->textureToMove.id;
+                            ListeHydraulic[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }      
+                }
+            }
+    }
+    //ajoute à l'étireuse
+    else if (grid[destI][destJ].up_texture.id == stretchTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+        for (int k = 0; k < numEttireuses; k++) {
+                if (ListeEttireuse[k].i == destI && ListeEttireuse[k].j == destJ) {
+                    //ajoute du matériau si il correspond
+                        if (ListeEttireuse[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
+                            ListeEttireuse[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }
+                        //si pas de matériaux on l'ajoute
+                        else if (ListeEttireuse[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
+                            ListeEttireuse[k].material_id = conv->textureToMove.id;
+                            ListeEttireuse[k].material_q++;
+                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
+                            conv->textureToMove = (Texture2D){ 0 };
+                        }      
                 }
             }
     }
@@ -687,18 +777,18 @@ void Update_Hydraulic() {
                     ListeHydraulic[i].energy_q++; // source d'énergie pas loin
                 
                 if (ListeHydraulic[i].energy_q > 0 && ListeHydraulic[i].material_q > 0) {
-                    if (ListeHydraulic[i].material_id == copperTexture.id) {
+                    if (ListeHydraulic[i].material_id == ironLingotTexture.id) {
                         ListeHydraulic[i].energy_q--;        // Consomme une unité d'énergie
                         ListeHydraulic[i].material_q--;     // Consomme une unité de matériau
                         ListeHydraulic[i].final_q++;        // Produit une unité de lingot
-                        ListeHydraulic[i].final_id = copperLingotTexture.id;
+                        ListeHydraulic[i].final_id = ironPlateTexture.id;
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
-                    } else if (ListeHydraulic[i].material_id == ironTexture.id) {
+                    } else if (ListeHydraulic[i].material_id == copperLingotTexture.id) {
                         ListeHydraulic[i].energy_q--;
                         ListeHydraulic[i].material_q--;
                         ListeHydraulic[i].final_q++;
-                        ListeHydraulic[i].final_id = ironLingotTexture.id;
+                        ListeHydraulic[i].final_id = copperPlateTexture.id;
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
                     }
@@ -718,18 +808,18 @@ void Update_Ettireuse() {
                     ListeEttireuse[i].energy_q++; // source d'énergie pas loin
                 
                 if (ListeEttireuse[i].energy_q > 0 && ListeEttireuse[i].material_q > 0) {
-                    if (ListeEttireuse[i].material_id == copperTexture.id) {
+                    if (ListeEttireuse[i].material_id == ironLingotTexture.id) {
                         ListeEttireuse[i].energy_q--;        // Consomme une unité d'énergie
                         ListeEttireuse[i].material_q--;     // Consomme une unité de matériau
                         ListeEttireuse[i].final_q++;        // Produit une unité de lingot
-                        ListeEttireuse[i].final_id = copperLingotTexture.id;
+                        ListeEttireuse[i].final_id = ironRodTexture.id;
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
                         if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
                     } else if (ListeEttireuse[i].material_id == ironTexture.id) {
                         ListeEttireuse[i].energy_q--;
                         ListeEttireuse[i].material_q--;
                         ListeEttireuse[i].final_q++;
-                        ListeEttireuse[i].final_id = ironLingotTexture.id;
+                        ListeEttireuse[i].final_id = copperRodTexture.id;
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
                         if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
                     }

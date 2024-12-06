@@ -95,7 +95,5 @@ void DrawMiniMap() {
 
     // Dessiner un cadre autour de la mini-carte
 
-    DrawRectangleLines(miniMapX, miniMapY, miniMapWidth, miniMapHeight, BLACK);
-
   
 }
