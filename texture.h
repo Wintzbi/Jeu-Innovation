@@ -11,6 +11,7 @@ extern Texture2D coalTexture;
 extern Texture2D coalVeinTexture;
 extern Texture2D rockVeinTexture;
 extern Texture2D rockTexture;
+extern Texture2D steelTexture;
 
 extern Texture2D sandVeinTexture;
 extern Texture2D waterVeinTexture;

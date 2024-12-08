@@ -40,9 +40,9 @@ Battery ListeBattery[MAX_BATTERY];
 
 int directions[4][2] = {
     {1, 0},
-    {0, -1},
+    {0, 1},
     {-1, 0},
-    {0, 1} 
+    {0, -1} 
     };
 
 void mouseDefault() {
@@ -351,8 +351,8 @@ void Convey(Conveyor *conv) {
                         if (crafted_textureId == copperLingotTexture.id) {
                             crafted_texture = copperLingotTexture;
                         }
-                        else if (crafted_textureId == copperLingotTexture.id) {
-                            crafted_texture = copperLingotTexture;
+                        else if (crafted_textureId == ironLingotTexture.id) {
+                            crafted_texture = ironLingotTexture;
                         }
                        
                         conv->textureToMove = crafted_texture;
@@ -424,15 +424,14 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
         }
-
+    // Déposer l'objet au sol
     if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
-        // Déposer l'objet au sol
-        grid[destI][destJ].placed = true;
-        grid[destI][destJ].up_texture = conv->textureToMove;
-        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+        // grid[destI][destJ].placed = true;
+        // grid[destI][destJ].up_texture = conv->textureToMove;
+        // grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
 
-        // Réinitialiser l'objet et l'état du convoyeur
-        conv->textureToMove = (Texture2D){ 0 };
+        // // Réinitialiser l'objet et l'état du convoyeur
+        // conv->textureToMove = (Texture2D){ 0 };
     }
     else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed){
          conv->textureToMove=grid[srcI][srcJ].move_texture;
@@ -755,6 +754,20 @@ void Update_Furnace() {
                     } else if (ListeFurnace[i].material_id == ironTexture.id) {
                                 ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
                                 ListeFurnace[i].material_q--;      // Consomme une unité de matériau
+                                ListeFurnace[i].final_q++;         // Produit une unité de lingot
+                                ListeFurnace[i].final_id = ironLingotTexture.id;
+                                if (ListeFurnace[i].energy_q == 0) {
+                                    ListeFurnace[i].energy_id = 0;
+                                }
+                                if (ListeFurnace[i].material_q == 0) {
+                                    ListeFurnace[i].material_id = 0;
+                                }
+                                //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
+                    }
+                    //acier
+                    else if (ListeFurnace[i].material_id == ironLingotTexture.id && ListeFurnace[i].energy_q> 3 ) {
+                                ListeFurnace[i].energy_q-=2;         // Consomme deux unité d'énergie
+                                ListeFurnace[i].material_q;      // Consomme une unité de matériau
                                 ListeFurnace[i].final_q++;         // Produit une unité de lingot
                                 ListeFurnace[i].final_id = ironLingotTexture.id;
                                 if (ListeFurnace[i].energy_q == 0) {
