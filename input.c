@@ -40,9 +40,9 @@ Battery ListeBattery[MAX_BATTERY];
 
 int directions[4][2] = {
     {1, 0},
-    {0, -1},
+    {0, 1},
     {-1, 0},
-    {0, 1} 
+    {0, -1} 
     };
 
 void mouseDefault() {
@@ -329,7 +329,7 @@ void Convey(Conveyor *conv) {
                             if (under_texture.id == waterVeinTexture.id) {
                                 mined_texture = waterVeinTexture;
                             }
-                            else if (under_texture.id == oilVeinTexture.id) {
+                            if (under_texture.id == oilVeinTexture.id) {
                                 mined_texture = oilVeinTexture;
                             }
                             }
@@ -351,8 +351,8 @@ void Convey(Conveyor *conv) {
                         if (crafted_textureId == copperLingotTexture.id) {
                             crafted_texture = copperLingotTexture;
                         }
-                        else if (crafted_textureId == copperLingotTexture.id) {
-                            crafted_texture = copperLingotTexture;
+                        else if (crafted_textureId == ironLingotTexture.id) {
+                            crafted_texture = ironLingotTexture;
                         }
                        
                         conv->textureToMove = crafted_texture;
@@ -424,15 +424,14 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
         }
-
+    // Déposer l'objet au sol
     if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
-        // Déposer l'objet au sol
-        grid[destI][destJ].placed = true;
-        grid[destI][destJ].up_texture = conv->textureToMove;
-        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
+        // grid[destI][destJ].placed = true;
+        // grid[destI][destJ].up_texture = conv->textureToMove;
+        // grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
 
-        // Réinitialiser l'objet et l'état du convoyeur
-        conv->textureToMove = (Texture2D){ 0 };
+        // // Réinitialiser l'objet et l'état du convoyeur
+        // conv->textureToMove = (Texture2D){ 0 };
     }
     else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed){
          conv->textureToMove=grid[srcI][srcJ].move_texture;
@@ -536,12 +535,12 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         }
-                        else if (ListeSteam[k].energy_id == conv->textureToMove.id && conv->textureToMove.id == coalTexture.id ) {
+                        else if (ListeSteam[k].energy_id == conv->textureToMove.id && (conv->textureToMove.id == coalTexture.id  || conv->textureToMove.id == oilVeinTexture.id)) {
                             ListeSteam[k].energy_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         } 
-                        else if (ListeSteam[k].energy_q == 0 && conv->textureToMove.id == coalTexture.id ) {
+                        else if (ListeSteam[k].energy_q == 0 && (conv->textureToMove.id == coalTexture.id  || conv->textureToMove.id == oilVeinTexture.id)) {
                             ListeSteam[k].energy_id= conv->textureToMove.id;
                             ListeSteam[k].energy_q++;
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
@@ -568,6 +567,9 @@ void Update_Foreuse() {
                     ListeForeuse[i].q += 1;
                 }
                 else if (texture.id == waterVeinTexture.id && ListeForeuse[i].q < 100) {
+                    ListeForeuse[i].q += 1;
+                }
+                else if (texture.id == oilVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
                 printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
@@ -765,6 +767,20 @@ void Update_Furnace() {
                                 }
                                 //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
                     }
+                    //acier
+                    else if (ListeFurnace[i].material_id == ironLingotTexture.id && ListeFurnace[i].energy_q> 3 ) {
+                                ListeFurnace[i].energy_q-=2;         // Consomme deux unité d'énergie
+                                ListeFurnace[i].material_q;      // Consomme une unité de matériau
+                                ListeFurnace[i].final_q++;         // Produit une unité de lingot
+                                ListeFurnace[i].final_id = ironLingotTexture.id;
+                                if (ListeFurnace[i].energy_q == 0) {
+                                    ListeFurnace[i].energy_id = 0;
+                                }
+                                if (ListeFurnace[i].material_q == 0) {
+                                    ListeFurnace[i].material_id = 0;
+                                }
+                                //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
+                    }
                 } else {
                     //printf("Four (%d, %d) : pas assez de ressources ou d'énergie\n", ListeFurnace[i].i, ListeFurnace[i].j);
                 }
@@ -849,9 +865,16 @@ void Update_Steam() {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
                     if (ListeSteam[i].material_id == waterVeinTexture.id) {
                         if (ListeSteam[i].final_q < 20) {
-                            ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
-                            ListeSteam[i].material_q--;      // Consomme une unité d'eau
-                            ListeSteam[i].final_q += 4;      // Produit de l'énergie
+                            if (ListeSteam[i].energy_id==oilVeinTexture.id){
+                                ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
+                                ListeSteam[i].material_q--;      // Consomme une unité d'eau
+                                ListeSteam[i].final_q += 6;
+                                } 
+                            else if (ListeSteam[i].energy_id==coalTexture.id){
+                                ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
+                                ListeSteam[i].material_q--;      // Consomme une unité d'eau
+                                ListeSteam[i].final_q += 4;
+                                }    // Produit de l'énergie
                             //printf("Steam (%d, %d) : production. Énergie produite : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
                         } else {
                             //printf("Steam (%d, %d) : réservoir plein. Énergie stockée : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);

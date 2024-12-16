@@ -9,6 +9,7 @@ Texture2D coalTexture;
 Texture2D coalVeinTexture;
 Texture2D rockVeinTexture;
 Texture2D rockTexture;
+Texture2D steelTexture;
 
 Texture2D sandVeinTexture;
 Texture2D waterVeinTexture;
@@ -45,6 +46,8 @@ void InitTexture() {
     coalVeinTexture =LoadTexture("assets/coalVeinTexture.png");
     rockVeinTexture=LoadTexture("assets/rockVeinTexture.png");
     rockTexture=LoadTexture("assets/rock_item.png");
+    steelTexture = LoadTexture("assets/iron_lingot.png");
+
     sandVeinTexture =LoadTexture("assets/sand_texture.png");
     waterVeinTexture=LoadTexture("assets/water.png");
     oilVeinTexture=LoadTexture("assets/oilTexture.png");
@@ -81,6 +84,7 @@ void UnloadAllTexture() {
     UnloadTexture(coalVeinTexture);
     UnloadTexture(rockVeinTexture);
     UnloadTexture(rockTexture);
+    UnloadTexture(steelTexture);
 
     UnloadTexture(sandVeinTexture);
     UnloadTexture(waterVeinTexture);

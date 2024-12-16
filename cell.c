@@ -27,9 +27,9 @@ Generator MineraiSandGenerator;
 
 int GetDirectionAngle(int direction[2]) {
     if (direction[0] == 1 && direction[1] == 0) return 0;   // Droite
-    if (direction[0] == 0 && direction[1] == -1) return 90; // Bas
+    if (direction[0] == 0 && direction[1] == -1) return 270; // Bas
     if (direction[0] == -1 && direction[1] == 0) return 180; // Gauche
-    if (direction[0] == 0 && direction[1] == 1) return 270;    // Haut
+    if (direction[0] == 0 && direction[1] == 1) return 90;    // Haut
     return 0; // Erreur si la direction ne correspond pas
 }
 void DrawMap(){
@@ -65,7 +65,7 @@ void DrawMap(){
 
             // Dessiner la texture en mouvement si elle est valide
             if (cell.move_texture.id != 0) {
-                DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, rotation, WHITE);
+                DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.0f, WHITE);
             }
         }
         
@@ -111,7 +111,7 @@ void CellDraw(Cell cell) {
 
     // Dessiner la texture en mouvement si elle est valide
     if (cell.move_texture.id != 0) {
-        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, rotation, WHITE);
+        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.0f, WHITE);
     }
     //DrawMiniMapVersion(cell);
     // Dessiner les contours de la cellule
