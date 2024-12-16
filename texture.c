@@ -46,7 +46,7 @@ void InitTexture() {
     rockVeinTexture=LoadTexture("assets/rockVeinTexture.png");
     rockTexture=LoadTexture("assets/rock_item.png");
     sandVeinTexture =LoadTexture("assets/sand_texture.png");
-    waterVeinTexture=LoadTexture("assets/blue_texture.png");
+    waterVeinTexture=LoadTexture("assets/water.png");
     oilVeinTexture=LoadTexture("assets/oilTexture.png");
 
     copperLingotTexture = LoadTexture("assets/copper_lingot.png");
@@ -55,8 +55,6 @@ void InitTexture() {
     copperRodTexture =LoadTexture("assets/barre_texture.png");
     ironPlateTexture =LoadTexture("assets/plaque_texture.png");
     ironRodTexture =LoadTexture("assets/barre_texture.png");
-
-
 
     copperVeinTexture= LoadTexture("assets/copperVeinTexture.png");
     ironVeinTexture= LoadTexture("assets/ironVeinTexture.png");
@@ -67,11 +65,11 @@ void InitTexture() {
     chestTexture = LoadTexture("assets/crate.png");
     furnaceTexture=LoadTexture("assets/furnace.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
-    solarpanelTexture = LoadTexture("assets/purple_texture.png");
+    solarpanelTexture = LoadTexture("assets/solar_panel.png");
     steamcentralTexture = LoadTexture("assets/red_texture.png");
     piloneTexture = LoadTexture("assets/coil.png");
     piloneEffectTexture = LoadTexture("assets/coil_effect.png");
-    batteryTexture = LoadTexture("assets/blue_texture.png");
+    batteryTexture = LoadTexture("assets/battery.png");
     pressTexture = LoadTexture("assets/presse_hydrau_texture.png");
     stretchTexture = LoadTexture("assets/etireuse_texture.png");
 }
