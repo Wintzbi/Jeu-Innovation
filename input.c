@@ -57,7 +57,13 @@ void mouseDefault() {
         Rectangle srcRect = { 0, 0, inventory[selectedItem].texture.width, inventory[selectedItem].texture.height };
         Vector2 origin = { cellSize / 2, cellSize / 2 };
 
-        DrawTexturePro(inventory[selectedItem].texture, srcRect, destRect, origin, rotation, Fade(WHITE, 0.35f));
+        if (inventory[selectedItem].texture.id == conveyorTexture.id || inventory[selectedItem].texture.id == pipeTexture.id || inventory[selectedItem].texture.id == piloneTexture.id ){
+            DrawTexturePro(inventory[selectedItem].texture, srcRect, destRect, origin, rotation, Fade(WHITE, 0.35f));
+        }
+
+        else {
+            DrawTexturePro(inventory[selectedItem].texture, srcRect, destRect, origin, 0.0f, Fade(WHITE, 0.35f));
+        }
     }
     else DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.35f));
 }

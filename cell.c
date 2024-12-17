@@ -40,6 +40,7 @@ void DrawMap(){
         for (int c = 0; c < COL; c++)
         {
             Cell cell=grid[r][c];
+
             float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
             Texture2D RefTexture = chestTexture; // Définir la texture de référence
             // Calcul de l'échelle pour adapter la texture à la taille de la cellule
