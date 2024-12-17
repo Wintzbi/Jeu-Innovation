@@ -39,6 +39,8 @@ extern Texture2D piloneEffectTexture;
 extern Texture2D pressTexture;
 extern Texture2D stretchTexture;
 
+extern Texture2D gearTexture;
+
 void InitTexture();
 void UnloadAllTexture();
 

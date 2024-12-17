@@ -37,6 +37,7 @@ Texture2D piloneEffectTexture;
 Texture2D batteryTexture;
 Texture2D pressTexture;
 Texture2D stretchTexture;
+Texture2D gearTexture;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -46,18 +47,19 @@ void InitTexture() {
     coalVeinTexture =LoadTexture("assets/coalVeinTexture.png");
     rockVeinTexture=LoadTexture("assets/rockVeinTexture.png");
     rockTexture=LoadTexture("assets/rock_item.png");
-    steelTexture = LoadTexture("assets/iron_lingot.png");
+    steelTexture = LoadTexture("assets/steel_lingot.png");
+    gearTexture = LoadTexture("assets/gear.png");
 
     sandVeinTexture =LoadTexture("assets/sand_texture.png");
     waterVeinTexture=LoadTexture("assets/water.png");
     oilVeinTexture=LoadTexture("assets/oilTexture.png");
 
-    copperLingotTexture = LoadTexture("assets/copper_lingot.png");
-    ironLingotTexture = LoadTexture("assets/iron_lingot.png");
-    copperPlateTexture =LoadTexture("assets/plaque_texture.png");
-    copperRodTexture =LoadTexture("assets/barre_texture.png");
-    ironPlateTexture =LoadTexture("assets/plaque_texture.png");
-    ironRodTexture =LoadTexture("assets/barre_texture.png");
+    copperLingotTexture = LoadTexture("assets/copper_lingot-export.png");
+    ironLingotTexture = LoadTexture("assets/iron_lingot-export.png");
+    copperPlateTexture =LoadTexture("assets/copperplate_texture.png");
+    copperRodTexture =LoadTexture("assets/copperstem_texture.png");
+    ironPlateTexture =LoadTexture("assets/ironplate_texture.png");
+    ironRodTexture =LoadTexture("assets/ironstem_texture.png");
 
     copperVeinTexture= LoadTexture("assets/copperVeinTexture.png");
     ironVeinTexture= LoadTexture("assets/ironVeinTexture.png");
@@ -113,6 +115,7 @@ void UnloadAllTexture() {
     UnloadTexture(piloneEffectTexture);
     UnloadTexture(pressTexture);
     UnloadTexture(stretchTexture);
+    UnloadTexture(gearTexture);
 
 
 }
