@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h> // Pour strcmp
 
-int MinPlaceableID = 17; // Liste des ID de textures plaçables
+int MinPlaceableID = 23; // Liste des ID de textures plaçables
 Conveyor ListeConveyor[MAX_CONVEYOR];
 bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];

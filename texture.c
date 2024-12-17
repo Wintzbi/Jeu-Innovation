@@ -49,20 +49,18 @@ void InitTexture() {
     rockTexture=LoadTexture("assets/rock_item.png");
     steelTexture = LoadTexture("assets/steel_lingot.png");
     gearTexture = LoadTexture("assets/gear.png");
-
     sandVeinTexture =LoadTexture("assets/sand_texture.png");
     waterVeinTexture=LoadTexture("assets/water.png");
     oilVeinTexture=LoadTexture("assets/oilTexture.png");
-
     copperLingotTexture = LoadTexture("assets/copper_lingot-export.png");
     ironLingotTexture = LoadTexture("assets/iron_lingot-export.png");
     copperPlateTexture =LoadTexture("assets/copperplate_texture.png");
     copperRodTexture =LoadTexture("assets/copperstem_texture.png");
     ironPlateTexture =LoadTexture("assets/ironplate_texture.png");
     ironRodTexture =LoadTexture("assets/ironstem_texture.png");
-
     copperVeinTexture= LoadTexture("assets/copperVeinTexture.png");
     ironVeinTexture= LoadTexture("assets/ironVeinTexture.png");
+
     defaultTexture = LoadTexture("assets/grass_texture.png");
     drillTexture = LoadTexture("assets/drill.png");
     conveyorTexture= LoadTexture("assets/conveyor.png");
