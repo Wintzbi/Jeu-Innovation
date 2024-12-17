@@ -50,45 +50,45 @@ Voici les commandes de base pour commencer :
 
 ## Fonctionnement des objets
 
-### Foreuse   ![PNG Foreuse](assets/drill.png)
+### Foreuse   ![PNG foreuse](assets/drill.png)
 - **Outils** : Chaque outil (pioche, hache, marteau) a une durée de vie et permet de récolter des ressources spécifiques.
 - **Armes** : Varient en puissance, portée et durée de vie. Les armes à distance nécessitent des munitions.
 - **Consommables** : Nourriture et potions pour restaurer votre santé ou vos énergies.
 
-### Tapis   ![PNG Foreuse](assets/conveyor.png)
+### Tapis   ![PNG tapis](assets/conveyor.png)
 - Transporte des objets en prenant celui derrière lui.
 - Dépose l'objet dans la machine devant lui.
 - Ne nécessite pas d'énergie.
 
-### Tuyaux   ![PNG Foreuse](assets/pipe.png)
+### Tuyaux   ![PNG tuyaux](assets/pipe.png)
 - Transport des liquides dans la même logique que les tapis
 - Ne nécessite pas d'énergie.
 
-### Four   ![PNG Foreuse](assets/furnace.png)
+### Four   ![PNG four](assets/furnace.png)
 - craft des lingots de cuivre ou de fer avec les minerais et de l'ernergie ou du charbon
 - craft de l'acier à partir de lingoits de fer
 
-### Presse   ![PNG Foreuse](assets/presse_hydrau_texture.png)
+### Presse   ![PNG presse](assets/presse_hydrau_texture.png)
 - craft des plaques d'acier ou de cuivre à partir de lingots
 - craft des engrenage à partir de plaques d'acier
 
-### Étireuse   ![PNG Foreuse](assets/etireuse_texture.png)
+### Étireuse   ![PNG étireuse](assets/etireuse_texture.png)
 - craft des barre d'acier ou de cuivre à partir de lingots
 - craft des fils électrique à partir de barres de cuivre
 
-### Centrale   ![PNG Foreuse](assets/furnace.png)
+### Centrale   ![PNG centrale](assets/furnace.png)
 - génère de l'énergie avec de l'eau et du charbon ou du pétrole
 
-### Bobine Tesla  ![PNG Foreuse](assets/coil.png)
+### Bobine Tesla  ![PNG bobine tesla](assets/coil.png)
 - Transporte 1 d'énergie dans un carré de 3 cases autour d'elle, nécessite d'être placé contre une machine pour l'allimenté
 
-### Batterie  ![PNG Foreuse](assets/battery.png)
+### Batterie  ![PNG batterie](assets/battery.png)
 - stocke jusqu'à 100 énergie
 
-### Panneau Solaire  ![PNG Foreuse](assets/furnace.png)
+### Panneau Solaire  ![PNG panneau solaire](assets/furnace.png)
 - génère 1 d'énergie tous les intervals
 
-### Coffre ![PNG Foreuse](assets/create.png)
+### Coffre ![PNG coffre](assets/crate.png)
 - Ajoute à l'inventaire l'objet qu'on lui apporte par convoyeur
 
 ---
