@@ -1,5 +1,6 @@
-# README - Mon Jeu
+# README - MEMEMinc simulation alpha V1
 
+![Logo MEMEInc](assets/logo.png)
 Bienvenue dans **MEMEMinc simulation**, un jeu crée par Leynaïck Duthieuw, Charlilou Maes et Mathys Kraim-Grisoni durant le semestre 1 du parcours d'innovation 2024 à l'ESME.
 ---
 
@@ -48,16 +49,18 @@ Voici les commandes de base pour commencer :
 
 ## Fonctionnement des objets
 
-### Foreuse
+### Foreuse ![PNG Foreuse](assets/drill.png)
 - **Outils** : Chaque outil (pioche, hache, marteau) a une durée de vie et permet de récolter des ressources spécifiques.
 - **Armes** : Varient en puissance, portée et durée de vie. Les armes à distance nécessitent des munitions.
 - **Consommables** : Nourriture et potions pour restaurer votre santé ou vos énergies.
 
-### Convoyeur
+### Convoyeur ![PNG Foreuse](assets/conveyor.png)
+![Logo MEMEInc](assets/logo.png)
 - **Blocs** : Utilisés pour bâtir des structures (murs, planchers, toits).
 - **Machines** : Fournissent des fonctionnalités avancées, comme le raffinage des ressources ou la production d'énergie.
 
-### Four
+### Four ![PNG Foreuse](assets/furnace.png)
+![Logo MEMEInc](assets/logo.png)
 - **Artefacts** : Objets rares offrant des pouvoirs uniques ou débloquant de nouvelles zones.
 - **Clés** : Nécessaires pour accéder à certains endroits verrouillés.
 
