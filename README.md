@@ -27,9 +27,10 @@ Voici les commandes de base pour commencer :
 - **Z/Q/S/D** : Déplacer la caméra.
 
 ### Actions
-- **Clic gauche** : Ramasser un objets
-- **Clic droit** : Poser objet/remplir machine
-- **E** : Ouvrir l'inventaire
+- **Clic gauche** : Ramasser un objets.
+- **Clic droit** : Poser objet/remplir machine.
+- **R** : Tourner le bloc.
+- **E** : Ouvrir l'inventaire.
 - **ESC** : Ouvrir les options.
 - **C** : Ouvrir les crafts.
 - **M** : Ouvrir la minimap.
@@ -49,20 +50,34 @@ Voici les commandes de base pour commencer :
 
 ## Fonctionnement des objets
 
-### Foreuse ![PNG Foreuse](assets/drill.png)
+### Foreuse   ![PNG Foreuse](assets/drill.png)
 - **Outils** : Chaque outil (pioche, hache, marteau) a une durée de vie et permet de récolter des ressources spécifiques.
 - **Armes** : Varient en puissance, portée et durée de vie. Les armes à distance nécessitent des munitions.
 - **Consommables** : Nourriture et potions pour restaurer votre santé ou vos énergies.
 
-### Convoyeur ![PNG Foreuse](assets/conveyor.png)
-![Logo MEMEInc](assets/logo.png)
+### Convoyeur   ![PNG Foreuse](assets/conveyor.png)
 - **Blocs** : Utilisés pour bâtir des structures (murs, planchers, toits).
 - **Machines** : Fournissent des fonctionnalités avancées, comme le raffinage des ressources ou la production d'énergie.
 
-### Four ![PNG Foreuse](assets/furnace.png)
-![Logo MEMEInc](assets/logo.png)
+### Tuyaux   ![PNG Foreuse](assets/pipe.png)
 - **Artefacts** : Objets rares offrant des pouvoirs uniques ou débloquant de nouvelles zones.
 - **Clés** : Nécessaires pour accéder à certains endroits verrouillés.
+
+### Four   ![PNG Foreuse](assets/furnace.png)
+
+### Presse   ![PNG Foreuse](assets/presse_hydrau_texture.png)
+
+### Étireuse   ![PNG Foreuse](assets/etireuse_texture.png)
+
+### Centrale   ![PNG Foreuse](assets/furnace.png)
+
+### Bobine Tesla  ![PNG Foreuse](assets/coil.png)
+
+### Batterie  ![PNG Foreuse](assets/battery.png)
+
+### Panneau Solaire  ![PNG Foreuse](assets/furnace.png)
+
+### Coffre ![PNG Foreuse](assets/create.png)
 
 ---
 
