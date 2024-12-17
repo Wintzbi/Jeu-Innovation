@@ -57,9 +57,9 @@ void mouseDefault() {
         Rectangle srcRect = { 0, 0, inventory[selectedItem].texture.width, inventory[selectedItem].texture.height };
         Vector2 origin = { cellSize / 2, cellSize / 2 };
 
-        DrawTexturePro(inventory[selectedItem].texture, srcRect, destRect, origin, 0.0f, Fade(WHITE, 0.3f));
+        DrawTexturePro(inventory[selectedItem].texture, srcRect, destRect, origin, rotation, Fade(WHITE, 0.35f));
     }
-    else DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.3f));
+    else DrawRectangle(posX * cellSize, posY * cellSize, cellSize, cellSize, Fade(RED, 0.35f));
 }
     
 
@@ -182,6 +182,7 @@ void leftClic() {
 void UpdateDir(){
     conveyor_dir = (conveyor_dir + 1) % 4;
     printf("changement de direction, option : %d\n", conveyor_dir);
+    rotation = (conveyor_dir * 90);
 }
 
 void ActionWithName(char ObjectName[20], int i, int j, int option) {

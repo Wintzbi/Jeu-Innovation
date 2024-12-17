@@ -9,6 +9,8 @@
 #define MAX_GENERATORS 200
 #define NB_FILON 7
 
+extern float rotation;
+
 typedef struct Cell {
     int i;
     int j;
