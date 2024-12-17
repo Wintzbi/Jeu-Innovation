@@ -55,29 +55,41 @@ Voici les commandes de base pour commencer :
 - **Armes** : Varient en puissance, portée et durée de vie. Les armes à distance nécessitent des munitions.
 - **Consommables** : Nourriture et potions pour restaurer votre santé ou vos énergies.
 
-### Convoyeur   ![PNG Foreuse](assets/conveyor.png)
-- **Blocs** : Utilisés pour bâtir des structures (murs, planchers, toits).
-- **Machines** : Fournissent des fonctionnalités avancées, comme le raffinage des ressources ou la production d'énergie.
+### Tapis   ![PNG Foreuse](assets/conveyor.png)
+- Transporte des objets en prenant celui derrière lui.
+- Dépose l'objet dans la machine devant lui.
+- Ne nécessite pas d'énergie.
 
 ### Tuyaux   ![PNG Foreuse](assets/pipe.png)
-- **Artefacts** : Objets rares offrant des pouvoirs uniques ou débloquant de nouvelles zones.
-- **Clés** : Nécessaires pour accéder à certains endroits verrouillés.
+- Transport des liquides dans la même logique que les tapis
+- Ne nécessite pas d'énergie.
 
 ### Four   ![PNG Foreuse](assets/furnace.png)
+- craft des lingots de cuivre ou de fer avec les minerais et de l'ernergie ou du charbon
+- craft de l'acier à partir de lingoits de fer
 
 ### Presse   ![PNG Foreuse](assets/presse_hydrau_texture.png)
+- craft des plaques d'acier ou de cuivre à partir de lingots
+- craft des engrenage à partir de plaques d'acier
 
 ### Étireuse   ![PNG Foreuse](assets/etireuse_texture.png)
+- craft des barre d'acier ou de cuivre à partir de lingots
+- craft des fils électrique à partir de barres de cuivre
 
 ### Centrale   ![PNG Foreuse](assets/furnace.png)
+- génère de l'énergie avec de l'eau et du charbon ou du pétrole
 
 ### Bobine Tesla  ![PNG Foreuse](assets/coil.png)
+- Transporte 1 d'énergie dans un carré de 3 cases autour d'elle, nécessite d'être placé contre une machine pour l'allimenté
 
 ### Batterie  ![PNG Foreuse](assets/battery.png)
+- stocke jusqu'à 100 énergie
 
 ### Panneau Solaire  ![PNG Foreuse](assets/furnace.png)
+- génère 1 d'énergie tous les intervals
 
 ### Coffre ![PNG Foreuse](assets/create.png)
+- Ajoute à l'inventaire l'objet qu'on lui apporte par convoyeur
 
 ---
 
