@@ -41,6 +41,7 @@ extern Texture2D pressTexture;
 extern Texture2D stretchTexture;
 
 extern Texture2D gearTexture;
+extern Texture2D sandDust;
 
 extern Texture2D copperCableTexture;
 
