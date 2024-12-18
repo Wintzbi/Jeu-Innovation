@@ -162,7 +162,7 @@ bool IndexIsValid(int i, int j) {
 int DayAndNight(){
  float currentTime = GetTime();
     int time = (int)currentTime % 40;  // Temps cyclique entre 0 et 39 secondes
-    int maxOpacity = 128;  // Opacité maximale de 128
+    int maxOpacity = 64;  // Opacité maximale de 128
 
     // Phase de jour (entre 0 et 10 secondes)
     if (time < 10) {

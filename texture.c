@@ -78,8 +78,8 @@ void InitTexture() {
     piloneTexture = LoadTexture("assets/coil.png");
     piloneEffectTexture = LoadTexture("assets/coil_effect.png");
     batteryTexture = LoadTexture("assets/battery.png");
-    pressTexture = LoadTexture("assets/presse_hydrau_texture.png");
-    stretchTexture = LoadTexture("assets/etireuse_texture.png");
+    pressTexture = LoadTexture("assets/hydraulic_press.png");
+    stretchTexture = LoadTexture("assets/stretching_machine.png");
     lanternTexture = LoadTexture("assets/lantern.png");
 }
 
