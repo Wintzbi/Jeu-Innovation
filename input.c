@@ -888,12 +888,12 @@ void Update_Ettireuse() {
 
 void Update_Steam() {
     float currentTime = GetTime();
-    if (currentTime - lastSteamTime >= 20.0f) {
+    if (currentTime - lastSteamTime >= 10.0f) {
         for (int i = 0; i < numSteams; i++) {
             if (ListeSteam[i].placed && IndexIsValid(ListeSteam[i].i, ListeSteam[i].j)) {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
                     if (ListeSteam[i].material_id == waterVeinTexture.id) {
-                        if (ListeSteam[i].final_q < 20) {
+                        if (ListeSteam[i].final_q < 50) {
                             if (ListeSteam[i].energy_id==oilVeinTexture.id){
                                 ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
                                 ListeSteam[i].material_q--;      // Consomme une unité d'eau
