@@ -387,7 +387,9 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                         else if (crafted_textureId == copperPlateTexture.id) {
                             crafted_texture = copperPlateTexture;
                         }
-
+                        else if (crafted_textureId == gearTexture.id) {
+                            crafted_texture = gearTexture;
+                        }
                        
                         conv->textureToMove = crafted_texture;
                         grid[conv->i][conv->j].move_texture=conv->textureToMove;
@@ -412,6 +414,9 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                         }
                         else if (crafted_textureId == ironRodTexture.id) {
                             crafted_texture = ironRodTexture;
+                        }
+                        else if (crafted_textureId == copperCableTexture.id) {
+                            crafted_texture = copperCableTexture;
                         }
                        
                         conv->textureToMove = crafted_texture;
@@ -452,7 +457,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
     }
     //ajoute au four
     else if (grid[destI][destJ].up_texture.id == furnaceTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
-        for (int k = 0; k < numForeuses; k++) {
+        for (int k = 0; k < numFurnaces; k++) {
                 if (ListeFurnace[k].i == destI && ListeFurnace[k].j == destJ) {
                     //ajoute du matériau si il correspond
                         if (ListeFurnace[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
@@ -800,17 +805,17 @@ void Update_Furnace() {
 
 void Update_Hydraulic() {
     float currentTime = GetTime();
-    if (currentTime - lastHydraulicTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numHydraulics; i++) {
             if (ListeHydraulic[i].placed && IndexIsValid(ListeHydraulic[i].i, ListeHydraulic[i].j)) {
                 if (IsEnergieNear(ListeHydraulic[i].i, ListeHydraulic[i].j, 1)) ListeHydraulic[i].energy_q++; // source d'énergie pas loin
                 if (ListeHydraulic[i].energy_q > 0 && ListeHydraulic[i].material_q > 0) {
-                    //printf("Presse en action\n");
+
                     if (ListeHydraulic[i].material_id == ironLingotTexture.id) {
                         ListeHydraulic[i].energy_q--;        // Consomme une unité d'énergie
                         ListeHydraulic[i].material_q--;     // Consomme une unité de matériau
                         ListeHydraulic[i].final_q++;        // Produit une unité de lingot
                         ListeHydraulic[i].final_id = ironPlateTexture.id;
+
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
 
@@ -819,6 +824,7 @@ void Update_Hydraulic() {
                         ListeHydraulic[i].material_q--;
                         ListeHydraulic[i].final_q++;
                         ListeHydraulic[i].final_id = copperPlateTexture.id;
+
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
                     }
@@ -833,13 +839,11 @@ void Update_Hydraulic() {
                 }
             }
         }
-        lastHydraulicTime = currentTime; // Mise à jour du temps pour la prochaine itération
-    }
+       
 }
 
 void Update_Ettireuse() {
     float currentTime = GetTime();
-    if (currentTime - lastEttireuseTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numEttireuses; i++) {
             //printf("Etireuse trouvé\n");
             if (ListeEttireuse[i].placed && IndexIsValid(ListeEttireuse[i].i, ListeEttireuse[i].j)) {
@@ -870,7 +874,7 @@ void Update_Ettireuse() {
                         ListeEttireuse[i].energy_q--;
                         ListeEttireuse[i].material_q--;
                         ListeEttireuse[i].final_q++;
-                        ListeEttireuse[i].final_id = gearTexture.id;
+                        ListeEttireuse[i].final_id = copperCableTexture.id;
                         //printf("Production barre cuivre \n");
 
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
@@ -879,8 +883,7 @@ void Update_Ettireuse() {
                 }
             }
         }
-        lastEttireuseTime = currentTime; // Mise à jour du temps pour la prochaine itération
-    }
+
 }
 
 void Update_Steam() {
