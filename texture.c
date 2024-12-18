@@ -24,6 +24,7 @@ Texture2D ironRodTexture;
 Texture2D stretchTexture;
 Texture2D gearTexture;
 Texture2D copperCableTexture;
+Texture2D sandDust;
 
 Texture2D defaultTexture;
 Texture2D drillTexture;
@@ -62,6 +63,7 @@ void InitTexture() {
     copperVeinTexture= LoadTexture("assets/copperVeinTexture.png");
     ironVeinTexture= LoadTexture("assets/ironVeinTexture.png");
     copperCableTexture = LoadTexture("assets/coppercable.png");
+    sandDust = LoadTexture("assets/sand_dust.png");
 
     defaultTexture = LoadTexture("assets/grass_texture.png");
     drillTexture = LoadTexture("assets/drill.png");
@@ -116,6 +118,7 @@ void UnloadAllTexture() {
     UnloadTexture(pressTexture);
     UnloadTexture(stretchTexture);
     UnloadTexture(gearTexture);
+    UnloadTexture(sandDust);
     UnloadTexture(copperCableTexture);
 
 

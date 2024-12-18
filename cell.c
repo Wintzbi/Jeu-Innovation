@@ -239,7 +239,7 @@ void InitMineraiGenerator() {
         .max_number=100,
         .density=20,
         .texture =sandVeinTexture,
-        .up_texture=sandVeinTexture,
+        .up_texture=sandDust,
         .isSolid=true
     };
     WaterVein=(Filon) {
