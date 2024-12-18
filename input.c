@@ -560,7 +560,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
 
 void Update_Foreuse() {
     float currentTime = GetTime();
-    if (currentTime - lastForeuseTime >= 10.0f) {
+    if (currentTime - lastForeuseTime >= 5.0f) {
         for (int i = 0; i < numForeuses; i++) {
             if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j) && IsEnergieNear(ListeForeuse[i].i, ListeForeuse[i].j,1)) {
                 Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
@@ -744,7 +744,7 @@ void RemoveBattery(int posX, int posY){
 
 void Update_Furnace() {
     float currentTime = GetTime();
-    if (currentTime - lastFurnaceTime >= 20.0f) { // Vérifie le délai global
+    if (currentTime - lastFurnaceTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numFurnaces; i++) {
             if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
                 if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j,1)) ListeFurnace[i].energy_q++ ;// source d'énergie pas loin
@@ -800,7 +800,7 @@ void Update_Furnace() {
 
 void Update_Hydraulic() {
     float currentTime = GetTime();
-    if (currentTime - lastHydraulicTime >= 20.0f) { // Vérifie le délai global
+    if (currentTime - lastHydraulicTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numHydraulics; i++) {
             if (ListeHydraulic[i].placed && IndexIsValid(ListeHydraulic[i].i, ListeHydraulic[i].j)) {
                 if (IsEnergieNear(ListeHydraulic[i].i, ListeHydraulic[i].j, 1)) ListeHydraulic[i].energy_q++; // source d'énergie pas loin
@@ -830,7 +830,7 @@ void Update_Hydraulic() {
 
 void Update_Ettireuse() {
     float currentTime = GetTime();
-    if (currentTime - lastEttireuseTime >= 20.0f) { // Vérifie le délai global
+    if (currentTime - lastEttireuseTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numEttireuses; i++) {
             //printf("Etireuse trouvé\n");
             if (ListeEttireuse[i].placed && IndexIsValid(ListeEttireuse[i].i, ListeEttireuse[i].j)) {
@@ -866,7 +866,7 @@ void Update_Ettireuse() {
 
 void Update_Steam() {
     float currentTime = GetTime();
-    if (currentTime - lastSteamTime >= 40.0f) {
+    if (currentTime - lastSteamTime >= 20.0f) {
         for (int i = 0; i < numSteams; i++) {
             if (ListeSteam[i].placed && IndexIsValid(ListeSteam[i].i, ListeSteam[i].j)) {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
@@ -905,7 +905,7 @@ void Update_Steam() {
 
 void Update_Oil() {
     float currentTime = GetTime();
-    if (currentTime - lastOilTime >= 40.0f) {
+    if (currentTime - lastOilTime >= 20.0f) {
         for (int i = 0; i < numOils; i++) {
             if (ListeOil[i].placed && IndexIsValid(ListeOil[i].i, ListeOil[i].j)) {
                 if (ListeOil[i].energy_q > 0 && ListeOil[i].material_q > 0) {
