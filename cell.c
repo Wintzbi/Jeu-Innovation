@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "stdio.h"
 
+
 const int screenWidth = 1920;
 const int screenHeight = 1200;
 const int cellSize = screenWidth / COL;
@@ -184,6 +185,8 @@ int DayAndNight(){
         // L'opacité diminue progressivement de 128 à 0
         BrightValue = (40 - time) * (maxOpacity / 10);  // L'opacité descend à 0 à la fin de la descente vers le jour (40 secondes)
     }
+
+    if (time==40) days ++;
     return  Clamp(BrightValue, 0, maxOpacity);
 }
 void InitGrid() {

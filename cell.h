@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include <stdlib.h>
 #include <time.h>
+#include "stat.h"
 
 #define COL 200
 #define ROW 200
