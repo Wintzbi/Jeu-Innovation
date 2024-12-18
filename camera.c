@@ -24,7 +24,7 @@ void InitBounds(int screenWidth, int screenHeight) {
         minX = 160.0f;           // Bord gauche
         maxX = 1640;        // Bord droit
         minY = 100.0f;           // Bord en haut
-        maxY = 1720;        // Bord en bass
+        maxY = 1700;        // Bord en bass
     }
 
     if (screenWidth == 1920*0.75 && screenHeight == 1200*0.75) {

@@ -4,8 +4,8 @@
 #include "stdio.h"
 
 
-const int screenWidth = 1920;
-const int screenHeight = 1200;
+const int screenWidth = 1920*0.75;
+const int screenHeight = 1200*0.75;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
@@ -92,9 +92,6 @@ void DrawMap(){
     DrawRectangleRec(screenRec, nightFilter);
 
     
-
-    
-
 }
 void CellDraw(Cell cell) {
     float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation

@@ -13,7 +13,7 @@ void CurrentScreenFix(){
         isMapScreenOpen=false;
         }
 }
-
+//Save load
 int save() {
     // Ouvrir le fichier en mode binaire pour écrire
     FILE *file = fopen("save.dat", "wb");
