@@ -31,7 +31,10 @@ void DrawMusic();
 void MusicButton();
 void RandomInt() ;
 void DrawStat();
+int save();
+int load();
 
 extern bool shouldClose;
+
 
 #endif

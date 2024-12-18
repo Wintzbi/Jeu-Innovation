@@ -9,6 +9,7 @@
         "texture.h": "c",
         "camera.h": "c",
         "stdio.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "input.h": "c"
     }
 }
