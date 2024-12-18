@@ -234,7 +234,7 @@ int CheckQuantity(Item comp){
     int res=0;
     for (int i=0;i<INVENTORY_SIZE;i++){
         //printf("nom comp : %s, inventaire : %s\n",comp.name,inventory[i].name);
-        if (strcmp(comp.name, inventory[i].name) ==0 ){
+        if (comp.texture.id == inventory[i].texture.id ){
             //printf("Quantité %d et %d",inventory[i].quantity,comp.quantity);
             res+=inventory[i].quantity;
         }

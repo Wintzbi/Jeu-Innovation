@@ -25,6 +25,7 @@ extern Texture2D ironPlateTexture;
 extern Texture2D ironRodTexture;
 
 extern Texture2D defaultTexture;
+
 extern Texture2D drillTexture;
 extern Texture2D purpleTexture;
 extern Texture2D conveyorTexture;

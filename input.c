@@ -777,9 +777,9 @@ void Update_Furnace() {
                     //acier
                     else if (ListeFurnace[i].material_id == ironLingotTexture.id && ListeFurnace[i].energy_q> 3 ) {
                                 ListeFurnace[i].energy_q-=2;         // Consomme deux unité d'énergie
-                                ListeFurnace[i].material_q;      // Consomme une unité de matériau
+                                ListeFurnace[i].material_q--;      // Consomme une unité de matériau
                                 ListeFurnace[i].final_q++;         // Produit une unité de lingot
-                                ListeFurnace[i].final_id = ironLingotTexture.id;
+                                ListeFurnace[i].final_id = steelTexture.id;
                                 if (ListeFurnace[i].energy_q == 0) {
                                     ListeFurnace[i].energy_id = 0;
                                 }
@@ -813,11 +813,20 @@ void Update_Hydraulic() {
                         ListeHydraulic[i].final_id = ironPlateTexture.id;
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
+
                     } else if (ListeHydraulic[i].material_id == copperLingotTexture.id) {
                         ListeHydraulic[i].energy_q--;
                         ListeHydraulic[i].material_q--;
                         ListeHydraulic[i].final_q++;
                         ListeHydraulic[i].final_id = copperPlateTexture.id;
+                        if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
+                        if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
+                    }
+                    else if (ListeHydraulic[i].material_id == ironPlateTexture.id) {
+                        ListeHydraulic[i].energy_q--;
+                        ListeHydraulic[i].material_q--;
+                        ListeHydraulic[i].final_q++;
+                        ListeHydraulic[i].final_id = gearTexture.id;
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
                     }
@@ -852,6 +861,16 @@ void Update_Ettireuse() {
                         ListeEttireuse[i].material_q--;
                         ListeEttireuse[i].final_q++;
                         ListeEttireuse[i].final_id = copperRodTexture.id;
+                        printf("Production barre cuivre \n");
+
+                        if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
+                        if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
+                    }
+                    else if (ListeEttireuse[i].material_id == copperRodTexture.id) {
+                        ListeEttireuse[i].energy_q--;
+                        ListeEttireuse[i].material_q--;
+                        ListeEttireuse[i].final_q++;
+                        ListeEttireuse[i].final_id = gearTexture.id;
                         printf("Production barre cuivre \n");
 
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;

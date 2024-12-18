@@ -21,7 +21,8 @@ Texture2D copperPlateTexture;
 Texture2D copperRodTexture;
 Texture2D ironPlateTexture;
 Texture2D ironRodTexture;
-
+Texture2D stretchTexture;
+Texture2D gearTexture;
 
 Texture2D defaultTexture;
 Texture2D drillTexture;
@@ -36,8 +37,7 @@ Texture2D piloneTexture;
 Texture2D piloneEffectTexture;
 Texture2D batteryTexture;
 Texture2D pressTexture;
-Texture2D stretchTexture;
-Texture2D gearTexture;
+
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -69,7 +69,7 @@ void InitTexture() {
     furnaceTexture=LoadTexture("assets/furnace.png");
     purpleTexture = LoadTexture("assets/purple_texture.png");
     solarpanelTexture = LoadTexture("assets/solar_panel.png");
-    steamcentralTexture = LoadTexture("assets/red_texture.png");
+    steamcentralTexture = LoadTexture("assets/power_station.png");
     piloneTexture = LoadTexture("assets/coil.png");
     piloneEffectTexture = LoadTexture("assets/coil_effect.png");
     batteryTexture = LoadTexture("assets/battery.png");
