@@ -39,6 +39,7 @@ Texture2D piloneTexture;
 Texture2D piloneEffectTexture;
 Texture2D batteryTexture;
 Texture2D pressTexture;
+Texture2D lanternTexture;
 
 
 void InitTexture() {
@@ -79,6 +80,7 @@ void InitTexture() {
     batteryTexture = LoadTexture("assets/battery.png");
     pressTexture = LoadTexture("assets/presse_hydrau_texture.png");
     stretchTexture = LoadTexture("assets/etireuse_texture.png");
+    lanternTexture = LoadTexture("assets/lantern.png");
 }
 
 void UnloadAllTexture() {
@@ -120,6 +122,7 @@ void UnloadAllTexture() {
     UnloadTexture(gearTexture);
     UnloadTexture(sandDust);
     UnloadTexture(copperCableTexture);
+    UnloadTexture(lanternTexture);
 
 
 }

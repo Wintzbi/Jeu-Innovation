@@ -44,6 +44,7 @@ extern Texture2D gearTexture;
 extern Texture2D sandDust;
 
 extern Texture2D copperCableTexture;
+extern Texture2D lanternTexture;
 
 void InitTexture();
 void UnloadAllTexture();
