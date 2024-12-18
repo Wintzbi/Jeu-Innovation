@@ -37,7 +37,6 @@ int GetDirectionAngle(int direction[2]) {
     return 0; // Erreur si la direction ne correspond pas
 }
 void DrawMap(){
-    
     for(int r=0;r<ROW;r++){
         for (int c = 0; c < COL; c++)
         {
@@ -51,14 +50,14 @@ void DrawMap(){
             float scale = (scaleX < scaleY) ? scaleX : scaleY; // Garder les proportions
 
             // Rectangle de destination : position centrée dans la cellule
-            Rectangle destRec = { 
+            Rectangle destRec = {
                 cell.i * cellSize + cellSize / 2.0f, // Centre de la cellule en X
                 cell.j * cellSize + cellSize / 2.0f, // Centre de la cellule en Y
                 RefTexture.width * scale,           // Largeur ajustée avec l'échelle
                 RefTexture.height * scale           // Hauteur ajustée avec l'échelle
             };
             // Rectangle source de la texture (portion de la texture à dessiner)
-            Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
+            Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height};
 
             // Origine pour la rotation (centre du rectangle de destination)
             Vector2 origin = { destRec.width / 2.0f, destRec.height / 2.0f };
@@ -75,8 +74,8 @@ void DrawMap(){
         }
         
     }
-    DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
-    DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, WHITE);
+    DrawRectangle((screenWidth/2)-400, 10, 800, 60, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, Fade(WHITE,0.7f));
     DrawRectangleLines(camera.target.x-120, camera.target.y-80, screenWidth/camera.zoom, screenHeight/camera.zoom, RED);
     
     Rectangle screenRec = {
@@ -89,10 +88,9 @@ void DrawMap(){
     int BrightValue= DayAndNight();
     // Ajouter un filtre noir semi-transparent
     Color nightFilter = { 0, 0, 0,BrightValue }; // Assurez-vous que `value` est entre 0 et `maxOpacity`
-    DrawRectangleRec(screenRec, nightFilter);
-
-    
+    DrawRectangleRec(screenRec, nightFilter);  
 }
+
 void CellDraw(Cell cell) {
     float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
     Texture2D RefTexture = chestTexture; // Définir la texture de référence
