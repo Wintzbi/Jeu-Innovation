@@ -101,7 +101,7 @@ void rightClic() {
             if (IndexIsValid(posX, posY) && !grid[posX][posY].placed) {
                 grid[posX][posY].placed = true;
                 grid[posX][posY].up_texture = inventory[selectedItem].texture;
-                printf("Name: %s | Texture: %d\n", inventory[selectedItem].name, inventory[selectedItem].texture.id);
+                //printf("Name: %s | Texture: %d\n", inventory[selectedItem].name, inventory[selectedItem].texture.id);
                 ActionWithName(inventory[selectedItem].name, posX, posY,option);
                 inventory[selectedItem].quantity--;
 
@@ -187,7 +187,7 @@ void leftClic() {
 }
 void UpdateDir(){
     conveyor_dir = (conveyor_dir + 1) % 4;
-    printf("changement de direction, option : %d\n", conveyor_dir);
+    //printf("changement de direction, option : %d\n", conveyor_dir);
     rotation = (conveyor_dir * 90);
 }
 
@@ -286,7 +286,7 @@ void UpdateBattery(){
         if (ListeBattery[k].placed) {
                 if(IsEnergieNear(ListeBattery[k].i, ListeBattery[k].j,1) && ListeBattery[k].q<=100){
                     ListeBattery[k].q++;
-                    printf("Batterie chargée à %d\n",ListeBattery[k].q);
+                    //printf("Batterie chargée à %d\n",ListeBattery[k].q);
                 }
         }
 }
@@ -402,7 +402,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
         //Trouve l'étireuse connecté
             for (int k = 0; k < numEttireuses; k++) {
                 if (ListeEttireuse[k].i == srcI && ListeEttireuse[k].j == srcJ) {
-                    printf("Etirreuse trouvé, nombre de craft :  %d \n",ListeEttireuse[k].final_q);
+                    //printf("Etirreuse trouvé, nombre de craft :  %d \n",ListeEttireuse[k].final_q);
                     if (ListeEttireuse[k].final_q>0){
                         int crafted_textureId = ListeEttireuse[k].final_id;
                         Texture2D crafted_texture =(Texture2D){0};
@@ -485,7 +485,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
     else if (grid[destI][destJ].up_texture.id == pressTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
         for (int k = 0; k < numHydraulics; k++) {
                 if (ListeHydraulic[k].i == destI && ListeHydraulic[k].j == destJ) {
-                    printf("Ajout à la presse\n");
+                    //printf("Ajout à la presse\n");
                     //ajoute du matériau si il correspond
                         if (ListeHydraulic[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
                             ListeHydraulic[k].material_q++;
@@ -510,7 +510,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                     //ajoute du matériau si il correspond
                         if (ListeEttireuse[k].material_id == conv->textureToMove.id && conv->textureToMove.id != 0 ) {
                             ListeEttireuse[k].material_q++;
-                            printf("Ajout à l'étireuse id :%d, lingot : %d\n",conv->textureToMove.id,copperLingotTexture.id);
+                            //printf("Ajout à l'étireuse id :%d, lingot : %d\n",conv->textureToMove.id,copperLingotTexture.id);
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         }
@@ -518,7 +518,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                         else if (ListeEttireuse[k].material_q ==0 && conv->textureToMove.id != 0 ) {
                             ListeEttireuse[k].material_id = conv->textureToMove.id;
                             ListeEttireuse[k].material_q++;
-                            printf("Ajout à l'étireuse id :%d, lingot : %d\n",conv->textureToMove.id,copperLingotTexture.id);
+                            //printf("Ajout à l'étireuse id :%d, lingot : %d\n",conv->textureToMove.id,copperLingotTexture.id);
                             grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
                             conv->textureToMove = (Texture2D){ 0 };
                         }      
@@ -579,7 +579,7 @@ void Update_Foreuse() {
                 else if (texture.id == oilVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
-                printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
+                //printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
             }
         }
 
@@ -805,7 +805,7 @@ void Update_Hydraulic() {
             if (ListeHydraulic[i].placed && IndexIsValid(ListeHydraulic[i].i, ListeHydraulic[i].j)) {
                 if (IsEnergieNear(ListeHydraulic[i].i, ListeHydraulic[i].j, 1)) ListeHydraulic[i].energy_q++; // source d'énergie pas loin
                 if (ListeHydraulic[i].energy_q > 0 && ListeHydraulic[i].material_q > 0) {
-                    printf("Presse en action\n");
+                    //printf("Presse en action\n");
                     if (ListeHydraulic[i].material_id == ironLingotTexture.id) {
                         ListeHydraulic[i].energy_q--;        // Consomme une unité d'énergie
                         ListeHydraulic[i].material_q--;     // Consomme une unité de matériau
@@ -832,19 +832,19 @@ void Update_Ettireuse() {
     float currentTime = GetTime();
     if (currentTime - lastEttireuseTime >= 20.0f) { // Vérifie le délai global
         for (int i = 0; i < numEttireuses; i++) {
-            printf("Etireuse trouvé\n");
+            //printf("Etireuse trouvé\n");
             if (ListeEttireuse[i].placed && IndexIsValid(ListeEttireuse[i].i, ListeEttireuse[i].j)) {
                 if (IsEnergieNear(ListeEttireuse[i].i, ListeEttireuse[i].j, 1)) ListeEttireuse[i].energy_q++; // source d'énergie pas loin
-                printf("énergie : %d ",ListeEttireuse[i].energy_q);
-                printf("matériaux : %d,quantité : %d \n",ListeEttireuse[i].material_id,ListeEttireuse[i].material_q);
+                //printf("énergie : %d ",ListeEttireuse[i].energy_q);
+                //printf("matériaux : %d,quantité : %d \n",ListeEttireuse[i].material_id,ListeEttireuse[i].material_q);
                 if (ListeEttireuse[i].energy_q > 0 && ListeEttireuse[i].material_q > 0) {
-                    printf("Prod de l'étireuse,id = %d,%d \n",ListeEttireuse[i].material_id,ironLingotTexture.id);
+                    //printf("Prod de l'étireuse,id = %d,%d \n",ListeEttireuse[i].material_id,ironLingotTexture.id);
                     if (ListeEttireuse[i].material_id == ironLingotTexture.id) {
                         ListeEttireuse[i].energy_q--;        // Consomme une unité d'énergie
                         ListeEttireuse[i].material_q--;     // Consomme une unité de matériau
                         ListeEttireuse[i].final_q++;        // Produit une unité de lingot
                         ListeEttireuse[i].final_id = ironRodTexture.id;
-                        printf("Production barre fer \n");
+                        //printf("Production barre fer \n");
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
                         if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
                     } else if (ListeEttireuse[i].material_id == copperLingotTexture.id) {
@@ -852,7 +852,7 @@ void Update_Ettireuse() {
                         ListeEttireuse[i].material_q--;
                         ListeEttireuse[i].final_q++;
                         ListeEttireuse[i].final_id = copperRodTexture.id;
-                        printf("Production barre cuivre \n");
+                        //printf("Production barre cuivre \n");
 
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
                         if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
