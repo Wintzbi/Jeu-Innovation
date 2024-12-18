@@ -871,7 +871,7 @@ void Update_Ettireuse() {
                         ListeEttireuse[i].material_q--;
                         ListeEttireuse[i].final_q++;
                         ListeEttireuse[i].final_id = gearTexture.id;
-                        printf("Production barre cuivre \n");
+                        //printf("Production barre cuivre \n");
 
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
                         if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;

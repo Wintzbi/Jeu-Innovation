@@ -32,7 +32,7 @@ void InitBaseCraft() {
     
     MecaCraftInvent[0] = (Craft) {"Engrenage",gearTexture, 2,1,{{ "Plaque Fer",ironPlateTexture, 1 }}};
     MecaCraftInvent[1] = (Craft) {"Tuyau",pipeTexture, 2,2,{{ "Barre cuivre",copperRodTexture, 1 },{ "Plaque cuivre",copperPlateTexture, 1 }}};
-    MecaCraftInvent[2] = (Craft) {"cable",pipeTexture, 2,1,{{ "Barre cuivre",copperRodTexture, 1 }}};
+    MecaCraftInvent[2] = (Craft) {"cable",copperCableTexture, 2,1,{{ "Barre cuivre",copperRodTexture, 1 }}};
 
 
     ProdCraftInvent[0] = (Craft) {"Tapis",conveyorTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};

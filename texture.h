@@ -42,6 +42,8 @@ extern Texture2D stretchTexture;
 
 extern Texture2D gearTexture;
 
+extern Texture2D copperCableTexture;
+
 void InitTexture();
 void UnloadAllTexture();
 
