@@ -9,6 +9,7 @@ const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
 float rotation;
+int BrightValue = 0;
 
 Generator generators[MAX_GENERATORS];
 Filon ListeFilon[NB_FILON];
@@ -76,6 +77,20 @@ void DrawMap(){
     DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
     DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, WHITE);
     DrawRectangleLines(camera.target.x-120, camera.target.y-80, screenWidth/camera.zoom, screenHeight/camera.zoom, RED);
+    
+    Rectangle screenRec = {
+        0,                // Position X (coin supérieur gauche de l'écran)
+        0,                // Position Y (coin supérieur gauche de l'écran)
+        screenWidth,      // Largeur du rectangle (taille de l'écran)
+        screenHeight      // Hauteur du rectangle (taille de l'écran)
+    };
+
+    int BrightValue= DayAndNight();
+    // Ajouter un filtre noir semi-transparent
+    Color nightFilter = { 0, 0, 0,BrightValue }; // Assurez-vous que `value` est entre 0 et `maxOpacity`
+    DrawRectangleRec(screenRec, nightFilter);
+
+    
 
     
 
@@ -119,6 +134,23 @@ void CellDraw(Cell cell) {
     //DrawMiniMapVersion(cell);
     // Dessiner les contours de la cellule
    // DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
+       
+    // Rectangle pour le filtre
+    Rectangle nightRec = { 
+        cell.i * cellSize,         // Centre de la cellule en X
+        cell.j * cellSize,         // Centre de la cellule en Y
+        RefTexture.width * 2,      // Largeur ajustée avec l'échelle
+        RefTexture.height * 2      // Hauteur ajustée avec l'échelle
+    };
+    int BrightValue= DayAndNight();
+    // Ajouter un filtre noir semi-transparent
+    Color nightFilter = { 0, 0, 0,BrightValue }; // Assurez-vous que `value` est entre 0 et `maxOpacity`
+    DrawRectangleRec(nightRec, nightFilter);
+
+   
+
+
+
 }
 
 
@@ -127,6 +159,33 @@ bool IndexIsValid(int i, int j) {
     return (i >= 0 && i < COL && j >= 0 && j < ROW);
 }
 
+int DayAndNight(){
+ float currentTime = GetTime();
+    int time = (int)currentTime % 40;  // Temps cyclique entre 0 et 39 secondes
+    int maxOpacity = 128;  // Opacité maximale de 128
+
+    // Phase de jour (entre 0 et 10 secondes)
+    if (time < 10) {
+        // L'opacité reste à 0 pendant la journée
+        BrightValue = 0;  
+    }
+    // Phase de montée vers la nuit (entre 10 et 20 secondes)
+    else if (time >= 10 && time < 20) {
+        // L'opacité augmente progressivement de 0 à 128
+        BrightValue = (time - 10) * (maxOpacity / 10);  // L'opacité atteint `maxOpacity` à la fin de la montée vers la nuit (20 secondes)
+    }
+    // Phase de nuit (entre 20 et 30 secondes)
+    else if (time >= 20 && time < 30) {
+        // L'opacité reste à `maxOpacity` pendant la nuit
+        BrightValue = maxOpacity;  // L'opacité reste à 128 pendant la nuit
+    }
+    // Phase de descente vers le jour (entre 30 et 40 secondes)
+    else if (time >= 30 && time < 40) {
+        // L'opacité diminue progressivement de 128 à 0
+        BrightValue = (40 - time) * (maxOpacity / 10);  // L'opacité descend à 0 à la fin de la descente vers le jour (40 secondes)
+    }
+    return  Clamp(BrightValue, 0, maxOpacity);
+}
 void InitGrid() {
     for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {

@@ -59,7 +59,8 @@ void InitMineraiGenerator();
 void MineraiGenerator();
 int GetDirectionAngle(int direction[2]);
 void DrawMap();
-
+int Clamp(int value, int min, int max);
+int DayAndNight();
 
 
 #endif
