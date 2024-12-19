@@ -91,16 +91,36 @@ void DrawMap(){
 
 
     Rectangle screenRec = {
-        0,                // Position X (coin supérieur gauche de l'écran)
-        0,                // Position Y (coin supérieur gauche de l'écran)
-        screenWidth,      // Largeur du rectangle (taille de l'écran)
-        screenHeight      // Hauteur du rectangle (taille de l'écran)
+         (screenWidth/4),                // Position X (coin supérieur gauche de l'écran)
+        100,                // Position Y (coin supérieur gauche de l'écran)
+        cellSize*0.50*ROW,      // Largeur du rectangle (taille de l'écran)
+        cellSize*0.50*COL      // Hauteur du rectangle (taille de l'écran)
     };
 
     int BrightValue= DayAndNight();
     // Ajouter un filtre noir semi-transparent
     Color nightFilter = { 0, 0, 0,BrightValue }; // Assurez-vous que `value` est entre 0 et `maxOpacity`
-    DrawRectangleRec(screenRec, nightFilter);  
+    DrawRectangleRec(screenRec, nightFilter); 
+     
+    DrawText(TextFormat("CREDITS : "),10,100,35, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Jeu créé durant le "),10,140,25, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("parcours Innovation, "),10,170,25, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("du premier semestre"),10,200,25, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("2024 par : "),10,230,25, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Leynaïck Duthieuw,"),10,260,25, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Charlilou Maes"),10,290,25, Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Mathys Karin-Grisoni"),10,320,25, Fade(DARKGRAY,0.7f));
+
+
+
+    DrawText(TextFormat("CONTROLS :"),(cellSize*0.50*ROW)+ (screenWidth/4)+10, 100 ,35,Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Déplacements : ZQSD"),(cellSize*0.50*ROW)+ (screenWidth/4)+10, 140 ,25,Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Option : ESC"),(cellSize*0.50*ROW)+ (screenWidth/4)+10, 170 ,25,Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Inventaire : E"),(cellSize*0.50*ROW)+ (screenWidth/4)+10, 200 ,25,Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Craft : C"),(cellSize*0.50*ROW)+ (screenWidth/4)+10, 230 ,25,Fade(DARKGRAY,0.7f));
+    DrawText(TextFormat("Map : M"),(cellSize*0.50*ROW)+ (screenWidth/4)+10, 260 ,25,Fade(DARKGRAY,0.7f));
+
+
 }
 
 void CellDraw(Cell cell) {
