@@ -431,7 +431,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
 
     
     // Si en mouvement, vérifier la destination
-    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0  ) {
+    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0 && (grid[srcI][srcJ].up_texture.id ==conveyorTexture.id || grid[srcI][srcJ].up_texture.id ==pipeTexture.id || grid[srcI][srcJ].up_texture.id ==piloneTexture.id) ) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
@@ -445,7 +445,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
         // // Réinitialiser l'objet et l'état du convoyeur
         // conv->textureToMove = (Texture2D){ 0 };
     }
-    else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed){
+    else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[srcI][srcJ].moveable){
          conv->textureToMove=grid[srcI][srcJ].move_texture;
          grid[conv->i][conv->j].move_texture=conv->textureToMove;
     }
@@ -655,6 +655,7 @@ void RemoveForeuse(int posX, int posY) {
                 ListeForeuse[j] = ListeForeuse[j + 1];
             }
             numForeuses--;
+            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -667,6 +668,7 @@ void RemoveFurnace(int posX, int posY) {
                 ListeFurnace[j] = ListeFurnace[j + 1];
             }
             numFurnaces--;
+            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -679,6 +681,7 @@ void RemoveHydraulic(int posX, int posY) {
                 ListeHydraulic[j] = ListeHydraulic[j + 1];
             }
             numHydraulics--;
+            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -691,6 +694,7 @@ void RemoveEttireuse(int posX, int posY) {
                 ListeEttireuse[j] = ListeEttireuse[j + 1];
             }
             numEttireuses--;
+            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -704,6 +708,8 @@ void RemoveSteam(int posX, int posY) {
                 ListeSteam[j] = ListeSteam[j + 1];
             }
             numSteams--;
+           grid[posX][posY].move_texture=(Texture2D){0};
+
             return;
         }
     }
@@ -716,8 +722,10 @@ void RemoveOil(int posX, int posY) {
                 ListeOil[j] = ListeOil[j + 1];
             }
             numOils--;
-            return;
             grid[posX][posY].moveable = true;
+            grid[posX][posY].move_texture=(Texture2D){0};
+            return;
+
         }
     }
 }
@@ -729,7 +737,9 @@ void RemoveConveyor(int posX, int posY){
                 ListeConveyor[j] = ListeConveyor[j + 1];
             }
             grid[posX][posY].moveable = true;
+            grid[posX][posY].move_texture=(Texture2D){0};
             return;
+            
         }
     }
 }
@@ -741,6 +751,8 @@ void RemoveBattery(int posX, int posY){
                 ListeBattery[j] = ListeBattery[j + 1];
             }
             grid[posX][posY].moveable = true;
+           grid[posX][posY].move_texture=(Texture2D){0};
+
             return;
         }
     }
@@ -753,7 +765,13 @@ void Update_Furnace() {
         for (int i = 0; i < numFurnaces; i++) {
             if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
                 if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j,1)) ListeFurnace[i].energy_q++ ;// source d'énergie pas loin
+
+                if (ListeFurnace[i].energy_q > 0) {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=furnaceEffect;}
+                else {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=(Texture2D){0};}
+
                 if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
+                   
+
                     if (ListeFurnace[i].material_id == copperTexture.id) {
                         ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
                         ListeFurnace[i].material_q--;      // Consomme une unité de matériau
@@ -794,6 +812,7 @@ void Update_Furnace() {
                                 //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
                     }
                 } else {
+                    
                     //printf("Four (%d, %d) : pas assez de ressources ou d'énergie\n", ListeFurnace[i].i, ListeFurnace[i].j);
                 }
             }
@@ -808,6 +827,9 @@ void Update_Hydraulic() {
         for (int i = 0; i < numHydraulics; i++) {
             if (ListeHydraulic[i].placed && IndexIsValid(ListeHydraulic[i].i, ListeHydraulic[i].j)) {
                 if (IsEnergieNear(ListeHydraulic[i].i, ListeHydraulic[i].j, 1)) ListeHydraulic[i].energy_q++; // source d'énergie pas loin
+                if (ListeHydraulic[i].energy_q > 0) grid[ListeHydraulic[i].i][ListeHydraulic[i].j].move_texture=pressEffect;
+                else grid[ListeHydraulic[i].i][ListeHydraulic[i].j].move_texture=(Texture2D){0};
+
                 if (ListeHydraulic[i].energy_q > 0 && ListeHydraulic[i].material_q > 0) {
 
                     if (ListeHydraulic[i].material_id == ironLingotTexture.id) {
@@ -837,6 +859,7 @@ void Update_Hydraulic() {
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
                     }
                 }
+
             }
         }
        
@@ -850,7 +873,11 @@ void Update_Ettireuse() {
                 if (IsEnergieNear(ListeEttireuse[i].i, ListeEttireuse[i].j, 1)) ListeEttireuse[i].energy_q++; // source d'énergie pas loin
                 //printf("énergie : %d ",ListeEttireuse[i].energy_q);
                 //printf("matériaux : %d,quantité : %d \n",ListeEttireuse[i].material_id,ListeEttireuse[i].material_q);
+                if (ListeEttireuse[i].energy_q > 0) grid[ListeEttireuse[i].i][ListeEttireuse[i].j].move_texture=stretchEffect;
+                else grid[ListeEttireuse[i].i][ListeEttireuse[i].j].move_texture=(Texture2D){0};
+
                 if (ListeEttireuse[i].energy_q > 0 && ListeEttireuse[i].material_q > 0) {
+                   
                     //printf("Prod de l'étireuse,id = %d,%d \n",ListeEttireuse[i].material_id,ironLingotTexture.id);
                     if (ListeEttireuse[i].material_id == ironLingotTexture.id) {
                         ListeEttireuse[i].energy_q--;        // Consomme une unité d'énergie
@@ -892,6 +919,7 @@ void Update_Steam() {
         for (int i = 0; i < numSteams; i++) {
             if (ListeSteam[i].placed && IndexIsValid(ListeSteam[i].i, ListeSteam[i].j)) {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
+                    grid[ListeSteam[i].i][ListeSteam[i].j].move_texture=steamEffect;
                     if (ListeSteam[i].material_id == waterVeinTexture.id) {
                         if (ListeSteam[i].final_q < 50) {
                             if (ListeSteam[i].energy_id==oilVeinTexture.id){
@@ -916,6 +944,7 @@ void Update_Steam() {
                         }
                     }
                 } else {
+                     grid[ListeSteam[i].i][ListeSteam[i].j].move_texture=(Texture2D){0};
                     //printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
                 }
             }

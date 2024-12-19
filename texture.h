@@ -45,6 +45,10 @@ extern Texture2D sandDust;
 
 extern Texture2D copperCableTexture;
 extern Texture2D lanternTexture;
+extern Texture2D steamEffect;
+extern Texture2D furnaceEffect;
+extern Texture2D pressEffect;
+extern Texture2D stretchEffect;
 
 void InitTexture();
 void UnloadAllTexture();

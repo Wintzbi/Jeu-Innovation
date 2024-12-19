@@ -40,7 +40,10 @@ Texture2D piloneEffectTexture;
 Texture2D batteryTexture;
 Texture2D pressTexture;
 Texture2D lanternTexture;
-
+Texture2D steamEffect;
+Texture2D furnaceEffect;
+Texture2D pressEffect;
+Texture2D stretchEffect;
 
 void InitTexture() {
     //ATTENTION ne pas changer l'ordre car les id deffinissent les identifients des itemps
@@ -80,7 +83,12 @@ void InitTexture() {
     batteryTexture = LoadTexture("assets/battery.png");
     pressTexture = LoadTexture("assets/hydraulic_press.png");
     stretchTexture = LoadTexture("assets/stretching_machine.png");
+
     lanternTexture = LoadTexture("assets/lantern.png");
+    steamEffect = LoadTexture("assets/power_station_effect.png");
+    furnaceEffect= LoadTexture("assets/furnace_effect.png");
+    pressEffect=LoadTexture("assets/hydraulic_press_effect.png");
+    stretchEffect=LoadTexture("assets/stretching_machine_effect.png");
 }
 
 void UnloadAllTexture() {
@@ -123,6 +131,9 @@ void UnloadAllTexture() {
     UnloadTexture(sandDust);
     UnloadTexture(copperCableTexture);
     UnloadTexture(lanternTexture);
-
+    UnloadTexture(steamEffect);
+    UnloadTexture(furnaceEffect);
+    UnloadTexture(pressEffect);
+    UnloadTexture(stretchEffect);
 
 }

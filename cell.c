@@ -121,12 +121,13 @@ void CellDraw(Cell cell) {
     // Dessiner la texture "up" si elle est valide
     if (cell.up_texture.id != 0) {
         DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, rotation, WHITE);
+        if (cell.move_texture.id != 0 && cell.up_texture.id !=defaultTexture.id) {
+        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.0f, WHITE);
+    }
     }
 
     // Dessiner la texture en mouvement si elle est valide
-    if (cell.move_texture.id != 0) {
-        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.0f, WHITE);
-    }
+    
     //DrawMiniMapVersion(cell);
     // Dessiner les contours de la cellule
    // DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
