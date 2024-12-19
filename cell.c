@@ -4,8 +4,8 @@
 #include "stdio.h"
 
 
-const int screenWidth = 1920*0.75;
-const int screenHeight = 1200*0.75;
+const int screenWidth = 1920;
+const int screenHeight = 1200;
 const int cellSize = screenWidth / COL;
 int offsetX = 0;
 int offsetY = 0;
@@ -76,8 +76,15 @@ void DrawMap(){
     }
     DrawRectangle((screenWidth/2)-400, 10, 800, 60, Fade(DARKGRAY,0.7f));
     DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, Fade(WHITE,0.7f));
-    DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-60, 100 + (camera.target.y/2)-40, (cellSize*0.5)*ROW/camera.zoom, (cellSize*0.35)*COL/camera.zoom, RED);
-    
+    if (screenWidth == 1920 && screenHeight == 1200) {
+        DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-80, 100 + (camera.target.y/2)-50, (cellSize*0.54)*ROW/camera.zoom, (cellSize*0.33)*COL/camera.zoom, RED);
+    }
+
+    if (screenWidth == 1920*0.75 && screenHeight == 1200*0.75) {
+        DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-60, 100 + (camera.target.y/2)-40, (cellSize*0.5)*ROW/camera.zoom, (cellSize*0.35)*COL/camera.zoom, RED);
+    }
+
+
     Rectangle screenRec = {
         0,                // Position X (coin supérieur gauche de l'écran)
         0,                // Position Y (coin supérieur gauche de l'écran)
@@ -193,7 +200,7 @@ void InitGrid() {
                 .moveable=true,
                 .isSolid=true,
                 .dir={0,0},
-                .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture
+                .texture = defaultTexture,  // Par défaut, on peut utiliser n'importe quelle texture def
                 .up_texture = (Texture2D){ 0 } ,
                 .move_texture= (Texture2D){ 0 }   
 

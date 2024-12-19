@@ -1,6 +1,8 @@
 #include "menu.h"
 #include "cell.h"
 
+//CODE INUTILE
+
 // Variable pour le bouton Play
 Rectangle playButton;
 
