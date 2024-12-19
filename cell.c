@@ -76,7 +76,7 @@ void DrawMap(){
     }
     DrawRectangle((screenWidth/2)-400, 10, 800, 60, Fade(DARKGRAY,0.7f));
     DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, Fade(WHITE,0.7f));
-    DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-60, 100 + (camera.target.y/2)-40, (cellSize*0.5)*ROW/camera.zoom, (cellSize*0.25)*COL/camera.zoom, RED);
+    DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-60, 100 + (camera.target.y/2)-40, (cellSize*0.5)*ROW/camera.zoom, (cellSize*0.35)*COL/camera.zoom, RED);
     
     Rectangle screenRec = {
         0,                // Position X (coin supérieur gauche de l'écran)
@@ -127,7 +127,8 @@ void CellDraw(Cell cell) {
     }
 
     // Dessiner la texture en mouvement si elle est valide
-    
+
+    //On abandonne la minimap trop relou
     //DrawMiniMapVersion(cell);
     // Dessiner les contours de la cellule
    // DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
@@ -143,11 +144,6 @@ void CellDraw(Cell cell) {
     // Ajouter un filtre noir semi-transparent
     Color nightFilter = { 0, 0, 0,BrightValue }; // Assurez-vous que `value` est entre 0 et `maxOpacity`
     DrawRectangleRec(nightRec, nightFilter);
-
-   
-
-
-
 }
 
 
@@ -185,6 +181,7 @@ int DayAndNight(){
     if (time==40) days ++;
     return  Clamp(BrightValue, 0, maxOpacity);
 }
+
 void InitGrid() {
     for (int i = 0; i < COL; i++) {
         for (int j = 0; j < ROW; j++) {

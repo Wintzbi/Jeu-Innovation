@@ -4,7 +4,7 @@
 #include "inventory.h"
 #include "stat.h"
 
-#define MaxBaseCraft 5
+#define MaxBaseCraft 6
 
 typedef struct Craft {
     char name[20];

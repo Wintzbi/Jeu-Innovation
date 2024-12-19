@@ -14,6 +14,8 @@ bool RightClick=false;
 
 
 void InitInventory() {
+    // Slots de base
+    //ATTENTION BIEN LES NOMER
     inventory[0] = (Item) { "Pilone",piloneTexture, 20 };  
     inventory[1] = (Item) { "Batterie",batteryTexture, 20 };    // Bloc de fer avec 2 unités
     inventory[2] = (Item) { "Charbon",coalTexture, 40 };   // Bloc de charbon avec 20 unités

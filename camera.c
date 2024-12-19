@@ -13,6 +13,7 @@ float minY;
 float maxY;
 
 void InitBounds(int screenWidth, int screenHeight) {
+    // On laisse en x0.75 pour le moment pitié
     if (screenWidth == 1920*0.5 && screenHeight == 1200*0.5) {
         minX = 160.0f*0.5;           // Bord gauche
         maxX = 640.0f;        // Bord droit
@@ -79,6 +80,7 @@ void moveCamera() {
     //printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
 }
 
+// Ne marche pas
 void DrawMiniMap() {
     int miniMapWidth = screenWidth / 2;
     int miniMapHeight = screenHeight / 2;
