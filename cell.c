@@ -45,14 +45,14 @@ void DrawMap(){
             float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
             Texture2D RefTexture = chestTexture; // Définir la texture de référence
             // Calcul de l'échelle pour adapter la texture à la taille de la cellule
-            float scaleX = (float)cellSize*1.0 / RefTexture.width;
-            float scaleY = (float)cellSize*1.0 / RefTexture.height;
+            float scaleX = (float)cellSize*0.50 / RefTexture.width;
+            float scaleY = (float)cellSize*0.50/ RefTexture.height;
             float scale = (scaleX < scaleY) ? scaleX : scaleY; // Garder les proportions
 
             // Rectangle de destination : position centrée dans la cellule
             Rectangle destRec = {
-                cell.i * cellSize + cellSize / 2.0f, // Centre de la cellule en X
-                cell.j * cellSize + cellSize / 2.0f, // Centre de la cellule en Y
+                (screenWidth/4) +cell.i * cellSize*0.50 + cellSize*0.50 / 2.0f, // Centre de la cellule en X
+                100+cell.j * cellSize*0.50 + cellSize*0.50 / 2.0f, // Centre de la cellule en Y
                 RefTexture.width * scale,           // Largeur ajustée avec l'échelle
                 RefTexture.height * scale           // Hauteur ajustée avec l'échelle
             };
@@ -76,7 +76,7 @@ void DrawMap(){
     }
     DrawRectangle((screenWidth/2)-400, 10, 800, 60, Fade(DARKGRAY,0.7f));
     DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, Fade(WHITE,0.7f));
-    DrawRectangleLines(camera.target.x-120, camera.target.y-80, screenWidth/camera.zoom, screenHeight/camera.zoom, RED);
+    DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-60, 100 + (camera.target.y/2)-40, (cellSize*0.5)*ROW/camera.zoom, (cellSize*0.25)*COL/camera.zoom, RED);
     
     Rectangle screenRec = {
         0,                // Position X (coin supérieur gauche de l'écran)
