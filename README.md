@@ -1,6 +1,6 @@
 ![Logo MEMEInc](assets/image.png)
 
-# README - MEMEMinc simulation alpha V1
+# README - MEMEMinc simulation
 Bienvenue dans **MEMEMinc simulation**, un jeu crée par Leynaïck Duthieuw, Charlilou Maes et Mathys Kraim-Grisoni durant le semestre 1 du parcours d'innovation 2024 à l'ESME.
 ---
 
@@ -97,4 +97,3 @@ Voici les commandes de base pour commencer :
 Si vous avez des questions ou des suggestions, n’hésitez pas à contacter notre équipe via [charlilou.maes@gmail.com], [leynaickd@gmail.com].
 
 Bonne chance et amusez-vous bien dans **MEMEinc simulation** !
-
