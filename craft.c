@@ -23,6 +23,7 @@ void InitBaseCraft() {
     BaseCraftInvent[1] = (Craft) {"Lingot Fer",ironLingotTexture, 2,2,{{ "Fer",ironTexture, 2 },{ "Charbon",coalTexture, 2 }}};
     BaseCraftInvent[2] = (Craft) {"Lingot Acier",steelTexture, 2,2,{{ "Lingot Fer",ironLingotTexture, 1 },{ "Charbon",coalTexture, 2 }}};
     
+    
 
     StructCraftInvent[0] = (Craft) {"Barre Fer",ironRodTexture, 2,1,{{ "Lingot Fer",ironLingotTexture, 2 }}};
     StructCraftInvent[1] = (Craft) {"Plaque Fer",ironPlateTexture, 2,1,{{ "Lingot Fer",ironLingotTexture, 2 }}};
@@ -32,15 +33,15 @@ void InitBaseCraft() {
     
     MecaCraftInvent[0] = (Craft) {"Engrenage",gearTexture, 2,1,{{ "Plaque Fer",ironPlateTexture, 1 }}};
     MecaCraftInvent[1] = (Craft) {"Tuyau",pipeTexture, 2,2,{{ "Barre cuivre",copperRodTexture, 1 },{ "Plaque cuivre",copperPlateTexture, 1 }}};
-    MecaCraftInvent[2] = (Craft) {"cable",copperCableTexture, 2,1,{{ "Barre cuivre",copperRodTexture, 1 }}};
+    MecaCraftInvent[2] = (Craft) {"Cable",copperCableTexture, 2,1,{{ "Barre cuivre",copperRodTexture, 1 }}};
 
 
-    ProdCraftInvent[0] = (Craft) {"Tapis",conveyorTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
-    ProdCraftInvent[1] = (Craft) {"Foreuse",drillTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
-    ProdCraftInvent[2] = (Craft) {"Furnace",furnaceTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
-    ProdCraftInvent[3] = (Craft) {"Centrale Vapeur",steamcentralTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
-    ProdCraftInvent[3] = (Craft) {"Coffre",chestTexture, 2,3,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
-    ProdCraftInvent[4] = (Craft) {"Batterie",batteryTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
+    ProdCraftInvent[0] = (Craft) {"Tapis",conveyorTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperCableTexture, 1 },{ "Engrenage",gearTexture, 1 }}};
+    ProdCraftInvent[1] = (Craft) {"Foreuse",drillTexture, 2,4,{{ "Plaque Fer",ironPlateTexture, 2 },{ "Tuyau",pipeTexture, 1 },{ "Engrenage",gearTexture, 1 },{ "Cable",copperCableTexture,1}}};
+    ProdCraftInvent[2] = (Craft) {"Furnace",furnaceTexture, 2,4,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperCableTexture, 1  },{ "Sable",sandDust, 5 },{ "Pierre",rockTexture, 5 }}};
+    ProdCraftInvent[3] = (Craft) {"Centrale Vapeur",steamcentralTexture, 2,6,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperCableTexture, 1  },{ "Sable",sandDust, 5 },{ "Pierre",rockTexture, 5 },{ "Tuyau",pipeTexture, 2 },{ "Engrenage",gearTexture, 1 }}};
+    ProdCraftInvent[3] = (Craft) {"Coffre",chestTexture, 2,2,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 }}};
+    ProdCraftInvent[4] = (Craft) {"Batterie",batteryTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 4 },{ "Barre cuivre",copperRodTexture, 2 },{ "Cable",copperCableTexture, 2 }}};
 
 
     // Initialiser les rectangles des options de menu
