@@ -331,6 +331,12 @@ void Convey(Conveyor *conv) {
                             else if (under_texture.id == coalVeinTexture.id) {
                                 mined_texture = coalTexture;
                             } 
+                            else if (under_texture.id == sandVeinTexture.id) {
+                                mined_texture = sandDust;
+                            } 
+                            else if (under_texture.id == rockVeinTexture.id) {
+                                mined_texture = rockTexture;
+                            } 
                         }
                         else if(conv->texture.id == pipeTexture.id ){ //liquide
                             if (under_texture.id == waterVeinTexture.id) {
@@ -582,6 +588,12 @@ void Update_Foreuse() {
                     ListeForeuse[i].q += 1;
                 }
                 else if (texture.id == oilVeinTexture.id && ListeForeuse[i].q < 100) {
+                    ListeForeuse[i].q += 1;
+                }
+                else if (texture.id == rockVeinTexture.id && ListeForeuse[i].q < 100) {
+                    ListeForeuse[i].q += 1;
+                }
+                else if (texture.id == sandVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
                 //printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
