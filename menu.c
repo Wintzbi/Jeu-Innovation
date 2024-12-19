@@ -7,8 +7,8 @@ Rectangle playButton,LargeButton,LilButton;
 // Fonction pour initialiser le bouton Play
 void ButtonPlay() {
     playButton = (Rectangle) {screenWidth / 2 - 50, screenHeight / 2 - 25, 100, 50 };
-    LargeButton= (Rectangle) {(screenWidth/2)-100, 660, 200, 50 };
-    LilButton= (Rectangle) {screenWidth/2-300, 660, 100, 50 };
+    LargeButton = (Rectangle) {screenWidth / 2 - 100, screenHeight / 2 + 50, 200, 50 }; 
+    LilButton = (Rectangle) {screenWidth / 2 - 300, screenHeight / 2 + 50, 100, 50 };
 }
 
 // Fonction pour dessiner le menu principal
@@ -52,5 +52,5 @@ void DrawMenu(GameScreen *currentScreen) {
     } else {
         DrawRectangleRec(LilButton, GRAY);  // Couleur normale
     }
-    DrawText(TextFormat("x0.75"), LilButton.x + 10, LilButton.y + (LilButton.height / 2) - 10, 19, WHITE);
+    DrawText(TextFormat("1440x900"), LilButton.x + 10, LilButton.y + (LilButton.height / 2) - 10, 19, WHITE);
 }
