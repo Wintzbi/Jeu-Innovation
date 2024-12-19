@@ -51,10 +51,7 @@ Voici les commandes de base pour commencer :
 ## Fonctionnement des objets
 
 ### Foreuse   ![PNG foreuse](assets/drill.png)
-- **Outils** : Chaque outil (pioche, hache, marteau) a une durée de vie et permet de récolter des ressources spécifiques.
-- **Armes** : Varient en puissance, portée et durée de vie. Les armes à distance nécessitent des munitions.
-- **Consommables** : Nourriture et potions pour restaurer votre santé ou vos énergies.
-
+- Puise le cuivre, le fer
 ### Tapis   ![PNG tapis](assets/conveyor.png)
 - Transporte des objets en prenant celui derrière lui.
 - Dépose l'objet dans la machine devant lui.

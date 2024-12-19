@@ -27,7 +27,6 @@ void InitInventory() {
     inventory[8] = (Item) {"Panneau solaire",solarpanelTexture,10};
     inventory[9] = (Item) {"Charbon",coalTexture, 10};
     inventory[10] = (Item) {"Centrale Vapeur",steamcentralTexture, 10};
-    inventory[11] = (Item) {"Eau",waterVeinTexture, 10};
     inventory[12] = (Item) {"Ettireuse",stretchTexture, 10};
     inventory[13] = (Item) {"Hydraulic",pressTexture, 10};
     

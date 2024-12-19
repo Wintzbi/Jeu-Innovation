@@ -192,6 +192,7 @@ void UpdateDir(){
 }
 
 void ActionWithName(char ObjectName[20], int i, int j, int option) {
+    // ATTENTION IL FAUT BIEN LES NOMMER
     if (strcmp(ObjectName, "Tapis") == 0) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
@@ -331,12 +332,6 @@ void Convey(Conveyor *conv) {
                             else if (under_texture.id == coalVeinTexture.id) {
                                 mined_texture = coalTexture;
                             } 
-                            else if (under_texture.id == sandVeinTexture.id) {
-                                mined_texture = sandDust;
-                            } 
-                            else if (under_texture.id == rockVeinTexture.id) {
-                                mined_texture = rockTexture;
-                            } 
                         }
                         else if(conv->texture.id == pipeTexture.id ){ //liquide
                             if (under_texture.id == waterVeinTexture.id) {
@@ -393,9 +388,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                         else if (crafted_textureId == copperPlateTexture.id) {
                             crafted_texture = copperPlateTexture;
                         }
-                        else if (crafted_textureId == gearTexture.id) {
-                            crafted_texture = gearTexture;
-                        }
+
                        
                         conv->textureToMove = crafted_texture;
                         grid[conv->i][conv->j].move_texture=conv->textureToMove;
@@ -421,9 +414,6 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
                         else if (crafted_textureId == ironRodTexture.id) {
                             crafted_texture = ironRodTexture;
                         }
-                        else if (crafted_textureId == copperCableTexture.id) {
-                            crafted_texture = copperCableTexture;
-                        }
                        
                         conv->textureToMove = crafted_texture;
                         grid[conv->i][conv->j].move_texture=conv->textureToMove;
@@ -437,7 +427,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
 
     
     // Si en mouvement, vérifier la destination
-    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0 && (grid[srcI][srcJ].up_texture.id ==conveyorTexture.id || grid[srcI][srcJ].up_texture.id ==pipeTexture.id || grid[srcI][srcJ].up_texture.id ==piloneTexture.id) ) {
+    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0  ) {
         conv->textureToMove=grid[srcI][srcJ].move_texture;
         grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
         grid[conv->i][conv->j].move_texture=conv->textureToMove;
@@ -451,7 +441,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
         // // Réinitialiser l'objet et l'état du convoyeur
         // conv->textureToMove = (Texture2D){ 0 };
     }
-    else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[srcI][srcJ].moveable){
+    else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed){
          conv->textureToMove=grid[srcI][srcJ].move_texture;
          grid[conv->i][conv->j].move_texture=conv->textureToMove;
     }
@@ -463,7 +453,7 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
     }
     //ajoute au four
     else if (grid[destI][destJ].up_texture.id == furnaceTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
-        for (int k = 0; k < numFurnaces; k++) {
+        for (int k = 0; k < numForeuses; k++) {
                 if (ListeFurnace[k].i == destI && ListeFurnace[k].j == destJ) {
                     //ajoute du matériau si il correspond
                         if (ListeFurnace[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
@@ -590,12 +580,6 @@ void Update_Foreuse() {
                 else if (texture.id == oilVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
                 }
-                else if (texture.id == rockVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
-                }
-                else if (texture.id == sandVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
-                }
                 //printf("Foreuse (%d, %d) mise à jour.\n", ListeForeuse[i].i, ListeForeuse[i].j);
             }
         }
@@ -667,7 +651,6 @@ void RemoveForeuse(int posX, int posY) {
                 ListeForeuse[j] = ListeForeuse[j + 1];
             }
             numForeuses--;
-            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -680,7 +663,6 @@ void RemoveFurnace(int posX, int posY) {
                 ListeFurnace[j] = ListeFurnace[j + 1];
             }
             numFurnaces--;
-            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -693,7 +675,6 @@ void RemoveHydraulic(int posX, int posY) {
                 ListeHydraulic[j] = ListeHydraulic[j + 1];
             }
             numHydraulics--;
-            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -706,7 +687,6 @@ void RemoveEttireuse(int posX, int posY) {
                 ListeEttireuse[j] = ListeEttireuse[j + 1];
             }
             numEttireuses--;
-            grid[posX][posY].move_texture=(Texture2D){0};
             return;
         }
     }
@@ -720,8 +700,6 @@ void RemoveSteam(int posX, int posY) {
                 ListeSteam[j] = ListeSteam[j + 1];
             }
             numSteams--;
-           grid[posX][posY].move_texture=(Texture2D){0};
-
             return;
         }
     }
@@ -734,10 +712,8 @@ void RemoveOil(int posX, int posY) {
                 ListeOil[j] = ListeOil[j + 1];
             }
             numOils--;
-            grid[posX][posY].moveable = true;
-            grid[posX][posY].move_texture=(Texture2D){0};
             return;
-
+            grid[posX][posY].moveable = true;
         }
     }
 }
@@ -749,9 +725,7 @@ void RemoveConveyor(int posX, int posY){
                 ListeConveyor[j] = ListeConveyor[j + 1];
             }
             grid[posX][posY].moveable = true;
-            grid[posX][posY].move_texture=(Texture2D){0};
             return;
-            
         }
     }
 }
@@ -763,8 +737,6 @@ void RemoveBattery(int posX, int posY){
                 ListeBattery[j] = ListeBattery[j + 1];
             }
             grid[posX][posY].moveable = true;
-           grid[posX][posY].move_texture=(Texture2D){0};
-
             return;
         }
     }
@@ -777,13 +749,7 @@ void Update_Furnace() {
         for (int i = 0; i < numFurnaces; i++) {
             if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
                 if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j,1)) ListeFurnace[i].energy_q++ ;// source d'énergie pas loin
-
-                if (ListeFurnace[i].energy_q > 0) {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=furnaceEffect;}
-                else {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=(Texture2D){0};}
-
                 if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
-                   
-
                     if (ListeFurnace[i].material_id == copperTexture.id) {
                         ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
                         ListeFurnace[i].material_q--;      // Consomme une unité de matériau
@@ -824,7 +790,6 @@ void Update_Furnace() {
                                 //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
                     }
                 } else {
-                    
                     //printf("Four (%d, %d) : pas assez de ressources ou d'énergie\n", ListeFurnace[i].i, ListeFurnace[i].j);
                 }
             }
@@ -836,20 +801,17 @@ void Update_Furnace() {
 
 void Update_Hydraulic() {
     float currentTime = GetTime();
+    if (currentTime - lastHydraulicTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numHydraulics; i++) {
             if (ListeHydraulic[i].placed && IndexIsValid(ListeHydraulic[i].i, ListeHydraulic[i].j)) {
                 if (IsEnergieNear(ListeHydraulic[i].i, ListeHydraulic[i].j, 1)) ListeHydraulic[i].energy_q++; // source d'énergie pas loin
-                if (ListeHydraulic[i].energy_q > 0) grid[ListeHydraulic[i].i][ListeHydraulic[i].j].move_texture=pressEffect;
-                else grid[ListeHydraulic[i].i][ListeHydraulic[i].j].move_texture=(Texture2D){0};
-
                 if (ListeHydraulic[i].energy_q > 0 && ListeHydraulic[i].material_q > 0) {
-
+                    //printf("Presse en action\n");
                     if (ListeHydraulic[i].material_id == ironLingotTexture.id) {
                         ListeHydraulic[i].energy_q--;        // Consomme une unité d'énergie
                         ListeHydraulic[i].material_q--;     // Consomme une unité de matériau
                         ListeHydraulic[i].final_q++;        // Produit une unité de lingot
                         ListeHydraulic[i].final_id = ironPlateTexture.id;
-
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
 
@@ -858,7 +820,6 @@ void Update_Hydraulic() {
                         ListeHydraulic[i].material_q--;
                         ListeHydraulic[i].final_q++;
                         ListeHydraulic[i].final_id = copperPlateTexture.id;
-
                         if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
                     }
@@ -871,25 +832,22 @@ void Update_Hydraulic() {
                         if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
                     }
                 }
-
             }
         }
-       
+        lastHydraulicTime = currentTime; // Mise à jour du temps pour la prochaine itération
+    }
 }
 
 void Update_Ettireuse() {
     float currentTime = GetTime();
+    if (currentTime - lastEttireuseTime >= 10.0f) { // Vérifie le délai global
         for (int i = 0; i < numEttireuses; i++) {
             //printf("Etireuse trouvé\n");
             if (ListeEttireuse[i].placed && IndexIsValid(ListeEttireuse[i].i, ListeEttireuse[i].j)) {
                 if (IsEnergieNear(ListeEttireuse[i].i, ListeEttireuse[i].j, 1)) ListeEttireuse[i].energy_q++; // source d'énergie pas loin
                 //printf("énergie : %d ",ListeEttireuse[i].energy_q);
                 //printf("matériaux : %d,quantité : %d \n",ListeEttireuse[i].material_id,ListeEttireuse[i].material_q);
-                if (ListeEttireuse[i].energy_q > 0) grid[ListeEttireuse[i].i][ListeEttireuse[i].j].move_texture=stretchEffect;
-                else grid[ListeEttireuse[i].i][ListeEttireuse[i].j].move_texture=(Texture2D){0};
-
                 if (ListeEttireuse[i].energy_q > 0 && ListeEttireuse[i].material_q > 0) {
-                   
                     //printf("Prod de l'étireuse,id = %d,%d \n",ListeEttireuse[i].material_id,ironLingotTexture.id);
                     if (ListeEttireuse[i].material_id == ironLingotTexture.id) {
                         ListeEttireuse[i].energy_q--;        // Consomme une unité d'énergie
@@ -913,7 +871,7 @@ void Update_Ettireuse() {
                         ListeEttireuse[i].energy_q--;
                         ListeEttireuse[i].material_q--;
                         ListeEttireuse[i].final_q++;
-                        ListeEttireuse[i].final_id = copperCableTexture.id;
+                        ListeEttireuse[i].final_id = gearTexture.id;
                         //printf("Production barre cuivre \n");
 
                         if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
@@ -922,7 +880,8 @@ void Update_Ettireuse() {
                 }
             }
         }
-
+        lastEttireuseTime = currentTime; // Mise à jour du temps pour la prochaine itération
+    }
 }
 
 void Update_Steam() {
@@ -931,7 +890,6 @@ void Update_Steam() {
         for (int i = 0; i < numSteams; i++) {
             if (ListeSteam[i].placed && IndexIsValid(ListeSteam[i].i, ListeSteam[i].j)) {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
-                    grid[ListeSteam[i].i][ListeSteam[i].j].move_texture=steamEffect;
                     if (ListeSteam[i].material_id == waterVeinTexture.id) {
                         if (ListeSteam[i].final_q < 50) {
                             if (ListeSteam[i].energy_id==oilVeinTexture.id){
@@ -956,7 +914,6 @@ void Update_Steam() {
                         }
                     }
                 } else {
-                     grid[ListeSteam[i].i][ListeSteam[i].j].move_texture=(Texture2D){0};
                     //printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
                 }
             }
@@ -966,6 +923,7 @@ void Update_Steam() {
     }
 }
 
+//Inutilisé pour le moment
 void Update_Oil() {
     float currentTime = GetTime();
     if (currentTime - lastOilTime >= 20.0f) {
