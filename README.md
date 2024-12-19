@@ -51,7 +51,9 @@ Voici les commandes de base pour commencer :
 ## Fonctionnement des objets
 
 ### Foreuse   ![PNG foreuse](assets/drill.png)
-- Puise le cuivre, le fer
+- Puise le cuivre, le fer et le charbon dans le filon adapté.
+- Puise l'eau et le pétrole.
+
 ### Tapis   ![PNG tapis](assets/conveyor.png)
 - Transporte des objets en prenant celui derrière lui.
 - Dépose l'objet dans la machine devant lui.
@@ -62,37 +64,37 @@ Voici les commandes de base pour commencer :
 - Ne nécessite pas d'énergie.
 
 ### Four   ![PNG four](assets/furnace.png)
-- craft des lingots de cuivre ou de fer avec les minerais et de l'ernergie ou du charbon
-- craft de l'acier à partir de lingoits de fer
+- Transforme les minerais bruts en lingot grâce au charbon et/ou l'électricité.
+- Transforme les lingots de fer en lingot d'argent.
 
-### Presse   ![PNG presse](assets/presse_hydrau_texture.png)
-- craft des plaques d'acier ou de cuivre à partir de lingots
-- craft des engrenage à partir de plaques d'acier
+### Presse   ![PNG presse](assets/hydraulic_press.png)
+- Transforme les lingots en plaque du même métal.
+- Transforme les lingots de fer en engrenage.
 
-### Étireuse   ![PNG étireuse](assets/etireuse_texture.png)
-- craft des barre d'acier ou de cuivre à partir de lingots
-- craft des fils électrique à partir de barres de cuivre
+### Étireuse   ![PNG étireuse](assets/stretching_machine.png)
+- Transforme les lingots en barre du même métal.
+- Transforme les barres de cuivre en câble.
 
-### Centrale   ![PNG centrale](assets/furnace.png)
-- génère de l'énergie avec de l'eau et du charbon ou du pétrole
+### Centrale   ![PNG centrale](assets/power_station.png)
+- Génère de l'énergie à partir d'eau et de charbon (ou de pétrole)
 
 ### Bobine Tesla  ![PNG bobine tesla](assets/coil.png)
-- Transporte 1 d'énergie dans un carré de 3 cases autour d'elle, nécessite d'être placé contre une machine pour l'allimenté
+- Transporte une unité d'énergie dans un carré de 3 cases autour d'elle, nécessite d'être placé contre une machine pour l'allimenter.
 
 ### Batterie  ![PNG batterie](assets/battery.png)
-- stocke jusqu'à 100 énergie
+- Stocke jusqu'à 100 unités énergies.
 
-### Panneau Solaire  ![PNG panneau solaire](assets/furnace.png)
-- génère 1 d'énergie tous les intervals
+### Panneau Solaire  ![PNG panneau solaire](assets/solar_panel.png)
+- Génère une unité d'énergie toutes les demi-secondes.
 
 ### Coffre ![PNG coffre](assets/crate.png)
-- Ajoute à l'inventaire l'objet qu'on lui apporte par convoyeur
+- Ajoute à l'inventaire l'objet qu'on lui apporte par convoyeur.
 
 ---
 
 ## Support et commentaires
 
-Si vous avez des questions ou des suggestions, n’hésitez pas à contacter notre équipe via [charlilou.maes@gmail.com].
+Si vous avez des questions ou des suggestions, n’hésitez pas à contacter notre équipe via [charlilou.maes@gmail.com], [leynaickd@gmail.com].
 
 Bonne chance et amusez-vous bien dans **MEMEinc simulation** !
 
