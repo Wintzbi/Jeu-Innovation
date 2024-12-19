@@ -21,7 +21,7 @@ void UnloadMusic();
 void DrawEscapePage();
 
 // Définir le nombre de musiques dans la liste
-#define NUM_MUSIC_FILES 8
+#define NUM_MUSIC_FILES 9
 // Variable pour les bouttons
 
 // Liste des chemins des musiques (tableau de chaînes de caractères)
