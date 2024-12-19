@@ -97,11 +97,11 @@ void MusicButton() {
     MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
     MusicNextButton = (Rectangle) {(screenWidth/2)+100, 150, 100, 50 };
     MusicShuffleButton = (Rectangle) {(screenWidth/2)+250, 150, 100, 50 };
-    CloseButton=(Rectangle) {(screenWidth/2)-100, 560, 200, 50 };
-    SaveButton=(Rectangle) {screenWidth/2-300, 560, 100, 50 };
-    LoadButton=(Rectangle) {(screenWidth/2)+200, 560, 100, 50 };
-
+    CloseButton= (Rectangle) {(screenWidth/2)-100, 560, 200, 50 };
+    SaveButton= (Rectangle) {screenWidth/2-300, 560, 100, 50 };
+    LoadButton= (Rectangle) {(screenWidth/2)+200, 560, 100, 50 };
 }
+
 void DrawMusicMenu() {
     DrawStat();
     MusicButton();

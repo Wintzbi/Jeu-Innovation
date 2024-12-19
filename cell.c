@@ -4,9 +4,14 @@
 #include "stdio.h"
 
 
-const int screenWidth = 1920;
-const int screenHeight = 1200;
-const int cellSize = screenWidth / COL;
+int screenWidth = 1920;
+int screenHeight = 1080;
+int cellSize;
+
+void update_size(){
+    cellSize = screenWidth / COL;
+}
+
 int offsetX = 0;
 int offsetY = 0;
 float rotation;
@@ -76,7 +81,7 @@ void DrawMap(){
     }
     DrawRectangle((screenWidth/2)-400, 10, 800, 60, Fade(DARKGRAY,0.7f));
     DrawText(TextFormat("MAP"), (screenWidth/2)-390, 11, 60, Fade(WHITE,0.7f));
-    if (screenWidth == 1920 && screenHeight == 1200) {
+    if (screenWidth == 1920 && screenHeight == 1080) {
         DrawRectangleLines((screenWidth/4) +( camera.target.x/2)-80, 100 + (camera.target.y/2)-50, (cellSize*0.54)*ROW/camera.zoom, (cellSize*0.33)*COL/camera.zoom, RED);
     }
 

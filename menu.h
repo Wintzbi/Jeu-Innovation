@@ -6,7 +6,7 @@
 typedef enum GameScreen { MENU = 0, GAME,INVENT,MUSIC,OPTION,CRAFT,MAP } GameScreen;
 
 // Déclaration de la variable globale pour le bouton Play
-extern Rectangle playButton;
+extern Rectangle playButton, LargeButton, LilButton;
 
 // Fonction pour initialiser le bouton Play
 void ButtonPlay();

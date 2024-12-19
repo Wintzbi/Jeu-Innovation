@@ -1,14 +1,14 @@
 #include "menu.h"
 #include "cell.h"
 
-//CODE INUTILE
-
 // Variable pour le bouton Play
-Rectangle playButton;
+Rectangle playButton,LargeButton,LilButton;
 
 // Fonction pour initialiser le bouton Play
 void ButtonPlay() {
     playButton = (Rectangle) {screenWidth / 2 - 50, screenHeight / 2 - 25, 100, 50 };
+    LargeButton= (Rectangle) {(screenWidth/2)-100, 660, 200, 50 };
+    LilButton= (Rectangle) {screenWidth/2-300, 660, 100, 50 };
 }
 
 // Fonction pour dessiner le menu principal
@@ -26,4 +26,31 @@ void DrawMenu(GameScreen *currentScreen) {
     }
 
     DrawText("Play", screenWidth / 2 - 20, screenHeight / 2 - 10, 20, BLACK);
+        if (CheckCollisionPointRec(GetMousePosition(), LargeButton)) {
+        DrawRectangleRec(LargeButton, LIGHTGRAY);  // Couleur survolée
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            screenHeight = 1080;
+            screenWidth = 1920;
+            CloseWindow();
+            InitWindow(screenWidth, screenHeight, "Minc Corp simulation");
+            ButtonPlay();
+        }
+    } else {
+        DrawRectangleRec(LargeButton, GRAY);  // Couleur normale
+    }
+    DrawText(TextFormat("1920x1080"), LargeButton.x + 10, LargeButton.y + (LargeButton.height / 2) - 10, 19, WHITE);
+
+    if (CheckCollisionPointRec(GetMousePosition(), LilButton)) {
+        DrawRectangleRec(LilButton, LIGHTGRAY);  // Couleur survolée
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            screenHeight = 1200 * 0.75;
+            screenWidth = 1920 * 0.75;
+            CloseWindow();
+            InitWindow(screenWidth, screenHeight, "Minc Corp simulation");
+            ButtonPlay();
+        }
+    } else {
+        DrawRectangleRec(LilButton, GRAY);  // Couleur normale
+    }
+    DrawText(TextFormat("x0.75"), LilButton.x + 10, LilButton.y + (LilButton.height / 2) - 10, 19, WHITE);
 }

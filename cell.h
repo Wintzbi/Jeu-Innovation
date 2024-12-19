@@ -48,11 +48,12 @@ extern Generator generators[MAX_GENERATORS];
 extern Filon ListeFilon[NB_FILON];  
 extern Cell grid[ROW][COL];
 
-extern const int screenWidth;
-extern const int screenHeight;
-extern const int cellSize;
+extern int screenWidth;
+extern int screenHeight;
+extern int cellSize;
 
 void CellDraw(Cell cell);
+void update_size();
 bool IndexIsValid(int i, int j);
 void InitGrid();
 void GridDraw();
