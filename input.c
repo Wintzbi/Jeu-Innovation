@@ -761,10 +761,10 @@ void RemoveBattery(int posX, int posY){
 
 void Update_Furnace() {
     float currentTime = GetTime();
-    if (currentTime - lastFurnaceTime >= 10.0f) { // Vérifie le délai global
+    if (currentTime - lastFurnaceTime >= 10.0f) { // Vérifie le délai global c'est ici Charlilou
         for (int i = 0; i < numFurnaces; i++) {
             if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
-                if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j,1)) ListeFurnace[i].energy_q++ ;// source d'énergie pas loin
+                if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j,1)) ListeFurnace[i].energy_q++ ;
 
                 if (ListeFurnace[i].energy_q > 0) {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=furnaceEffect;}
                 else {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=(Texture2D){0};}
@@ -818,7 +818,7 @@ void Update_Furnace() {
             }
             //printf("DEBUG: Four (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].energy_q, ListeFurnace[i].material_q,ListeFurnace[i].energy_id, ListeFurnace[i].material_id);
         }
-        lastFurnaceTime = currentTime; // Mise à jour du temps pour la prochaine itération
+        lastFurnaceTime = currentTime;
     }
 }
 
