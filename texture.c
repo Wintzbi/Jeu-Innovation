@@ -70,6 +70,7 @@ void InitTexture() {
     sandDust = LoadTexture("assets/sand_dust.png");
 
     defaultTexture = LoadTexture("assets/grass_texture.png");
+    
     drillTexture = LoadTexture("assets/drill.png");
     conveyorTexture= LoadTexture("assets/conveyor.png");
     pipeTexture =LoadTexture("assets/pipe.png");

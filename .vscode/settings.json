@@ -10,6 +10,7 @@
         "camera.h": "c",
         "stdio.h": "c",
         "stdlib.h": "c",
-        "input.h": "c"
+        "input.h": "c",
+        "craft.h": "c"
     }
 }
