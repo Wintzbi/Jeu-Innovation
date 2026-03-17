@@ -310,7 +310,7 @@ void MineraiGenerator() {
         int attempts = 0; // Compteur pour les tentatives
 
         while (mineralsPlaced < generators[k].max_number && attempts < 10) { // Tenter de placer 3 minerais avec une limite de tentatives
-            int dirIndex = rand() % 5; // Choisir une direction aléatoire
+            int dirIndex = rand() % 4;
             int newI = generators[k].i + directions[dirIndex][0];
             int newJ = generators[k].j + directions[dirIndex][1];
 

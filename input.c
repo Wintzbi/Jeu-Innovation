@@ -110,6 +110,10 @@ void rightClic() {
 
 void RemoveForeuse(int posX, int posY);
 void RemoveFurnace(int posX, int posY);
+void RemoveHydraulic(int posX, int posY);
+void RemoveEttireuse(int posX, int posY);
+void RemoveSteam(int posX, int posY);
+void RemoveOil(int posX, int posY);
 
 void leftClic() {
     Vector2 mousePos = GetMousePosition();
@@ -152,6 +156,7 @@ void leftClic() {
                 if (ListeForeuse[f].i == posX && ListeForeuse[f].j == posY && ListeForeuse[f].placed) {
                     ListeForeuse[f].placed = false;
                     RemoveForeuse(ListeForeuse[f].i, ListeForeuse[f].j);
+                    grid[posX][posY].moveable = true;
                     break;
                 }
             }
@@ -167,8 +172,36 @@ void leftClic() {
                     ListeConveyor[f].placed = false;
                     grid[posX][posY].dir[0] = 0;
                     grid[posX][posY].dir[1] = 0;
-                    grid[posX][posY].move_texture=(Texture2D){0};
+                    grid[posX][posY].move_texture = (Texture2D){0};
                     RemoveConveyor(ListeConveyor[f].i, ListeConveyor[f].j);
+                    break;
+                }
+            }
+            // Machines processeurs
+            if (isMachine(ListeFurnace, numFurnaces, posX, posY)) {
+                RemoveFurnace(posX, posY);
+                grid[posX][posY].moveable = true;
+            }
+            if (isMachine(ListeHydraulic, numHydraulics, posX, posY)) {
+                RemoveHydraulic(posX, posY);
+                grid[posX][posY].moveable = true;
+            }
+            if (isMachine(ListeEttireuse, numEttireuses, posX, posY)) {
+                RemoveEttireuse(posX, posY);
+                grid[posX][posY].moveable = true;
+            }
+            // Générateurs
+            for (int f = 0; f < numSteams; f++) {
+                if (ListeSteam[f].i == posX && ListeSteam[f].j == posY && ListeSteam[f].placed) {
+                    RemoveSteam(posX, posY);
+                    grid[posX][posY].moveable = true;
+                    break;
+                }
+            }
+            for (int f = 0; f < numOils; f++) {
+                if (ListeOil[f].i == posX && ListeOil[f].j == posY && ListeOil[f].placed) {
+                    RemoveOil(posX, posY);
+                    grid[posX][posY].moveable = true;
                     break;
                 }
             }
@@ -962,18 +995,18 @@ int IsEnergieNear(int x, int y,int range) {
     return 0;
 }
 
-int FindNearestBattery(int x, int y){
-    if (IndexIsValid(x-1,y-1) && IndexIsValid(x+1,y+1)){
+int FindNearestBattery(int x, int y) {
+    if (!IndexIsValid(x - 1, y - 1) || !IndexIsValid(x + 1, y + 1)) return 0;
     for (int k = 0; k < MAX_BATTERY; k++) {
-        if ((ListeBattery[k].i > x-1) && (ListeBattery[k].i < x+1) &&
-    (ListeBattery[k].j > y-1) && (ListeBattery[k].j < y+1)) {
-            if (ListeBattery[k].q>0){
+        if (ListeBattery[k].placed &&
+            ListeBattery[k].i >= x - 1 && ListeBattery[k].i <= x + 1 &&
+            ListeBattery[k].j >= y - 1 && ListeBattery[k].j <= y + 1) {
+            if (ListeBattery[k].q > 0) {
                 ListeBattery[k].q--;
                 return 1;
             }
-            
         }
-    }}
+    }
     return 0;
 }
 
