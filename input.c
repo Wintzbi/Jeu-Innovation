@@ -14,15 +14,15 @@ int option =0;
 int numForeuses = 0;
 float lastForeuseTime;
 
-Furnace ListeFurnace[MAX_FURNACE];
+Machine ListeFurnace[MAX_FURNACE];
 int numFurnaces = 0;
 float lastFurnaceTime;
 
-Hydraulic ListeHydraulic[MAX_HYDRAULIC];
+Machine ListeHydraulic[MAX_HYDRAULIC];
 int numHydraulics = 0;
 float lastHydraulicTime;
 
-Ettireuse ListeEttireuse[MAX_ETTIREUSE];
+Machine ListeEttireuse[MAX_ETTIREUSE];
 int numEttireuses = 0;
 float lastEttireuseTime;
 
@@ -234,17 +234,17 @@ void ActionWithName(char ObjectName[20], int i, int j, int option) {
         }
     } else if (strcmp(ObjectName, "Furnace") == 0) {
         if (numFurnaces < MAX_FURNACE) {
-            ListeFurnace[numFurnaces++] = (Furnace){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_id = 0, .final_q = 0, .placed = true};
+            ListeFurnace[numFurnaces++] = (Machine){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
     } else if (strcmp(ObjectName, "Hydraulic") == 0) {
         if (numHydraulics < MAX_HYDRAULIC) {
-            ListeHydraulic[numHydraulics++] = (Hydraulic){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_id = 0, .final_q = 0, .placed = true};
+            ListeHydraulic[numHydraulics++] = (Machine){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
     } else if (strcmp(ObjectName, "Ettireuse") == 0) {
         if (numEttireuses < MAX_ETTIREUSE) {
-            ListeEttireuse[numEttireuses++] = (Ettireuse){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_id = 0, .final_q = 0, .placed = true};
+            ListeEttireuse[numEttireuses++] = (Machine){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
     } else if (strcmp(ObjectName, "Centrale Vapeur") == 0) {
@@ -602,32 +602,9 @@ bool isForeuse(int posX, int posY) {
     return false;
 }
 
-bool isFurnace(int posX, int posY) {
-    for (int i = 0; i < numFurnaces; i++) {
-        if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool isHydraulic(int posX, int posY) {
-    for (int i = 0; i < numHydraulics; i++) {
-        if (ListeHydraulic[i].i == posX && ListeHydraulic[i].j == posY) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool isEttireuse(int posX, int posY) {
-    for (int i = 0; i < numEttireuses; i++) {
-        if (ListeEttireuse[i].i == posX && ListeEttireuse[i].j == posY) {
-            return true;
-        }
-    }
-    return false;
-}
+bool isFurnace(int posX, int posY)   { return isMachine(ListeFurnace,   numFurnaces,   posX, posY); }
+bool isHydraulic(int posX, int posY) { return isMachine(ListeHydraulic,  numHydraulics, posX, posY); }
+bool isEttireuse(int posX, int posY) { return isMachine(ListeEttireuse,  numEttireuses, posX, posY); }
 
 
 bool isSteam(int posX, int posY) {
@@ -662,42 +639,15 @@ void RemoveForeuse(int posX, int posY) {
 }
 
 void RemoveFurnace(int posX, int posY) {
-    for (int i = 0; i < numFurnaces; i++) {
-        if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY) {
-            for (int j = i; j < numFurnaces - 1; j++) {
-                ListeFurnace[j] = ListeFurnace[j + 1];
-            }
-            numFurnaces--;
-            grid[posX][posY].move_texture=(Texture2D){0};
-            return;
-        }
-    }
+    Remove_Machine(ListeFurnace, &numFurnaces, posX, posY);
 }
 
 void RemoveHydraulic(int posX, int posY) {
-    for (int i = 0; i < numHydraulics; i++) {
-        if (ListeHydraulic[i].i == posX && ListeHydraulic[i].j == posY) {
-            for (int j = i; j < numHydraulics - 1; j++) {
-                ListeHydraulic[j] = ListeHydraulic[j + 1];
-            }
-            numHydraulics--;
-            grid[posX][posY].move_texture=(Texture2D){0};
-            return;
-        }
-    }
+    Remove_Machine(ListeHydraulic, &numHydraulics, posX, posY);
 }
 
 void RemoveEttireuse(int posX, int posY) {
-    for (int i = 0; i < numEttireuses; i++) {
-        if (ListeEttireuse[i].i == posX && ListeEttireuse[i].j == posY) {
-            for (int j = i; j < numEttireuses - 1; j++) {
-                ListeEttireuse[j] = ListeEttireuse[j + 1];
-            }
-            numEttireuses--;
-            grid[posX][posY].move_texture=(Texture2D){0};
-            return;
-        }
-    }
+    Remove_Machine(ListeEttireuse, &numEttireuses, posX, posY);
 }
 
 
@@ -760,157 +710,24 @@ void RemoveBattery(int posX, int posY){
 
 
 void Update_Furnace() {
-    float currentTime = GetTime();
-    if (currentTime - lastFurnaceTime >= 10.0f) { // Vérifie le délai global c'est ici Charlilou
-        for (int i = 0; i < numFurnaces; i++) {
-            if (ListeFurnace[i].placed && IndexIsValid(ListeFurnace[i].i, ListeFurnace[i].j)) {
-                if(IsEnergieNear(ListeFurnace[i].i,ListeFurnace[i].j,1)) ListeFurnace[i].energy_q++ ;
-
-                if (ListeFurnace[i].energy_q > 0) {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=furnaceEffect;}
-                else {grid[ListeFurnace[i].i][ListeFurnace[i].j].move_texture=(Texture2D){0};}
-
-                if (ListeFurnace[i].energy_q > 0 && ListeFurnace[i].material_q > 0) {
-                   
-
-                    if (ListeFurnace[i].material_id == copperTexture.id) {
-                        ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
-                        ListeFurnace[i].material_q--;      // Consomme une unité de matériau
-                        ListeFurnace[i].final_q++;         // Produit une unité de lingot
-                        ListeFurnace[i].final_id = copperLingotTexture.id;
-                        if (ListeFurnace[i].energy_q == 0) {
-                            ListeFurnace[i].energy_id = 0;
-                        }
-                        if (ListeFurnace[i].material_q == 0) {
-                            ListeFurnace[i].material_id = 0;
-                        }
-                        //printf("Four (%d, %d) : production de lingot de cuivre. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
-                    } else if (ListeFurnace[i].material_id == ironTexture.id) {
-                                ListeFurnace[i].energy_q--;         // Consomme une unité d'énergie
-                                ListeFurnace[i].material_q--;      // Consomme une unité de matériau
-                                ListeFurnace[i].final_q++;         // Produit une unité de lingot
-                                ListeFurnace[i].final_id = ironLingotTexture.id;
-                                if (ListeFurnace[i].energy_q == 0) {
-                                    ListeFurnace[i].energy_id = 0;
-                                }
-                                if (ListeFurnace[i].material_q == 0) {
-                                    ListeFurnace[i].material_id = 0;
-                                }
-                                //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
-                    }
-                    //acier
-                    else if (ListeFurnace[i].material_id == ironLingotTexture.id && ListeFurnace[i].energy_q> 3 ) {
-                                ListeFurnace[i].energy_q-=2;         // Consomme deux unité d'énergie
-                                ListeFurnace[i].material_q--;      // Consomme une unité de matériau
-                                ListeFurnace[i].final_q++;         // Produit une unité de lingot
-                                ListeFurnace[i].final_id = steelTexture.id;
-                                if (ListeFurnace[i].energy_q == 0) {
-                                    ListeFurnace[i].energy_id = 0;
-                                }
-                                if (ListeFurnace[i].material_q == 0) {
-                                    ListeFurnace[i].material_id = 0;
-                                }
-                                //printf("Four (%d, %d) : production de lingot de fer. Quantité : %d\n", ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].final_q);
-                    }
-                } else {
-                    
-                    //printf("Four (%d, %d) : pas assez de ressources ou d'énergie\n", ListeFurnace[i].i, ListeFurnace[i].j);
-                }
-            }
-            //printf("DEBUG: Four (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeFurnace[i].i, ListeFurnace[i].j, ListeFurnace[i].energy_q, ListeFurnace[i].material_q,ListeFurnace[i].energy_id, ListeFurnace[i].material_id);
-        }
-        lastFurnaceTime = currentTime;
-    }
+    Update_Processor(ListeFurnace, numFurnaces,
+                     &lastFurnaceTime, 10.0f, true,
+                     furnaceEffect,
+                     FurnaceRecipes, FurnaceRecipeCount);
 }
 
 void Update_Hydraulic() {
-    float currentTime = GetTime();
-        for (int i = 0; i < numHydraulics; i++) {
-            if (ListeHydraulic[i].placed && IndexIsValid(ListeHydraulic[i].i, ListeHydraulic[i].j)) {
-                if (IsEnergieNear(ListeHydraulic[i].i, ListeHydraulic[i].j, 1)) ListeHydraulic[i].energy_q++; // source d'énergie pas loin
-                if (ListeHydraulic[i].energy_q > 0) grid[ListeHydraulic[i].i][ListeHydraulic[i].j].move_texture=pressEffect;
-                else grid[ListeHydraulic[i].i][ListeHydraulic[i].j].move_texture=(Texture2D){0};
-
-                if (ListeHydraulic[i].energy_q > 0 && ListeHydraulic[i].material_q > 0) {
-
-                    if (ListeHydraulic[i].material_id == ironLingotTexture.id) {
-                        ListeHydraulic[i].energy_q--;        // Consomme une unité d'énergie
-                        ListeHydraulic[i].material_q--;     // Consomme une unité de matériau
-                        ListeHydraulic[i].final_q++;        // Produit une unité de lingot
-                        ListeHydraulic[i].final_id = ironPlateTexture.id;
-
-                        if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
-                        if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
-
-                    } else if (ListeHydraulic[i].material_id == copperLingotTexture.id) {
-                        ListeHydraulic[i].energy_q--;
-                        ListeHydraulic[i].material_q--;
-                        ListeHydraulic[i].final_q++;
-                        ListeHydraulic[i].final_id = copperPlateTexture.id;
-
-                        if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
-                        if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
-                    }
-                    else if (ListeHydraulic[i].material_id == ironPlateTexture.id) {
-                        ListeHydraulic[i].energy_q--;
-                        ListeHydraulic[i].material_q--;
-                        ListeHydraulic[i].final_q++;
-                        ListeHydraulic[i].final_id = gearTexture.id;
-                        if (ListeHydraulic[i].energy_q == 0) ListeHydraulic[i].energy_id = 0;
-                        if (ListeHydraulic[i].material_q == 0) ListeHydraulic[i].material_id = 0;
-                    }
-                }
-
-            }
-        }
-       
+    Update_Processor(ListeHydraulic, numHydraulics,
+                     &lastHydraulicTime, 0.0f, false,
+                     pressEffect,
+                     HydraulicRecipes, HydraulicRecipeCount);
 }
 
 void Update_Ettireuse() {
-    float currentTime = GetTime();
-        for (int i = 0; i < numEttireuses; i++) {
-            //printf("Etireuse trouvé\n");
-            if (ListeEttireuse[i].placed && IndexIsValid(ListeEttireuse[i].i, ListeEttireuse[i].j)) {
-                if (IsEnergieNear(ListeEttireuse[i].i, ListeEttireuse[i].j, 1)) ListeEttireuse[i].energy_q++; // source d'énergie pas loin
-                //printf("énergie : %d ",ListeEttireuse[i].energy_q);
-                //printf("matériaux : %d,quantité : %d \n",ListeEttireuse[i].material_id,ListeEttireuse[i].material_q);
-                if (ListeEttireuse[i].energy_q > 0) grid[ListeEttireuse[i].i][ListeEttireuse[i].j].move_texture=stretchEffect;
-                else grid[ListeEttireuse[i].i][ListeEttireuse[i].j].move_texture=(Texture2D){0};
-
-                if (ListeEttireuse[i].energy_q > 0 && ListeEttireuse[i].material_q > 0) {
-                   
-                    //printf("Prod de l'étireuse,id = %d,%d \n",ListeEttireuse[i].material_id,ironLingotTexture.id);
-                    if (ListeEttireuse[i].material_id == ironLingotTexture.id) {
-                        ListeEttireuse[i].energy_q--;        // Consomme une unité d'énergie
-                        ListeEttireuse[i].material_q--;     // Consomme une unité de matériau
-                        ListeEttireuse[i].final_q++;        // Produit une unité de lingot
-                        ListeEttireuse[i].final_id = ironRodTexture.id;
-                        //printf("Production barre fer \n");
-                        if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
-                        if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
-                    } else if (ListeEttireuse[i].material_id == copperLingotTexture.id) {
-                        ListeEttireuse[i].energy_q--;
-                        ListeEttireuse[i].material_q--;
-                        ListeEttireuse[i].final_q++;
-                        ListeEttireuse[i].final_id = copperRodTexture.id;
-                        //printf("Production barre cuivre \n");
-
-                        if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
-                        if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
-                    }
-                    else if (ListeEttireuse[i].material_id == copperRodTexture.id) {
-                        ListeEttireuse[i].energy_q--;
-                        ListeEttireuse[i].material_q--;
-                        ListeEttireuse[i].final_q++;
-                        ListeEttireuse[i].final_id = copperCableTexture.id;
-                        //printf("Production barre cuivre \n");
-
-                        if (ListeEttireuse[i].energy_q == 0) ListeEttireuse[i].energy_id = 0;
-                        if (ListeEttireuse[i].material_q == 0) ListeEttireuse[i].material_id = 0;
-                    }
-                }
-            }
-        }
-
+    Update_Processor(ListeEttireuse, numEttireuses,
+                     &lastEttireuseTime, 0.0f, false,
+                     stretchEffect,
+                     EttireuseRecipes, EttireuseRecipeCount);
 }
 
 void Update_Steam() {
@@ -961,26 +778,16 @@ void Update_Oil() {
             if (ListeOil[i].placed && IndexIsValid(ListeOil[i].i, ListeOil[i].j)) {
                 if (ListeOil[i].energy_q > 0 && ListeOil[i].material_q > 0) {
                     if (ListeOil[i].material_id == waterVeinTexture.id) {
-                        if (ListeSteam[i].final_q < 50) {
-                            ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
-                            ListeSteam[i].material_q--;      // Consomme une unité d'eau
-                            ListeSteam[i].final_q += 8;      // Produit de l'énergie
-                            //printf("Steam (%d, %d) : production. Énergie produite : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
-                        } else {
-                            //printf("Steam (%d, %d) : réservoir plein. Énergie stockée : %d\n", ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+                        if (ListeOil[i].final_q < 50) {
+                            ListeOil[i].energy_q--;
+                            ListeOil[i].material_q--;
+                            ListeOil[i].final_q += 8;
                         }
-                        if (ListeOil[i].energy_q == 0) {
-                            ListeOil[i].energy_id = 0;
-                        }
-                        if (ListeOil[i].material_q == 0) {
-                            ListeOil[i].material_id = 0;
-                        }
+                        if (ListeOil[i].energy_q   == 0) ListeOil[i].energy_id   = 0;
+                        if (ListeOil[i].material_q == 0) ListeOil[i].material_id = 0;
                     }
-                } else {
-                    //printf("Steam (%d, %d) : pas assez de ressources ou d'énergie\n", ListeSteam[i].i, ListeSteam[i].j);
                 }
             }
-            //printf("DEBUG: Steam (%d, %d) - energy_q: %d, material_q: %d, energy_id: %d, material_id: %d\n",ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].energy_q, ListeSteam[i].material_q,ListeSteam[i].energy_id, ListeSteam[i].material_id);
         }
         lastOilTime = currentTime;
     }

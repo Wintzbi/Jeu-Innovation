@@ -28,10 +28,9 @@ extern int directions[4][2];
 
 // Structures
 
-// Foreuse
+// ─── Foreuse (cas particulier : pas de transformation) ───────────────────────
 typedef struct Foreuse {
-    int i;
-    int j;
+    int i, j;
     bool placed;
     int q;
     Texture2D texture;
@@ -41,66 +40,30 @@ extern int numForeuses;
 extern Foreuse* NearForeuse;
 void Update_Foreuse();
 
-// Furnace
-typedef struct Furnace {
-    int i;
-    int j;
-    bool placed;
-    int energy_q;
-    int energy_id;
-    int material_q;
-    int material_id;
-    int final_q;
-    int final_id;
-    Texture2D texture;
-} Furnace;
-extern Furnace ListeFurnace[MAX_FURNACE];
+// ─── Machines processeurs (Furnace, Hydraulic, Ettireuse) ────────────────────
+// Struct unifiée — voir machine.h pour les détails
+#include "machine.h"
+
+extern Machine ListeFurnace[MAX_FURNACE];
 extern int numFurnaces;
 void Update_Furnace();
 
-// Hydraulic
-typedef struct Hydraulic {
-    int i;
-    int j;
-    bool placed;
-    int energy_q;
-    int energy_id;
-    int material_q;
-    int material_id;
-    int final_q;
-    int final_id;
-    Texture2D texture;
-} Hydraulic;
-extern Hydraulic ListeHydraulic[MAX_HYDRAULIC];
+extern Machine ListeHydraulic[MAX_HYDRAULIC];
 extern int numHydraulics;
 void Update_Hydraulic();
 
-// Ettireuse
-typedef struct Ettireuse {
-    int i;
-    int j;
-    bool placed;
-    int energy_q;
-    int energy_id;
-    int material_q;
-    int material_id;
-    int final_q;
-    int final_id;
-    Texture2D texture;
-} Ettireuse;
-extern Ettireuse ListeEttireuse[MAX_ETTIREUSE];
+extern Machine ListeEttireuse[MAX_ETTIREUSE];
 extern int numEttireuses;
 void Update_Ettireuse();
 
-// Steam
+// ─── Générateurs d'énergie (Steam, Oil) ──────────────────────────────────────
+// Logique différente des processeurs : produisent de l'énergie (final_q),
+// pas de matériau de sortie → struct séparée (sans final_id)
 typedef struct Steam {
-    int i;
-    int j;
+    int i, j;
     bool placed;
-    int energy_q;
-    int energy_id;
-    int material_q;
-    int material_id;
+    int energy_q, energy_id;
+    int material_q, material_id;
     int final_q;
     Texture2D texture;
 } Steam;
@@ -109,15 +72,11 @@ extern int numSteams;
 void Update_Steam();
 int FindNearestSteam(int x, int y);
 
-// Oil
 typedef struct Oil {
-    int i;
-    int j;
+    int i, j;
     bool placed;
-    int energy_q;
-    int energy_id;
-    int material_q;
-    int material_id;
+    int energy_q, energy_id;
+    int material_q, material_id;
     int final_q;
     Texture2D texture;
 } Oil;

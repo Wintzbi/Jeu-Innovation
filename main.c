@@ -16,7 +16,7 @@ void CurrentScreenFix(){
         }
 }
 
-//Save load : 
+//Save load
 int save() {
     // Ouvrir le fichier en mode binaire pour écrire
     FILE *file = fopen("save.dat", "wb");
@@ -227,6 +227,7 @@ int main(void) {
             Update_Foreuse();
             Update_Furnace();
             Update_Steam();
+            Update_Oil();
             Update_Hydraulic();
             Update_Ettireuse();
             DrawMiniMap();
@@ -249,4 +250,3 @@ int main(void) {
 
     return 0;
 }
-

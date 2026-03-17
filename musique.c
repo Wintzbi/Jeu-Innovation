@@ -35,9 +35,6 @@ const char* musicFiles[NUM_MUSIC_FILES] = {
 };
 
 void InitMusic() {
-    // Initialiser le système audio
-    chdir("/Users/charliloumaes/Desktop/Esme/Cours/ingé1/innovation/Jeu-Innovation-ley/Jeu-Innovation");
-
     InitAudioDevice();
     
     // Charger la première musique
@@ -251,5 +248,3 @@ void DrawStat(){
     DrawText(TextFormat("Temps écoulé : %d",days), (screenWidth/2)-390, 490, 50, LIGHTGRAY);
 
 }
-
-

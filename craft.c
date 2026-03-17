@@ -36,9 +36,10 @@ void InitBaseCraft() {
     ProdCraftInvent[1] = (Craft) {"Foreuse",drillTexture, 2,4,{{ "Plaque Fer",ironPlateTexture, 2 },{ "Tuyau",pipeTexture, 1 },{ "Engrenage",gearTexture, 1 },{ "Cable",copperCableTexture,1}}};
     ProdCraftInvent[2] = (Craft) {"Furnace",furnaceTexture, 2,4,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperCableTexture, 1  },{ "Sable",sandDust, 5 },{ "Pierre",rockTexture, 5 }}};
     ProdCraftInvent[3] = (Craft) {"Centrale Vapeur",steamcentralTexture, 2,6,{{ "Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperCableTexture, 1  },{ "Sable",sandDust, 5 },{ "Pierre",rockTexture, 5 },{ "Tuyau",pipeTexture, 2 },{ "Engrenage",gearTexture, 1 }}};
-    ProdCraftInvent[3] = (Craft) {"Coffre",chestTexture, 2,2,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 }}};
     ProdCraftInvent[4] = (Craft) {"Batterie",batteryTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 4 },{ "Barre cuivre",copperRodTexture, 2 },{ "Cable",copperCableTexture, 2 }}};
     ProdCraftInvent[5] = (Craft) {"Panneau solaire",solarpanelTexture, 2, 5,{{"Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperRodTexture, 2 },{"Plaque cuivre",copperPlateTexture, 1 },{"Sable",sandDust, 5},{"Acier",steelTexture, 1}}};
+    ProdCraftInvent[6] = (Craft) {"Coffre",chestTexture, 2,2,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 }}};
+    ProdCraftInvent[7] = (Craft) {"Pilone",piloneTexture, 2,3,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Cable",copperRodTexture, 2 }}};
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
@@ -50,7 +51,7 @@ void InitBaseCraft() {
     
 }
 
-Rectangle BaseCraftButton, dropdownMenu[MaxBaseCraft];
+Rectangle dropdownMenu[MaxBaseCraft];
 
 void CraftButton() {
     BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };
@@ -236,10 +237,9 @@ int CheckQuantity(Item comp){
             res+=inventory[i].quantity;
         }
     }
-    if (res<comp.quantity) return -1;
-    else if (res>=comp.quantity) return 1;
-    else if (res>=5*comp.quantity) return 5;
-    return -2;
+    if (res >= 5*comp.quantity) return 5;
+    else if (res >= comp.quantity) return 1;
+    else return -1;
 }
 
 int CraftItem(int q,Craft obj){
