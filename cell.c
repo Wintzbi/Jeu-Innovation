@@ -3,6 +3,8 @@
 #include "camera.h"
 #include "stdio.h"
 
+Cell grid[ROW][COL];
+
 
 int screenWidth = 1920;
 int screenHeight = 1080;
@@ -275,7 +277,7 @@ void InitMineraiGenerator() {
     ListeFilon[6]= OilVein;
     
     // Initialiser chaque générateur
-    srand(time(NULL)); // Utilise le temps actuel comme valeur de départ
+    // srand initialisé dans main.c
     
     for (int k = 0; k < MAX_GENERATORS; k++) {
         int ore_type = (rand() % (sizeof(ListeFilon) / sizeof(ListeFilon[0])));
