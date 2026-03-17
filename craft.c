@@ -39,14 +39,13 @@ void InitBaseCraft() {
     ProdCraftInvent[4] = (Craft) {"Batterie",batteryTexture, 2,3,{{ "Plaque Fer",ironPlateTexture, 4 },{ "Barre cuivre",copperRodTexture, 2 },{ "Cable",copperCableTexture, 2 }}};
     ProdCraftInvent[5] = (Craft) {"Panneau solaire",solarpanelTexture, 2, 5,{{"Plaque Fer",ironPlateTexture, 1 },{ "Cable",copperRodTexture, 2 },{"Plaque cuivre",copperPlateTexture, 1 },{"Sable",sandDust, 5},{"Acier",steelTexture, 1}}};
     ProdCraftInvent[6] = (Craft) {"Coffre",chestTexture, 2,2,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 }}};
-    ProdCraftInvent[7] = (Craft) {"Pilone",piloneTexture, 2,3,{{"Plaque Fer",ironPlateTexture, 1 },{ "Barre cuivre",copperRodTexture, 1 },{ "Cable",copperRodTexture, 2 }}};
 
     // Initialiser les rectangles des options de menu
     for (int i = 0; i < MaxBaseCraft; i++) {
-        BaseDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
-        StructDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
-        MecaDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
-        ProdDropdownMenu[i] = (Rectangle) { screenWidth-(screenWidth-100), 150 + (i + 1) * 50, 200, 40 };
+        BaseDropdownMenu[i] = (Rectangle) { 100, 150 + (i + 1) * 50, 200, 40 };
+        StructDropdownMenu[i] = (Rectangle) { 100, 150 + (i + 1) * 50, 200, 40 };
+        MecaDropdownMenu[i] = (Rectangle) { 100, 150 + (i + 1) * 50, 200, 40 };
+        ProdDropdownMenu[i] = (Rectangle) { 100, 150 + (i + 1) * 50, 200, 40 };
     }
     
 }
@@ -165,15 +164,15 @@ void DrawCraftItem(CraftMenu OldMenu){
         AvaQuantity=CheckQuantity(currentInventory[CraftSelectedItem].components[i]);
 
         if( AvaQuantity>0 ){
-            DrawRectangle(screenWidth-210, 200+70*i, 170, 60, DARKGRAY);
+            DrawRectangle(GetScreenWidth()-210, 200+70*i, 170, 60, DARKGRAY);
         }
         else 
         {
-            DrawRectangle(screenWidth-210, 200+70*i, 170, 60, LIGHTGRAY);
+            DrawRectangle(GetScreenWidth()-210, 200+70*i, 170, 60, LIGHTGRAY);
             IsCraftable=false;
         }
-        DrawText(TextFormat("%d %s",currentInventory[CraftSelectedItem].components[i].quantity,currentInventory[CraftSelectedItem].components[i].name), screenWidth-200, 210+70*i, 15, WHITE);
-        Vector2 pos = { screenWidth-100, 200+70*i};
+        DrawText(TextFormat("%d %s",currentInventory[CraftSelectedItem].components[i].quantity,currentInventory[CraftSelectedItem].components[i].name), GetScreenWidth()-200, 210+70*i, 15, WHITE);
+        Vector2 pos = { GetScreenWidth()-100, 200+70*i};
         DrawTextureEx(currentInventory[CraftSelectedItem].components[i].texture, pos,  0.0f,  2.0f, WHITE);
 
     }

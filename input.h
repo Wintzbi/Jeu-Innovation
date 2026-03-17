@@ -11,6 +11,7 @@
 
 // Déclarations externes générales
 extern int MinPlaceableID;
+extern float rotation;  // Angle du conveyor sélectionné (mis à jour par UpdateDir)
 extern bool inMouvement;
 
 // Constantes

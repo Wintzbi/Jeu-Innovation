@@ -1,5 +1,6 @@
 #include "musique.h"
-#include <stdlib.h>  // Pour rand() et srand()
+#include "global.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 
@@ -13,8 +14,8 @@ bool shouldClose=false;
 
 
 void DrawEscapePage(){
-    DrawRectangle((screenWidth/2)-400, 10, 800, 60, DARKGRAY);
-    DrawText(TextFormat("OPTIONS"), (screenWidth/2)-390, 11, 60, WHITE); // Display quantity
+    DrawRectangle((GetScreenWidth()/2)-400, 10, 800, 60, DARKGRAY);
+    DrawText(TextFormat("OPTIONS"), (GetScreenWidth()/2)-390, 11, 60, WHITE); // Display quantity
     DrawMusic();
     DrawMusicMenu();
 }
@@ -82,21 +83,21 @@ void UnloadMusic() {
 
 
 void DrawMusic(){
-    DrawRectangle((screenWidth/2)-400, 80, 800, 60, DARKGRAY);
-    DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (screenWidth/2)-390, 81, 60, WHITE);
+    DrawRectangle((GetScreenWidth()/2)-400, 80, 800, 60, DARKGRAY);
+    DrawText(TextFormat("Musique : %s",&musicFiles[currentMusicIndex][9]), (GetScreenWidth()/2)-390, 81, 60, WHITE);
 }
 Rectangle MusicPlayButton,MusicPreviewButton,MusicNextButton,MusicShuffleButton,MusicLoopButton,CloseButton,SaveButton,LoadButton;
 
 // Fonction pour initialiser le bouton Play
 void MusicButton() {
-    MusicLoopButton = (Rectangle) {screenWidth/2-350, 150, 100, 50 };
-    MusicPreviewButton = (Rectangle) {screenWidth/2-200, 150, 100, 50 };
-    MusicPlayButton = (Rectangle) {(screenWidth/2)-50, 150, 100, 50 };
-    MusicNextButton = (Rectangle) {(screenWidth/2)+100, 150, 100, 50 };
-    MusicShuffleButton = (Rectangle) {(screenWidth/2)+250, 150, 100, 50 };
-    CloseButton= (Rectangle) {(screenWidth/2)-100, 560, 200, 50 };
-    SaveButton= (Rectangle) {screenWidth/2-300, 560, 100, 50 };
-    LoadButton= (Rectangle) {(screenWidth/2)+200, 560, 100, 50 };
+    MusicLoopButton = (Rectangle) {GetScreenWidth()/2-350, 150, 100, 50 };
+    MusicPreviewButton = (Rectangle) {GetScreenWidth()/2-200, 150, 100, 50 };
+    MusicPlayButton = (Rectangle) {(GetScreenWidth()/2)-50, 150, 100, 50 };
+    MusicNextButton = (Rectangle) {(GetScreenWidth()/2)+100, 150, 100, 50 };
+    MusicShuffleButton = (Rectangle) {(GetScreenWidth()/2)+250, 150, 100, 50 };
+    CloseButton= (Rectangle) {(GetScreenWidth()/2)-100, 560, 200, 50 };
+    SaveButton= (Rectangle) {GetScreenWidth()/2-300, 560, 100, 50 };
+    LoadButton= (Rectangle) {(GetScreenWidth()/2)+200, 560, 100, 50 };
 }
 
 void DrawMusicMenu() {
@@ -241,10 +242,10 @@ void RandomInt() {
 }
 
 void DrawStat(){
-    DrawRectangle((screenWidth/2)-400, 250, 800, 60, DARKGRAY);
-    DrawText(TextFormat("Satistiques"), (screenWidth/2)-390, 250, 60, WHITE);
-    DrawText(TextFormat("Craft : %d",craftedObjects), (screenWidth/2)-390, 350, 50, LIGHTGRAY);
-    DrawText(TextFormat("Objets ramassé : %d",pickedObject), (screenWidth/2)-390, 420, 50, LIGHTGRAY);
-    DrawText(TextFormat("Temps écoulé : %d",days), (screenWidth/2)-390, 490, 50, LIGHTGRAY);
+    DrawRectangle((GetScreenWidth()/2)-400, 250, 800, 60, DARKGRAY);
+    DrawText(TextFormat("Satistiques"), (GetScreenWidth()/2)-390, 250, 60, WHITE);
+    DrawText(TextFormat("Craft : %d",craftedObjects), (GetScreenWidth()/2)-390, 350, 50, LIGHTGRAY);
+    DrawText(TextFormat("Objets ramassé : %d",pickedObject), (GetScreenWidth()/2)-390, 420, 50, LIGHTGRAY);
+    DrawText(TextFormat("Temps écoulé : %d",days), (GetScreenWidth()/2)-390, 490, 50, LIGHTGRAY);
 
 }

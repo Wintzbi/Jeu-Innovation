@@ -13,6 +13,7 @@
 #include "craft.h"
 #include "camera.h"
 #include "stat.h"
+#include "ui.h"
 #include <time.h>
 
 extern GameScreen currentScreen;

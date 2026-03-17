@@ -10,7 +10,6 @@
 #define MAX_GENERATORS 200
 #define NB_FILON 7
 
-extern float rotation;
 
 typedef struct Cell {
     int i;
@@ -60,7 +59,6 @@ void GridDraw();
 void InitMineraiGenerator();
 void MineraiGenerator();
 int GetDirectionAngle(int direction[2]);
-void DrawMap();
 int DayAndNight();
 
 
