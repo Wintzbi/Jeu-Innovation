@@ -13,27 +13,18 @@ float minY;
 float maxY;
 
 void InitBounds(int screenWidth, int screenHeight) {
-    // On laisse en x0.75 pour le moment pitié
-    if (screenWidth == 1920*0.5 && screenHeight == 1200*0.5) {
-        minX = 160.0f*0.5;           // Bord gauche
-        maxX = 640.0f;        // Bord droit
-        minY = 100.0f*0.5;           // Bord en haut
-        maxY = 700.0f;        // Bord en bas
-    }
+    float gridW = COL * (float)cellSize;
+    float gridH = ROW * (float)cellSize;
 
-    if (screenWidth == 1920 && screenHeight == 1080) {
-        minX = 160.0f;           // Bord gauche
-        maxX = 1640;        // Bord droit
-        minY = 100.0f;           // Bord en haut
-        maxY = 1700;        // Bord en bass
-    }
+    // Le target de la caméra est son centre — on soustrait le demi-écran
+    // en coordonnées monde (screenSize / zoom) pour rester dans la grille
+    float halfW = screenWidth  / (2.0f * camera.zoom);
+    float halfH = screenHeight / (2.0f * camera.zoom);
 
-    if (screenWidth == 1920*0.75 && screenHeight == 1200*0.75) {
-        minX = 160.0f*0.75;           // Bord gauche
-        maxX = 1280.0f;        // Bord droit
-        minY = 100.0f*0.75;           // Bord en haut
-        maxY = 1325.0f;        // Bord en bas
-    }
+    minX = halfW;
+    maxX = gridW - halfW;
+    minY = halfH;
+    maxY = gridH - halfH;
 }
 
 

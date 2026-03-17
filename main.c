@@ -41,15 +41,15 @@ int save() {
 
     // Sauvegarder le nombre de furnaces et la liste
     fwrite(&numFurnaces, sizeof(int), 1, file);  // Sauvegarder le nombre de furnaces
-    fwrite(ListeFurnace, sizeof(Furnace), numFurnaces, file);  // Sauvegarder les furnaces
+    fwrite(ListeFurnace, sizeof(Machine), numFurnaces, file);  // Sauvegarder les furnaces
 
     // Sauvegarder le nombre d'hydraulics et la liste
     fwrite(&numHydraulics, sizeof(int), 1, file);  // Sauvegarder le nombre d'hydraulics
-    fwrite(ListeHydraulic, sizeof(Hydraulic), numHydraulics, file);  // Sauvegarder les hydraulics
+    fwrite(ListeHydraulic, sizeof(Machine), numHydraulics, file);  // Sauvegarder les hydraulics
 
     // Sauvegarder le nombre d'ettireuses et la liste
     fwrite(&numEttireuses, sizeof(int), 1, file);  // Sauvegarder le nombre d'ettireuses
-    fwrite(ListeEttireuse, sizeof(Ettireuse), numEttireuses, file);  // Sauvegarder les ettireuses
+    fwrite(ListeEttireuse, sizeof(Machine), numEttireuses, file);  // Sauvegarder les ettireuses
 
     // Sauvegarder le nombre de steams et la liste
     fwrite(&numSteams, sizeof(int), 1, file);  // Sauvegarder le nombre de steams
@@ -94,15 +94,15 @@ int load() {
 
     // Lire le nombre de furnaces et la liste
     fread(&numFurnaces, sizeof(int), 1, file);  // Lire le nombre de furnaces
-    fread(ListeFurnace, sizeof(Furnace), numFurnaces, file);  // Lire les furnaces
+    fread(ListeFurnace, sizeof(Machine), numFurnaces, file);  // Lire les furnaces
 
     // Lire le nombre d'hydraulics et la liste
     fread(&numHydraulics, sizeof(int), 1, file);  // Lire le nombre d'hydraulics
-    fread(ListeHydraulic, sizeof(Hydraulic), numHydraulics, file);  // Lire les hydraulics
+    fread(ListeHydraulic, sizeof(Machine), numHydraulics, file);  // Lire les hydraulics
 
     // Lire le nombre d'ettireuses et la liste
     fread(&numEttireuses, sizeof(int), 1, file);  // Lire le nombre d'ettireuses
-    fread(ListeEttireuse, sizeof(Ettireuse), numEttireuses, file);  // Lire les ettireuses
+    fread(ListeEttireuse, sizeof(Machine), numEttireuses, file);  // Lire les ettireuses
 
     // Lire le nombre de steams et la liste
     fread(&numSteams, sizeof(int), 1, file);  // Lire le nombre de steams
@@ -134,8 +134,19 @@ void InitGame() {
 }
 
 int main(void) {
+    // Fenêtre temporaire pour pouvoir appeler GetMonitorWidth
+    InitWindow(1280, 800, "Minc Corp Simulation");
+    int monW = GetMonitorWidth(0);
+    int monH = GetMonitorHeight(0);
+    // Choisir la plus grande résolution qui tient dans le moniteur
+    if      (monW >= 1920 && monH >= 1080) { screenWidth = 1920; screenHeight = 1080; }
+    else if (monW >= 1440 && monH >=  900) { screenWidth = 1440; screenHeight =  900; }
+    else                                   { screenWidth = 1280; screenHeight =  800; }
+    if (screenWidth != 1280 || screenHeight != 800) {
+        CloseWindow();
+        InitWindow(screenWidth, screenHeight, "Minc Corp Simulation");
+    }
     update_size();
-    InitWindow(screenWidth, screenHeight, "Minc Corp simulation with inventory");
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
 
     ButtonPlay(); // Initialiser le bouton Play
