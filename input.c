@@ -764,14 +764,17 @@ int AddInInvent(int q, Texture2D texture) {
 
 const char* FindName(Texture2D textureRef)
 {
-    for (int k=0;k< MaxBaseCraft;k++){
-        if(BaseCraftInvent[k].texture.id==textureRef.id) return BaseCraftInvent[k].name;
-        if(StructCraftInvent[k].texture.id==textureRef.id) return StructCraftInvent[k].name;
-        if(MecaCraftInvent[k].texture.id==textureRef.id) return MecaCraftInvent[k].name;
-        if(ProdCraftInvent[k].texture.id==textureRef.id) return ProdCraftInvent[k].name;
-
+    // Base, Struct, Meca ont MaxBaseCraft items
+    for (int k = 0; k < MaxBaseCraft; k++) {
+        if (BaseCraftInvent[k].texture.id  == textureRef.id) return BaseCraftInvent[k].name;
+        if (StructCraftInvent[k].texture.id == textureRef.id) return StructCraftInvent[k].name;
+        if (MecaCraftInvent[k].texture.id  == textureRef.id) return MecaCraftInvent[k].name;
     }
-
+    // ProdCraft peut avoir plus d'items que MaxBaseCraft — on cherche jusqu'au nom vide
+    for (int k = 0; k < MaxBaseCraft * 2; k++) {
+        if (ProdCraftInvent[k].name[0] == '\0') break;
+        if (ProdCraftInvent[k].texture.id == textureRef.id) return ProdCraftInvent[k].name;
+    }
     return " ";
 }
 
@@ -918,14 +921,14 @@ void interraction(int posX, int posY) {
             if (ListeOil[i].i == posX && ListeOil[i].j == posY) {
                 if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == oilVeinTexture.id) {
                     inventory[selectedItem].quantity--;
-                    ListeSteam[i].energy_q++;
-                    ListeSteam[i].energy_id = oilVeinTexture.id;
+                    ListeOil[i].energy_q++;
+                    ListeOil[i].energy_id = oilVeinTexture.id;
                 }
                 else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == waterVeinTexture.id) {
-                    if (ListeSteam[i].material_id == 0 || ListeSteam[i].material_id == waterVeinTexture.id) {
+                    if (ListeOil[i].material_id == 0 || ListeOil[i].material_id == waterVeinTexture.id) {
                         inventory[selectedItem].quantity--;
-                        ListeSteam[i].material_q++;
-                        ListeSteam[i].material_id = waterVeinTexture.id;
+                        ListeOil[i].material_q++;
+                        ListeOil[i].material_id = waterVeinTexture.id;
                     }
                 }
             }
