@@ -1,4 +1,5 @@
 #include "global.h"
+#include "texture_registry.h"
 
 GameScreen currentScreen = MENU;
 bool isInventoryScreenOpen = false;
@@ -16,115 +17,229 @@ void CurrentScreenFix(){
         }
 }
 
-//Save load
+// ─── Helpers save/load ───────────────────────────────────────────────────────
+// Écrit/lit un int dans le fichier (texture index ou valeur simple)
+#define WINT(v)  { int _v=(v); fwrite(&_v, sizeof(int), 1, file); }
+#define RINT(v)  fread(&(v), sizeof(int), 1, file)
+
+// Convertit un OpenGL texture.id en index logique du registre
+// (pour les champs material_id / energy_id / final_id qui stockent des .id GPU)
+static int RawIdToIdx(unsigned int rawId) {
+    if (rawId == 0) return TEX_NONE;
+    Texture2D t = { .id = rawId };
+    return TexToIdx(t);
+}
+
+// ─── save() ──────────────────────────────────────────────────────────────────
 int save() {
-    // Ouvrir le fichier en mode binaire pour écrire
     FILE *file = fopen("save.dat", "wb");
-    if (file == NULL) {
-        perror("Erreur d'ouverture du fichier");
-        return 1;
-    }
+    if (!file) { perror("save"); return 1; }
 
-    // Sauvegarder le nombre de cellules de la grille
+    // Version du format — permet de détecter les saves incompatibles
+    int version = 2;
+    WINT(version);
+
+    // Grille : chaque cellule sérialise ses 3 textures en indices logiques
     int gridSize = ROW * COL;
-    fwrite(&gridSize, sizeof(int), 1, file);  // Sauvegarder la taille de la grille (ROW * COL)
+    WINT(gridSize);
+    for (int i = 0; i < COL; i++) {
+        for (int j = 0; j < ROW; j++) {
+            Cell *c = &grid[i][j];
+            WINT(c->i);  WINT(c->j);
+            WINT((int)c->placed);  WINT((int)c->pickable);
+            WINT((int)c->moveable); WINT((int)c->isSolid);
+            WINT(c->dir[0]);  WINT(c->dir[1]);
+            WINT(TexToIdx(c->texture));
+            WINT(TexToIdx(c->up_texture));
+            WINT(TexToIdx(c->move_texture));
+        }
+    }
 
-    // Sauvegarder la grille
-    fwrite(grid, sizeof(Cell), gridSize, file);  // Sauvegarder toutes les cellules de la grille
+    // Inventaire : Item contient une Texture2D mais pas de handle critique
+    // (les items sont recréés par nom au craft — on sauvegarde quand même l'index)
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        fwrite(inventory[i].name, sizeof(char), 20, file);
+        WINT(TexToIdx(inventory[i].texture));
+        WINT(inventory[i].quantity);
+    }
 
-    // Sauvegarder l'inventaire
-    fwrite(inventory, sizeof(Item), INVENTORY_SIZE, file);  // Sauvegarder l'inventaire
+    // Foreuses : pas de texture de production, juste position + quantité
+    WINT(numForeuses);
+    for (int i = 0; i < numForeuses; i++) {
+        WINT(ListeForeuse[i].i);  WINT(ListeForeuse[i].j);
+        WINT((int)ListeForeuse[i].placed);
+        WINT(ListeForeuse[i].q);
+    }
 
-    // Sauvegarder le nombre de foreuses et la liste
-    fwrite(&numForeuses, sizeof(int), 1, file);  // Sauvegarder le nombre de foreuses
-    fwrite(ListeForeuse, sizeof(Foreuse), numForeuses, file);  // Sauvegarder les foreuses
+    // Machines processeurs (Furnace, Hydraulic, Ettireuse)
+    // material_id / energy_id / final_id sont des .id OpenGL → convertis en index
+    #define SAVE_MACHINES(list, count) do { \
+        WINT(count); \
+        for (int i = 0; i < (count); i++) { \
+            WINT((list)[i].i);  WINT((list)[i].j); \
+            WINT((int)(list)[i].placed); \
+            WINT((list)[i].energy_q);  WINT(RawIdToIdx((list)[i].energy_id)); \
+            WINT((list)[i].material_q);WINT(RawIdToIdx((list)[i].material_id)); \
+            WINT((list)[i].final_q);   WINT(RawIdToIdx((list)[i].final_id)); \
+        } \
+    } while(0)
 
-    // Sauvegarder le nombre de furnaces et la liste
-    fwrite(&numFurnaces, sizeof(int), 1, file);  // Sauvegarder le nombre de furnaces
-    fwrite(ListeFurnace, sizeof(Machine), numFurnaces, file);  // Sauvegarder les furnaces
+    SAVE_MACHINES(ListeFurnace,   numFurnaces);
+    SAVE_MACHINES(ListeHydraulic, numHydraulics);
+    SAVE_MACHINES(ListeEttireuse, numEttireuses);
+    #undef SAVE_MACHINES
 
-    // Sauvegarder le nombre d'hydraulics et la liste
-    fwrite(&numHydraulics, sizeof(int), 1, file);  // Sauvegarder le nombre d'hydraulics
-    fwrite(ListeHydraulic, sizeof(Machine), numHydraulics, file);  // Sauvegarder les hydraulics
+    // Générateurs (Steam, Oil) — même logique, pas de final_id
+    #define SAVE_GENERATORS(list, count) do { \
+        WINT(count); \
+        for (int i = 0; i < (count); i++) { \
+            WINT((list)[i].i);  WINT((list)[i].j); \
+            WINT((int)(list)[i].placed); \
+            WINT((list)[i].energy_q);  WINT(RawIdToIdx((list)[i].energy_id)); \
+            WINT((list)[i].material_q);WINT(RawIdToIdx((list)[i].material_id)); \
+            WINT((list)[i].final_q); \
+        } \
+    } while(0)
 
-    // Sauvegarder le nombre d'ettireuses et la liste
-    fwrite(&numEttireuses, sizeof(int), 1, file);  // Sauvegarder le nombre d'ettireuses
-    fwrite(ListeEttireuse, sizeof(Machine), numEttireuses, file);  // Sauvegarder les ettireuses
+    SAVE_GENERATORS(ListeSteam, numSteams);
+    SAVE_GENERATORS(ListeOil,   numOils);
+    #undef SAVE_GENERATORS
 
-    // Sauvegarder le nombre de steams et la liste
-    fwrite(&numSteams, sizeof(int), 1, file);  // Sauvegarder le nombre de steams
-    fwrite(ListeSteam, sizeof(Steam), numSteams, file);  // Sauvegarder les steams
+    // Convoyeurs
+    for (int i = 0; i < MAX_CONVEYOR; i++) {
+        WINT(ListeConveyor[i].i);  WINT(ListeConveyor[i].j);
+        WINT(ListeConveyor[i].dir[0]);  WINT(ListeConveyor[i].dir[1]);
+        WINT((int)ListeConveyor[i].placed);
+        WINT((int)ListeConveyor[i].power);
+        WINT(TexToIdx(ListeConveyor[i].texture));
+        WINT((int)ListeConveyor[i].inMouvement);
+        WINT(TexToIdx(ListeConveyor[i].textureToMove));
+    }
 
-    // Sauvegarder le nombre d'oils et la liste
-    fwrite(&numOils, sizeof(int), 1, file);  // Sauvegarder le nombre d'oils
-    fwrite(ListeOil, sizeof(Oil), numOils, file);  // Sauvegarder les oils
+    // Batteries
+    for (int i = 0; i < MAX_BATTERY; i++) {
+        WINT(ListeBattery[i].i);  WINT(ListeBattery[i].j);
+        WINT(ListeBattery[i].q);
+        WINT((int)ListeBattery[i].placed);
+    }
 
-    // Sauvegarder la liste des conveyors
-    fwrite(ListeConveyor, sizeof(Conveyor), MAX_CONVEYOR, file);  // Sauvegarder les conveyors
-
-    // Sauvegarder la liste des batteries
-    fwrite(ListeBattery, sizeof(Battery), MAX_BATTERY, file);  // Sauvegarder les batteries
+    // Stats
+    WINT(days);
 
     fclose(file);
     return 0;
 }
 
-
+// ─── load() ──────────────────────────────────────────────────────────────────
 int load() {
-    // Ouvrir le fichier en mode binaire pour lire
     FILE *file = fopen("save.dat", "rb");
-    if (file == NULL) {
-        perror("Erreur d'ouverture du fichier");
+    if (!file) { perror("load"); return 1; }
+
+    int version;
+    RINT(version);
+    if (version != 2) {
+        printf("Save incompatible (version %d), ignoré\n", version);
+        fclose(file);
         return 1;
     }
 
-    // Lire la taille de la grille
     int gridSize;
-    fread(&gridSize, sizeof(int), 1, file);
+    RINT(gridSize);
+    for (int i = 0; i < COL; i++) {
+        for (int j = 0; j < ROW; j++) {
+            Cell *c = &grid[i][j];
+            int ti, tup, tmove, placed, pickable, moveable, isSolid;
+            RINT(c->i);  RINT(c->j);
+            RINT(placed);   c->placed   = (bool)placed;
+            RINT(pickable); c->pickable = (bool)pickable;
+            RINT(moveable); c->moveable = (bool)moveable;
+            RINT(isSolid);  c->isSolid  = (bool)isSolid;
+            RINT(c->dir[0]);  RINT(c->dir[1]);
+            RINT(ti);    c->texture      = IdxToTex(ti);
+            RINT(tup);   c->up_texture   = IdxToTex(tup);
+            RINT(tmove); c->move_texture = IdxToTex(tmove);
+        }
+    }
 
-    // Lire la grille
-    fread(grid, sizeof(Cell), gridSize, file);  // Lire les cellules de la grille
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        int tidx;
+        fread(inventory[i].name, sizeof(char), 20, file);
+        RINT(tidx); inventory[i].texture = IdxToTex(tidx);
+        RINT(inventory[i].quantity);
+    }
 
-    // Lire l'inventaire
-    fread(inventory, sizeof(Item), INVENTORY_SIZE, file);  // Lire l'inventaire
+    RINT(numForeuses);
+    for (int i = 0; i < numForeuses; i++) {
+        RINT(ListeForeuse[i].i);  RINT(ListeForeuse[i].j);
+        int fp; RINT(fp); ListeForeuse[i].placed = (bool)fp;
+        RINT(ListeForeuse[i].q);
+        ListeForeuse[i].texture = drillTexture;
+    }
 
-    // Lire le nombre de foreuses et la liste
-    fread(&numForeuses, sizeof(int), 1, file);  // Lire le nombre de foreuses
-    fread(ListeForeuse, sizeof(Foreuse), numForeuses, file);  // Lire les foreuses
+    // Machines processeurs — reconvertit les index en .id OpenGL courants
+    #define LOAD_MACHINES(list, count) do { \
+        RINT(count); \
+        for (int i = 0; i < (count); i++) { \
+            int ei, mi, fi, placed; \
+            RINT((list)[i].i);  RINT((list)[i].j); \
+            RINT(placed); (list)[i].placed = (bool)placed; \
+            RINT((list)[i].energy_q);  RINT(ei); (list)[i].energy_id   = IdxToTex(ei).id; \
+            RINT((list)[i].material_q);RINT(mi); (list)[i].material_id = IdxToTex(mi).id; \
+            RINT((list)[i].final_q);   RINT(fi); (list)[i].final_id    = IdxToTex(fi).id; \
+        } \
+    } while(0)
 
-    // Lire le nombre de furnaces et la liste
-    fread(&numFurnaces, sizeof(int), 1, file);  // Lire le nombre de furnaces
-    fread(ListeFurnace, sizeof(Machine), numFurnaces, file);  // Lire les furnaces
+    LOAD_MACHINES(ListeFurnace,   numFurnaces);
+    LOAD_MACHINES(ListeHydraulic, numHydraulics);
+    LOAD_MACHINES(ListeEttireuse, numEttireuses);
+    #undef LOAD_MACHINES
 
-    // Lire le nombre d'hydraulics et la liste
-    fread(&numHydraulics, sizeof(int), 1, file);  // Lire le nombre d'hydraulics
-    fread(ListeHydraulic, sizeof(Machine), numHydraulics, file);  // Lire les hydraulics
+    #define LOAD_GENERATORS(list, count) do { \
+        RINT(count); \
+        for (int i = 0; i < (count); i++) { \
+            int ei, mi, placed; \
+            RINT((list)[i].i);  RINT((list)[i].j); \
+            RINT(placed); (list)[i].placed = (bool)placed; \
+            RINT((list)[i].energy_q);  RINT(ei); (list)[i].energy_id   = IdxToTex(ei).id; \
+            RINT((list)[i].material_q);RINT(mi); (list)[i].material_id = IdxToTex(mi).id; \
+            RINT((list)[i].final_q); \
+        } \
+    } while(0)
 
-    // Lire le nombre d'ettireuses et la liste
-    fread(&numEttireuses, sizeof(int), 1, file);  // Lire le nombre d'ettireuses
-    fread(ListeEttireuse, sizeof(Machine), numEttireuses, file);  // Lire les ettireuses
+    LOAD_GENERATORS(ListeSteam, numSteams);
+    LOAD_GENERATORS(ListeOil,   numOils);
+    #undef LOAD_GENERATORS
 
-    // Lire le nombre de steams et la liste
-    fread(&numSteams, sizeof(int), 1, file);  // Lire le nombre de steams
-    fread(ListeSteam, sizeof(Steam), numSteams, file);  // Lire les steams
+    for (int i = 0; i < MAX_CONVEYOR; i++) {
+        int ttex, ttomove;
+        RINT(ListeConveyor[i].i);  RINT(ListeConveyor[i].j);
+        RINT(ListeConveyor[i].dir[0]);  RINT(ListeConveyor[i].dir[1]);
+        int cp, cpo; RINT(cp); ListeConveyor[i].placed = (bool)cp;
+        RINT(cpo); ListeConveyor[i].power = (bool)cpo;
+        RINT(ttex);    ListeConveyor[i].texture       = IdxToTex(ttex);
+        int cm; RINT(cm); ListeConveyor[i].inMouvement = (bool)cm;
+        RINT(ttomove); ListeConveyor[i].textureToMove = IdxToTex(ttomove);
+    }
 
-    // Lire le nombre d'oils et la liste
-    fread(&numOils, sizeof(int), 1, file);  // Lire le nombre d'oils
-    fread(ListeOil, sizeof(Oil), numOils, file);  // Lire les oils
+    for (int i = 0; i < MAX_BATTERY; i++) {
+        RINT(ListeBattery[i].i);  RINT(ListeBattery[i].j);
+        RINT(ListeBattery[i].q);
+        int bp; RINT(bp); ListeBattery[i].placed = (bool)bp;
+        ListeBattery[i].texture = batteryTexture;
+    }
 
-    // Lire la liste des conveyors
-    fread(ListeConveyor, sizeof(Conveyor), MAX_CONVEYOR, file);  // Lire les conveyors
-
-    // Lire la liste des batteries
-    fread(ListeBattery, sizeof(Battery), MAX_BATTERY, file);  // Lire les batteries
-
+    RINT(days);
 
     fclose(file);
     return 0;
 }
+
+#undef WINT
+#undef RINT
 
 void InitGame() {
     InitTexture();
+    InitTextureRegistry();  // doit être appelé juste après InitTexture()
     InitGrid();
     InitMusic();
     InitInventory();  // Initialiser l'inventaire avec des textures et des quantités d'exemple

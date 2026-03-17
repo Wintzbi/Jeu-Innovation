@@ -20,7 +20,7 @@ endif
 
 # Liste des fichiers objets
 
-OBJS = cell.o inventory.o texture.o input.o menu.o musique.o camera.o craft.o stat.o main.o machine.o
+OBJS = cell.o inventory.o texture.o input.o menu.o musique.o camera.o craft.o stat.o main.o machine.o texture_registry.o
 
 # Compilation des fichiers objets
 %.o: %.c
