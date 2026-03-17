@@ -52,7 +52,7 @@ extern int screenWidth;
 extern int screenHeight;
 extern int cellSize;
 
-void CellDraw(Cell cell);
+void CellDraw(Cell cell, int brightValue);
 void update_size();
 bool IndexIsValid(int i, int j);
 void InitGrid();

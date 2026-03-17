@@ -123,59 +123,41 @@ void DrawMap(){
 
 }
 
-void CellDraw(Cell cell) {
-    float rotation = GetDirectionAngle(cell.dir); // Récupérer l'angle de direction pour la rotation
-    Texture2D RefTexture = chestTexture; // Définir la texture de référence
+void CellDraw(Cell cell, int brightValue) {
+    float rotation = GetDirectionAngle(cell.dir);
+    Texture2D RefTexture = chestTexture;
 
-    // Calcul de l'échelle pour adapter la texture à la taille de la cellule
-    float scaleX = (float)cellSize*1.0 / RefTexture.width;
-    float scaleY = (float)cellSize*1.0 / RefTexture.height;
-    float scale = (scaleX < scaleY) ? scaleX : scaleY; // Garder les proportions
+    float scaleX = (float)cellSize / RefTexture.width;
+    float scaleY = (float)cellSize / RefTexture.height;
+    float scale  = (scaleX < scaleY) ? scaleX : scaleY;
 
-    // Rectangle de destination : position centrée dans la cellule
-    Rectangle destRec = { 
-        cell.i * cellSize + cellSize / 2.0f, // Centre de la cellule en X
-        cell.j * cellSize + cellSize / 2.0f, // Centre de la cellule en Y
-        RefTexture.width * scale,           // Largeur ajustée avec l'échelle
-        RefTexture.height * scale           // Hauteur ajustée avec l'échelle
+    Rectangle destRec = {
+        cell.i * cellSize + cellSize / 2.0f,
+        cell.j * cellSize + cellSize / 2.0f,
+        RefTexture.width  * scale,
+        RefTexture.height * scale
     };
-
-
-    // Rectangle source de la texture (portion de la texture à dessiner)
     Rectangle sourceRec = { 0, 0, (float)RefTexture.width, (float)RefTexture.height };
+    Vector2   origin    = { destRec.width / 2.0f, destRec.height / 2.0f };
 
-    // Origine pour la rotation (centre du rectangle de destination)
-    Vector2 origin = { destRec.width / 2.0f, destRec.height / 2.0f };
-
-    // Dessiner la texture principale
     DrawTexturePro(cell.texture, sourceRec, destRec, origin, 0.0f, WHITE);
 
-    // Dessiner la texture "up" si elle est valide
     if (cell.up_texture.id != 0) {
         DrawTexturePro(cell.up_texture, sourceRec, destRec, origin, rotation, WHITE);
-        if (cell.move_texture.id != 0 && cell.up_texture.id !=defaultTexture.id) {
-        DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.0f, WHITE);
-    }
+        if (cell.move_texture.id != 0 && cell.up_texture.id != defaultTexture.id)
+            DrawTexturePro(cell.move_texture, sourceRec, destRec, origin, 0.0f, WHITE);
     }
 
-    // Dessiner la texture en mouvement si elle est valide
-
-    //On abandonne la minimap trop relou
-    //DrawMiniMapVersion(cell);
-    // Dessiner les contours de la cellule
-   // DrawRectangleLines(cell.i * cellSize, cell.j * cellSize, cellSize*1.5, cellSize*1.5, Fade(LIGHTGRAY,0.5f));
-       
-    // Rectangle pour le filtre
-    Rectangle nightRec = { 
-        cell.i * cellSize,         // Centre de la cellule en X
-        cell.j * cellSize,         // Centre de la cellule en Y
-        RefTexture.width * 2,      // Largeur ajustée avec l'échelle
-        RefTexture.height * 2      // Hauteur ajustée avec l'échelle
-    };
-    int BrightValue= DayAndNight();
-    // Ajouter un filtre noir semi-transparent
-    Color nightFilter = { 0, 0, 0,BrightValue }; // Assurez-vous que `value` est entre 0 et `maxOpacity`
-    DrawRectangleRec(nightRec, nightFilter);
+    // Filtre nuit appliqué par cellule si brightValue > 0
+    if (brightValue > 0) {
+        Rectangle nightRec = {
+            cell.i * cellSize,
+            cell.j * cellSize,
+            RefTexture.width  * 2,
+            RefTexture.height * 2
+        };
+        DrawRectangleRec(nightRec, (Color){ 0, 0, 0, (unsigned char)brightValue });
+    }
 }
 
 
@@ -363,27 +345,23 @@ void MineraiGenerator() {
 }
 
 void GridDraw() {
-    // Calculer les limites visibles de la vue de la caméra
-    Vector2 topLeft = GetScreenToWorld2D((Vector2){ 0, 0 }, camera);
+    Vector2 topLeft     = GetScreenToWorld2D((Vector2){ 0, 0 }, camera);
     Vector2 bottomRight = GetScreenToWorld2D((Vector2){ screenWidth, screenHeight }, camera);
 
-    // Calculer la grille visibles les coordonnées
     int startX = (int)(topLeft.x / cellSize);
     int startY = (int)(topLeft.y / cellSize);
-    int endX = (int)(bottomRight.x / cellSize);
-    int endY = (int)(bottomRight.y / cellSize);
+    int endX   = (int)(bottomRight.x / cellSize);
+    int endY   = (int)(bottomRight.y / cellSize);
 
-    // Vérifier que cela fait bien parti de la grille
     startX = startX < 0 ? 0 : startX;
     startY = startY < 0 ? 0 : startY;
-    endX = endX >= COL ? COL - 1 : endX;
-    endY = endY >= ROW ? ROW - 1 : endY;
+    endX   = endX >= COL ? COL - 1 : endX;
+    endY   = endY >= ROW ? ROW - 1 : endY;
 
-    // Dessiner uniquement les cases visibles
-    for (int i = startX; i <= endX; i++) {
-        for (int j = startY; j <= endY; j++) {
-            CellDraw(grid[i][j]);
-        }
-    }
-    
+    // Calculé UNE SEULE FOIS pour toute la frame
+    int brightValue = DayAndNight();
+
+    for (int i = startX; i <= endX; i++)
+        for (int j = startY; j <= endY; j++)
+            CellDraw(grid[i][j], brightValue);
 }
