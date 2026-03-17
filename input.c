@@ -2,6 +2,7 @@
 #include "input.h"
 #include "inventory.h"
 #include "camera.h"
+#include "texture_registry.h"
 #include <stdio.h>
 #include <string.h> // Pour strcmp
 
@@ -811,158 +812,136 @@ const char* FindName(Texture2D textureRef)
     return " ";
 }
 
+// ─── Helper générique : interaction joueur ↔ machine ────────────────────────
+// energy_tex    : texture acceptée comme énergie (0 = aucune)
+// mat_tex[]     : textures acceptées comme matériau (tableau terminé par id==0)
+// Collecte automatiquement final_q dans l'inventaire.
+static void interact_machine(Machine *m,
+                              unsigned int energy_tex_id,
+                              unsigned int mat_tex_ids[]) {
+    Item *sel = &inventory[selectedItem];
+    unsigned int sel_id = sel->texture.id;
+
+    if (sel->quantity <= 0) {
+        // Pas d'item sélectionné : on tente de récupérer la production
+        if (m->final_q > 0 && m->final_id != 0) {
+            Texture2D out = IdxToTex(TexToIdx((Texture2D){.id = m->final_id}));
+            if (out.id == 0) out.id = m->final_id; // fallback si non indexé
+            AddInInvent(m->final_q, out);
+            m->final_q = 0;
+            m->final_id = 0;
+        }
+        return;
+    }
+
+    // Énergie
+    if (energy_tex_id != 0 && sel_id == energy_tex_id) {
+        sel->quantity--;
+        m->energy_q++;
+        m->energy_id = energy_tex_id;
+        return;
+    }
+
+    // Matériaux acceptés
+    for (int t = 0; mat_tex_ids[t] != 0; t++) {
+        if (sel_id == mat_tex_ids[t]) {
+            if (m->material_id == 0 || m->material_id == sel_id) {
+                sel->quantity--;
+                m->material_q++;
+                m->material_id = sel_id;
+            }
+            return;
+        }
+    }
+
+    // Récupération production (clic avec mauvais item en main)
+    if (m->final_q > 0 && m->final_id != 0) {
+        Texture2D out = IdxToTex(TexToIdx((Texture2D){.id = m->final_id}));
+        if (out.id == 0) out.id = m->final_id;
+        AddInInvent(m->final_q, out);
+        m->final_q = 0;
+        m->final_id = 0;
+    }
+}
+
+// ─── Matériaux acceptés par type de machine ──────────────────────────────────
+// Tableaux terminés par 0 — ajoutez ici pour étendre les recettes
+static unsigned int FurnaceMats[]   = { 0, 0, 0, 0 }; // rempli dans interraction
+static unsigned int HydraulicMats[] = { 0, 0, 0, 0 };
+static unsigned int EttireuseMats[] = { 0, 0, 0, 0 };
+static unsigned int SteamMats[]     = { 0, 0 };
+static unsigned int OilMats[]       = { 0, 0 };
+static bool matsReady = false;
+
+static void InitInterractionMats(void) {
+    if (matsReady) return;
+    FurnaceMats[0]   = copperTexture.id;
+    FurnaceMats[1]   = ironTexture.id;
+    FurnaceMats[2]   = ironLingotTexture.id;
+    HydraulicMats[0] = ironLingotTexture.id;
+    HydraulicMats[1] = copperLingotTexture.id;
+    HydraulicMats[2] = ironPlateTexture.id;
+    EttireuseMats[0] = ironLingotTexture.id;
+    EttireuseMats[1] = copperLingotTexture.id;
+    EttireuseMats[2] = copperRodTexture.id;
+    SteamMats[0]     = waterVeinTexture.id;
+    OilMats[0]       = waterVeinTexture.id;
+    matsReady = true;
+}
+
 void interraction(int posX, int posY) {
+    InitInterractionMats();
+
     if (isForeuse(posX, posY)) {
         for (int i = 0; i < numForeuses; i++) {
-            if (ListeForeuse[i].i == posX && ListeForeuse[i].j == posY) {
-                Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
-                if (texture.id == copperVeinTexture.id) {
-                    AddInInvent(ListeForeuse[i].q, copperTexture);
-                    ListeForeuse[i].q = 0;
-                } else if (texture.id == ironVeinTexture.id) {
-                    AddInInvent(ListeForeuse[i].q, ironTexture);
-                    ListeForeuse[i].q = 0;
-                } else if (texture.id == coalVeinTexture.id) {
-                    AddInInvent(ListeForeuse[i].q, coalTexture);
-                    ListeForeuse[i].q = 0;
-                }
-            }
+            if (ListeForeuse[i].i != posX || ListeForeuse[i].j != posY) continue;
+            Texture2D tex = grid[posX][posY].texture;
+            if      (tex.id == copperVeinTexture.id) { AddInInvent(ListeForeuse[i].q, copperTexture); }
+            else if (tex.id == ironVeinTexture.id)   { AddInInvent(ListeForeuse[i].q, ironTexture); }
+            else if (tex.id == coalVeinTexture.id)   { AddInInvent(ListeForeuse[i].q, coalTexture); }
+            ListeForeuse[i].q = 0;
         }
-    } else if (isHydraulic(posX, posY)) {
-        for (int i = 0; i < numHydraulics; i++) {
-            if (ListeHydraulic[i].i == posX && ListeHydraulic[i].j == posY) {
-                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == coalTexture.id) {
-                    inventory[selectedItem].quantity--;
-                    ListeHydraulic[i].energy_q++;
-                    ListeHydraulic[i].energy_id = coalTexture.id;
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == copperTexture.id) {
-                    if (ListeHydraulic[i].material_id == 0 || ListeHydraulic[i].material_id == copperTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeHydraulic[i].material_q++;
-                        ListeHydraulic[i].material_id = copperTexture.id;
-                    }
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == ironTexture.id) {
-                    if (ListeHydraulic[i].material_id == 0 || ListeHydraulic[i].material_id == ironTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeHydraulic[i].material_q++;
-                        ListeHydraulic[i].material_id = ironTexture.id;
-                    }
-                }
-                else if (ListeHydraulic[i].final_id == copperLingotTexture.id) {
-                    AddInInvent(ListeHydraulic[i].final_q, copperLingotTexture);
-                    ListeHydraulic[i].final_q = 0;
-                    ListeHydraulic[i].final_id = 0;
-                }
-                else if (ListeHydraulic[i].final_id == ironLingotTexture.id) {
-                    AddInInvent(ListeHydraulic[i].final_q, ironLingotTexture);
-                    ListeHydraulic[i].final_q = 0;
-                    ListeHydraulic[i].final_id = 0;
-                }
-            }
-        }
-
-    } else if (isEttireuse(posX, posY)) {
-        for (int i = 0; i < numEttireuses; i++) {
-            if (ListeEttireuse[i].i == posX && ListeEttireuse[i].j == posY) {
-                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == coalTexture.id) {
-                    inventory[selectedItem].quantity--;
-                    ListeEttireuse[i].energy_q++;
-                    ListeEttireuse[i].energy_id = coalTexture.id;
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == copperTexture.id) {
-                    if (ListeEttireuse[i].material_id == 0 || ListeEttireuse[i].material_id == copperTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeEttireuse[i].material_q++;
-                        ListeEttireuse[i].material_id = copperTexture.id;
-                    }
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == ironTexture.id) {
-                    if (ListeEttireuse[i].material_id == 0 || ListeEttireuse[i].material_id == ironTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeEttireuse[i].material_q++;
-                        ListeEttireuse[i].material_id = ironTexture.id;
-                    }
-                }
-                else if (ListeEttireuse[i].final_id == copperLingotTexture.id) {
-                    AddInInvent(ListeEttireuse[i].final_q, copperLingotTexture);
-                    ListeEttireuse[i].final_q = 0;
-                    ListeEttireuse[i].final_id = 0;
-                }
-                else if (ListeEttireuse[i].final_id == ironLingotTexture.id) {
-                    AddInInvent(ListeEttireuse[i].final_q, ironLingotTexture);
-                    ListeEttireuse[i].final_q = 0;
-                    ListeEttireuse[i].final_id = 0;
-                }
-            }
-        }
-        
     } else if (isFurnace(posX, posY)) {
-        for (int i = 0; i < numFurnaces; i++) {
-            if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY) {
-                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == coalTexture.id) {
-                    inventory[selectedItem].quantity--;
-                    ListeFurnace[i].energy_q++;
-                    ListeFurnace[i].energy_id = coalTexture.id;
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == copperTexture.id) {
-                    if (ListeFurnace[i].material_id == 0 || ListeFurnace[i].material_id == copperTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeFurnace[i].material_q++;
-                        ListeFurnace[i].material_id = copperTexture.id;
-                    }
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == ironTexture.id) {
-                    if (ListeFurnace[i].material_id == 0 || ListeFurnace[i].material_id == ironTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeFurnace[i].material_q++;
-                        ListeFurnace[i].material_id = ironTexture.id;
-                    }
-                }
-                else if (ListeFurnace[i].final_id == copperLingotTexture.id) {
-                    AddInInvent(ListeFurnace[i].final_q, copperLingotTexture);
-                    ListeFurnace[i].final_q = 0;
-                    ListeFurnace[i].final_id = 0;
-                }
-                else if (ListeFurnace[i].final_id == ironLingotTexture.id) {
-                    AddInInvent(ListeFurnace[i].final_q, ironLingotTexture);
-                    ListeFurnace[i].final_q = 0;
-                    ListeFurnace[i].final_id = 0;
-                }
-            }
-        }
+        for (int i = 0; i < numFurnaces; i++)
+            if (ListeFurnace[i].i == posX && ListeFurnace[i].j == posY)
+                interact_machine(&ListeFurnace[i], coalTexture.id, FurnaceMats);
+    } else if (isHydraulic(posX, posY)) {
+        for (int i = 0; i < numHydraulics; i++)
+            if (ListeHydraulic[i].i == posX && ListeHydraulic[i].j == posY)
+                interact_machine(&ListeHydraulic[i], coalTexture.id, HydraulicMats);
+    } else if (isEttireuse(posX, posY)) {
+        for (int i = 0; i < numEttireuses; i++)
+            if (ListeEttireuse[i].i == posX && ListeEttireuse[i].j == posY)
+                interact_machine(&ListeEttireuse[i], coalTexture.id, EttireuseMats);
     } else if (isSteam(posX, posY)) {
         for (int i = 0; i < numSteams; i++) {
-            if (ListeSteam[i].i == posX && ListeSteam[i].j == posY) {
-                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == coalTexture.id) {
-                    inventory[selectedItem].quantity--;
-                    ListeSteam[i].energy_q++;
-                    ListeSteam[i].energy_id = coalTexture.id;
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == waterVeinTexture.id) {
-                    if (ListeSteam[i].material_id == 0 || ListeSteam[i].material_id == waterVeinTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeSteam[i].material_q++;
-                        ListeSteam[i].material_id = waterVeinTexture.id;
-                    }
+            if (ListeSteam[i].i != posX || ListeSteam[i].j != posY) continue;
+            Item *sel = &inventory[selectedItem];
+            if (sel->quantity > 0 && sel->texture.id == coalTexture.id) {
+                sel->quantity--;
+                ListeSteam[i].energy_q++;
+                ListeSteam[i].energy_id = coalTexture.id;
+            } else if (sel->quantity > 0 && sel->texture.id == SteamMats[0]) {
+                if (ListeSteam[i].material_id == 0 || ListeSteam[i].material_id == SteamMats[0]) {
+                    sel->quantity--;
+                    ListeSteam[i].material_q++;
+                    ListeSteam[i].material_id = SteamMats[0];
                 }
             }
         }
     } else if (isOil(posX, posY)) {
         for (int i = 0; i < numOils; i++) {
-            if (ListeOil[i].i == posX && ListeOil[i].j == posY) {
-                if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == oilVeinTexture.id) {
-                    inventory[selectedItem].quantity--;
-                    ListeOil[i].energy_q++;
-                    ListeOil[i].energy_id = oilVeinTexture.id;
-                }
-                else if (inventory[selectedItem].quantity > 0 && inventory[selectedItem].texture.id == waterVeinTexture.id) {
-                    if (ListeOil[i].material_id == 0 || ListeOil[i].material_id == waterVeinTexture.id) {
-                        inventory[selectedItem].quantity--;
-                        ListeOil[i].material_q++;
-                        ListeOil[i].material_id = waterVeinTexture.id;
-                    }
+            if (ListeOil[i].i != posX || ListeOil[i].j != posY) continue;
+            Item *sel = &inventory[selectedItem];
+            if (sel->quantity > 0 && sel->texture.id == oilVeinTexture.id) {
+                sel->quantity--;
+                ListeOil[i].energy_q++;
+                ListeOil[i].energy_id = oilVeinTexture.id;
+            } else if (sel->quantity > 0 && sel->texture.id == OilMats[0]) {
+                if (ListeOil[i].material_id == 0 || ListeOil[i].material_id == OilMats[0]) {
+                    sel->quantity--;
+                    ListeOil[i].material_q++;
+                    ListeOil[i].material_id = OilMats[0];
                 }
             }
         }

@@ -195,7 +195,7 @@ int DayAndNight(){
     }
 
     if (time==40) days ++;
-    return  Clamp(BrightValue, 0, maxOpacity);
+    return BrightValue < 0 ? 0 : (BrightValue > maxOpacity ? maxOpacity : BrightValue);
 }
 
 void InitGrid() {

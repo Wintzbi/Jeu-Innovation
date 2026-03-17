@@ -15,78 +15,45 @@ float maxY;
 void InitBounds(int screenWidth, int screenHeight) {
     float gridW = COL * (float)cellSize;
     float gridH = ROW * (float)cellSize;
-
-    // Le target de la caméra est son centre — on soustrait le demi-écran
-    // en coordonnées monde (screenSize / zoom) pour rester dans la grille
     float halfW = screenWidth  / (2.0f * camera.zoom);
     float halfH = screenHeight / (2.0f * camera.zoom);
-
     minX = halfW;
     maxX = gridW - halfW;
     minY = halfH;
     maxY = gridH - halfH;
 }
 
+// À appeler si le zoom change en jeu
+void UpdateBounds() {
+    InitBounds(screenWidth, screenHeight);
+}
 
 void setPlayerCamera() {
-    camera.target = (Vector2){0.0f, 0.0f}; // Position de la cible (initialement à l'origine)
-    camera.offset = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f}; // Centre la caméra au milieu de l'écran
+    camera.target   = (Vector2){0.0f, 0.0f};
+    camera.offset   = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f};
     camera.rotation = 0.0f;
-    camera.zoom = 6.0f;
-
-    // Configure la mini-carte
-    miniMapCamera = camera;
-    miniMapCamera.zoom = 0.3f; // Zoom différent pour la mini-carte
-
+    camera.zoom     = 6.0f;
+    miniMapCamera   = camera;
+    miniMapCamera.zoom = 0.3f;
     InitBounds(screenWidth, screenHeight);
 }
 
 void moveCamera() {
-    // Gère les mouvements de la caméra
     if (IsKeyDown(KEY_W)) camera.target.y -= cameraSpeed * GetFrameTime();
     if (IsKeyDown(KEY_S)) camera.target.y += cameraSpeed * GetFrameTime();
     if (IsKeyDown(KEY_A)) camera.target.x -= cameraSpeed * GetFrameTime();
     if (IsKeyDown(KEY_D)) camera.target.x += cameraSpeed * GetFrameTime();
 
-    // Gestion du zoom de la caméra avec les touches ou la molette de la souris
-    //if (IsKeyDown(KEY_RIGHT)) camera.zoom += 0.005f;
-    //if (IsKeyDown(KEY_LEFT)) camera.zoom -= 0.005f;
+    // Zoom molette — décommente et appelle UpdateBounds() après si tu l'actives
+    // float wheel = GetMouseWheelMove();
+    // if (wheel != 0) { camera.zoom += wheel * 0.5f; UpdateBounds(); }
 
-    //float mouseWheelMove = GetMouseWheelMove();
-    //if (mouseWheelMove != 0) {
-    //  cameraSpeed += mouseWheelMove * 0.1f;
-   // }
-
-    // Limite le zoom
-    //if (camera.zoom < 1.2f) camera.zoom = 1.2f; // Min zoom
-    //if (camera.zoom > 3.0f) camera.zoom = 3.0f; // Max zoom
-
-    // Limiter la caméra
     if (camera.target.x < minX) camera.target.x = minX;
     if (camera.target.x > maxX) camera.target.x = maxX;
     if (camera.target.y < minY) camera.target.y = minY;
     if (camera.target.y > maxY) camera.target.y = maxY;
-
-    // Debug
-    //printf("Camera position: (%.2f, %.2f), zoom: %.2f\n", camera.target.x, camera.target.y, camera.zoom);
 }
 
-// Ne marche pas
 void DrawMiniMap() {
-    int miniMapWidth = screenWidth / 2;
-    int miniMapHeight = screenHeight / 2;
-    int miniMapX = screenWidth - miniMapWidth - 5;
-    int miniMapY = screenHeight - miniMapHeight - 10;
-
-    // Dessine la vue de la mini-carte
-
-    // BeginScissorMode(miniMapX, miniMapY, miniMapWidth, miniMapHeight);
-    // BeginMode2D(miniMapCamera);
-    // GridDraw();  // Dessiner la grille de jeu
-    // EndMode2D();
-    // EndScissorMode();
-
-    // Dessiner un cadre autour de la mini-carte
-
-  
+    // Non implémenté — réservé pour une future minimap ScissorMode
 }
