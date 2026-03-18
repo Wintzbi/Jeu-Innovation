@@ -294,12 +294,17 @@ void ActionWithName(char ObjectName[20], int i, int j, int option) {
 static int dbg_requests = 0;
 static int dbg_success  = 0;
 
+// Pool d'énergie solaire — rechargé chaque tick dans Update_Conv
+// Chaque panneau solaire contribue SOLAR_PER_PANEL unités/tick
+#define SOLAR_PER_PANEL 3
+static int solarPool = 0;
+
 int HasEnergySource(int x, int y, int range) {
     for (int i = -range; i <= range; i++) {
         for (int j = -range; j <= range; j++) {
             int nx = x + i, ny = y + j;
             if (!IndexIsValid(nx, ny)) continue;
-            if (grid[nx][ny].up_texture.id == solarpanelTexture.id) return 1;
+            if (grid[nx][ny].up_texture.id == solarpanelTexture.id && solarPool > 0) return 1;
             if (grid[nx][ny].up_texture.id == piloneTexture.id &&
                 grid[nx][ny].move_texture.id == piloneEffectTexture.id) return 1;
             for (int k = 0; k < numSteams; k++)
@@ -339,9 +344,10 @@ int RequestEnergy(int x, int y, int amount) {
                     if (visitedI[v] == ni && visitedJ[v] == nj) { seen = true; break; }
                 if (seen) continue;
 
-                // ── Panneau solaire : source directe ──────────────────────
-                if (grid[ni][nj].up_texture.id == solarpanelTexture.id) {
-                    // Remonter le chemin et incrémenter les pylônes
+                // ── Panneau solaire : source limitée (solarPool) ─────────
+                if (grid[ni][nj].up_texture.id == solarpanelTexture.id &&
+                    solarPool >= amount) {
+                    solarPool -= amount;
                     int idx = head - 1;
                     while (idx >= 0) {
                         int pi = visitedI[idx], pj = visitedJ[idx];
@@ -416,7 +422,8 @@ int RequestEnergy(int x, int y, int amount) {
 }
 
 void Update_Conv() {
-    // ── Étape 1 : reset les charges des pylônes ───────────────────────────
+    // ── Étape 1 : reset les charges des pylônes + recharge solaire ────────
+    solarPool = 0;
     for (int k = 0; k < MAX_CONVEYOR; k++) {
         if (ListeConveyor[k].placed && ListeConveyor[k].texture.id == piloneTexture.id) {
             ListeConveyor[k].load = 0;
@@ -425,6 +432,11 @@ void Update_Conv() {
             grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture = (Texture2D){0};
         }
     }
+    // Compter les panneaux solaires posés
+    for (int i = 0; i < COL; i++)
+        for (int j = 0; j < ROW; j++)
+            if (grid[i][j].up_texture.id == solarpanelTexture.id)
+                solarPool += SOLAR_PER_PANEL;
 
     // ── Étape 2 : allumer les pylônes qui ont une source (HasEnergySource) ─
     // Multi-pass pour propager les chaînes
@@ -468,6 +480,8 @@ void DebugEnergy(void) {
                ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
         totalSteam += ListeSteam[i].final_q;
     }
+    printf("  Solaire        : %3dA disponibles ce tick (%d panneaux × %dA)\n",
+           solarPool, solarPool / SOLAR_PER_PANEL, SOLAR_PER_PANEL);
 
     int piloneCount = 0;
     for (int k = 0; k < MAX_CONVEYOR; k++) {
@@ -503,14 +517,13 @@ void DebugEnergy(void) {
     printf("=========================\n");
 }
 
-void UpdateBattery(){
+void UpdateBattery() {
     for (int k = 0; k < MAX_BATTERY; k++) {
-        if (ListeBattery[k].placed) {
-                if(IsEnergieNear(ListeBattery[k].i, ListeBattery[k].j,1) && ListeBattery[k].q<=100){
-                    ListeBattery[k].q++;
-                }
+        if (ListeBattery[k].placed && ListeBattery[k].q <= 100) {
+            if (RequestEnergy(ListeBattery[k].i, ListeBattery[k].j, 1))
+                ListeBattery[k].q++;
         }
-}
+    }
 }
 void Convey(Conveyor *conv) {
     
@@ -753,29 +766,22 @@ else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
 
 void Update_Foreuse() {
     float currentTime = GetTime();
-    if (currentTime - lastForeuseTime >= 5.0f) {
+    if (currentTime - lastForeuseTime >= 3.0f) {
         for (int i = 0; i < numForeuses; i++) {
             if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j) &&
                 RequestEnergy(ListeForeuse[i].i, ListeForeuse[i].j, 1)) {
                 Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
-                if (texture.id == copperVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
-                }
-                else if (texture.id == ironVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
-                }
-                else if (texture.id == coalVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
-                }
-                else if (texture.id == waterVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
-                }
-                else if (texture.id == oilVeinTexture.id && ListeForeuse[i].q < 100) {
-                    ListeForeuse[i].q += 1;
+                if (ListeForeuse[i].q < 100) {
+                    if      (texture.id == copperVeinTexture.id)  ListeForeuse[i].q += 2;
+                    else if (texture.id == ironVeinTexture.id)    ListeForeuse[i].q += 2;
+                    else if (texture.id == coalVeinTexture.id)    ListeForeuse[i].q += 3; // charbon plus abondant
+                    else if (texture.id == waterVeinTexture.id)   ListeForeuse[i].q += 2;
+                    else if (texture.id == oilVeinTexture.id)     ListeForeuse[i].q += 2;
+                    else if (texture.id == rockVeinTexture.id)    ListeForeuse[i].q += 2;
+                    else if (texture.id == sandVeinTexture.id)    ListeForeuse[i].q += 3; // sable très abondant
                 }
             }
         }
-
         lastForeuseTime = currentTime;
     }
 }
@@ -1154,7 +1160,7 @@ int IsEnergieNear(int x, int y, int range) {
         for (int j = -range; j <= range; j++) {
             int nx = x + i, ny = y + j;
             if (!IndexIsValid(nx, ny)) continue;
-            if (grid[nx][ny].up_texture.id == solarpanelTexture.id) return 1;
+            if (grid[nx][ny].up_texture.id == solarpanelTexture.id && solarPool > 0) return 1;
             if (grid[nx][ny].up_texture.id == piloneTexture.id &&
                 grid[nx][ny].move_texture.id == piloneEffectTexture.id) return 1;
             if (FindNearestSteam(nx, ny))   return 1;
