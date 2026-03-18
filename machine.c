@@ -100,8 +100,8 @@ void Update_Processor(Machine *list, int count,
         if (!m->placed || !IndexIsValid(m->i, m->j))
             continue;
 
-        // Charge de l'énergie si une source est proche
-        if (IsEnergieNear(m->i, m->j, 1))
+        // Charge de l'énergie si une source est accessible (consomme 1A du réseau)
+        if (RequestEnergy(m->i, m->j, 1))
             m->energy_q++;
 
         // Effet visuel selon présence d'énergie

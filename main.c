@@ -36,7 +36,7 @@ int save() {
     if (!file) { perror("save"); return 1; }
 
     // Version du format — permet de détecter les saves incompatibles
-    int version = 2;
+    int version = 4;
     WINT(version);
 
     // Grille : chaque cellule sérialise ses 3 textures en indices logiques
@@ -111,6 +111,7 @@ int save() {
         WINT(ListeConveyor[i].dir[0]);  WINT(ListeConveyor[i].dir[1]);
         WINT((int)ListeConveyor[i].placed);
         WINT((int)ListeConveyor[i].power);
+        WINT(ListeConveyor[i].max_load);
         WINT(TexToIdx(ListeConveyor[i].texture));
         WINT((int)ListeConveyor[i].inMouvement);
         WINT(TexToIdx(ListeConveyor[i].textureToMove));
@@ -137,11 +138,12 @@ int load() {
 
     int version;
     RINT(version);
-    if (version != 2) {
+    if (version != 3 && version != 4) {
         printf("Save incompatible (version %d), ignoré\n", version);
         fclose(file);
         return 1;
     }
+    bool has_max_load = (version >= 4);
 
     int gridSize;
     RINT(gridSize);
@@ -216,9 +218,16 @@ int load() {
         RINT(ListeConveyor[i].dir[0]);  RINT(ListeConveyor[i].dir[1]);
         int cp, cpo; RINT(cp); ListeConveyor[i].placed = (bool)cp;
         RINT(cpo); ListeConveyor[i].power = (bool)cpo;
+        if (has_max_load) {
+            RINT(ListeConveyor[i].max_load);
+        }
         RINT(ttex);    ListeConveyor[i].texture       = IdxToTex(ttex);
         int cm; RINT(cm); ListeConveyor[i].inMouvement = (bool)cm;
         RINT(ttomove); ListeConveyor[i].textureToMove = IdxToTex(ttomove);
+        // Toujours recalculer max_load pour les pylônes si absent ou nul
+        if (ListeConveyor[i].placed && ListeConveyor[i].max_load == 0 &&
+            ListeConveyor[i].texture.id == piloneTexture.id)
+            ListeConveyor[i].max_load = 5;
     }
 
     for (int i = 0; i < MAX_BATTERY; i++) {
@@ -301,6 +310,7 @@ int main(void) {
 
         if (IsKeyPressed(KEY_R)) UpdateDir();
         if (IsKeyPressed(KEY_TAB)) selectedItem = (selectedItem + 1) % 10;
+        if (IsKeyPressed(KEY_F1)) DebugEnergy();
 
         if (currentScreen != MENU) {
             if (IsKeyPressed(KEY_E)) {

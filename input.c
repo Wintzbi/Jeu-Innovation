@@ -228,8 +228,9 @@ void ActionWithName(char ObjectName[20], int i, int j, int option) {
                 Texture2D tex = (id == conveyorTexture.id) ? conveyorTexture
                               : (id == pipeTexture.id)     ? pipeTexture
                                                            : piloneTexture;
+                int mload = (id == piloneTexture.id) ? 5 : 0;
                 ListeConveyor[k] = (Conveyor){
-                    .i = i, .j = j, .texture = tex,
+                    .i = i, .j = j, .texture = tex, .max_load = mload,
                     .dir = {directions[conveyor_dir][0], directions[conveyor_dir][1]},
                     .placed = true, .inMouvement = false, .textureToMove = (Texture2D){0}
                 };
@@ -280,22 +281,226 @@ void ActionWithName(char ObjectName[20], int i, int j, int option) {
     }
 }
 
-void Update_Conv() {
-    for (int k = 0; k < MAX_CONVEYOR; k++) {
-        if (ListeConveyor[k].placed) {
-            if (ListeConveyor[k].texture.id==piloneTexture.id){
-                if(IsEnergieNear(ListeConveyor[k].i, ListeConveyor[k].j,3)){
-                    ListeConveyor[k].textureToMove = piloneEffectTexture;
-                    ListeConveyor[k].placed=true;
-                    grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture= ListeConveyor[k].textureToMove;
-                }
-                
-            }
-            else {
-                Convey(&ListeConveyor[k]);
-            } 
+// ─── Système énergétique ─────────────────────────────────────────────────────
+// BFS depuis (startX, startY) pour trouver un chemin vers une source d'énergie.
+// Chaque pylône sur le chemin doit avoir load < max_load.
+// Si un chemin valide est trouvé : décrémente la source, incrémente les pylônes.
+// Retourne 1 si l'énergie est accordée, 0 sinon.
+
+#define BFS_MAX 512
+
+// Vérifie la présence d'énergie SANS consommer (pour allumer les pylônes)
+// Compteurs de diagnostic — remis à 0 par DebugEnergy()
+static int dbg_requests = 0;
+static int dbg_success  = 0;
+
+int HasEnergySource(int x, int y, int range) {
+    for (int i = -range; i <= range; i++) {
+        for (int j = -range; j <= range; j++) {
+            int nx = x + i, ny = y + j;
+            if (!IndexIsValid(nx, ny)) continue;
+            if (grid[nx][ny].up_texture.id == solarpanelTexture.id) return 1;
+            if (grid[nx][ny].up_texture.id == piloneTexture.id &&
+                grid[nx][ny].move_texture.id == piloneEffectTexture.id) return 1;
+            for (int k = 0; k < numSteams; k++)
+                if (ListeSteam[k].i == nx && ListeSteam[k].j == ny &&
+                    ListeSteam[k].final_q > 0) return 1;
+            for (int k = 0; k < MAX_BATTERY; k++)
+                if (ListeBattery[k].placed && ListeBattery[k].q > 0 &&
+                    ListeBattery[k].i == nx && ListeBattery[k].j == ny) return 1;
         }
     }
+    return 0;
+}
+
+int RequestEnergy(int x, int y, int amount) {
+    dbg_requests++;
+    // BFS : tableau de cellules visitées + parent pour reconstruire le chemin
+    static int visitedI[BFS_MAX], visitedJ[BFS_MAX];
+    static int parentIdx[BFS_MAX];  // index du parent dans visited[]
+    int head = 0, tail = 0;
+
+    visitedI[tail] = x; visitedJ[tail] = y; parentIdx[tail] = -1;
+    tail++;
+
+    while (head < tail) {
+        int ci = visitedI[head], cj = visitedJ[head];
+        head++;
+
+        // Chercher dans un rayon de 3 cases (portée pylône)
+        for (int di = -3; di <= 3; di++) {
+            for (int dj = -3; dj <= 3; dj++) {
+                int ni = ci + di, nj = cj + dj;
+                if (!IndexIsValid(ni, nj)) continue;
+
+                // Déjà visité ?
+                bool seen = false;
+                for (int v = 0; v < tail; v++)
+                    if (visitedI[v] == ni && visitedJ[v] == nj) { seen = true; break; }
+                if (seen) continue;
+
+                // ── Panneau solaire : source directe ──────────────────────
+                if (grid[ni][nj].up_texture.id == solarpanelTexture.id) {
+                    // Remonter le chemin et incrémenter les pylônes
+                    int idx = head - 1;
+                    while (idx >= 0) {
+                        int pi = visitedI[idx], pj = visitedJ[idx];
+                        for (int k = 0; k < MAX_CONVEYOR; k++) {
+                            if (ListeConveyor[k].placed &&
+                                ListeConveyor[k].texture.id == piloneTexture.id &&
+                                ListeConveyor[k].i == pi && ListeConveyor[k].j == pj) {
+                                ListeConveyor[k].load += amount;
+                                if (ListeConveyor[k].load > ListeConveyor[k].peak_load) ListeConveyor[k].peak_load = ListeConveyor[k].load;
+                            }
+                        }
+                        idx = parentIdx[idx];
+                    }
+                    dbg_success++; return 1;
+                }
+
+                // ── Steam / Battery : source consommable ──────────────────
+                for (int k = 0; k < numSteams; k++) {
+                    if (ListeSteam[k].i == ni && ListeSteam[k].j == nj &&
+                        ListeSteam[k].final_q >= amount) {
+                        ListeSteam[k].final_q -= amount;
+                        // Remonter chemin
+                        int idx = head - 1;
+                        while (idx >= 0) {
+                            int pi = visitedI[idx], pj = visitedJ[idx];
+                            for (int c = 0; c < MAX_CONVEYOR; c++) {
+                                if (ListeConveyor[c].placed &&
+                                    ListeConveyor[c].texture.id == piloneTexture.id &&
+                                    ListeConveyor[c].i == pi && ListeConveyor[c].j == pj)
+                                    ListeConveyor[c].load += amount;
+                                    if (ListeConveyor[c].load > ListeConveyor[c].peak_load) ListeConveyor[c].peak_load = ListeConveyor[c].load;
+                            }
+                            idx = parentIdx[idx];
+                        }
+                        dbg_success++; return 1;
+                    }
+                }
+                if (FindNearestBattery(ni, nj)) {
+                    int idx = head - 1;
+                    while (idx >= 0) {
+                        int pi = visitedI[idx], pj = visitedJ[idx];
+                        for (int c = 0; c < MAX_CONVEYOR; c++) {
+                            if (ListeConveyor[c].placed &&
+                                ListeConveyor[c].texture.id == piloneTexture.id &&
+                                ListeConveyor[c].i == pi && ListeConveyor[c].j == pj)
+                                ListeConveyor[c].load += amount;
+                                    if (ListeConveyor[c].load > ListeConveyor[c].peak_load) ListeConveyor[c].peak_load = ListeConveyor[c].load;
+                        }
+                        idx = parentIdx[idx];
+                    }
+                    dbg_success++; return 1;
+                }
+
+                // ── Pylône allumé avec capacité disponible : continuer BFS ─
+                for (int c = 0; c < MAX_CONVEYOR; c++) {
+                    if (!ListeConveyor[c].placed) continue;
+                    if (ListeConveyor[c].texture.id != piloneTexture.id) continue;
+                    if (ListeConveyor[c].i != ni || ListeConveyor[c].j != nj) continue;
+                    if (ListeConveyor[c].load + amount > ListeConveyor[c].max_load) continue;
+
+                    if (tail < BFS_MAX) {
+                        visitedI[tail] = ni; visitedJ[tail] = nj;
+                        parentIdx[tail] = head - 1;
+                        tail++;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return 0;  // Pas de source trouvée ou réseau saturé
+}
+
+void Update_Conv() {
+    // ── Étape 1 : reset les charges des pylônes ───────────────────────────
+    for (int k = 0; k < MAX_CONVEYOR; k++) {
+        if (ListeConveyor[k].placed && ListeConveyor[k].texture.id == piloneTexture.id) {
+            ListeConveyor[k].load = 0;
+            // peak_load conservé jusqu'au prochain F1
+            ListeConveyor[k].textureToMove = (Texture2D){0};
+            grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture = (Texture2D){0};
+        }
+    }
+
+    // ── Étape 2 : allumer les pylônes qui ont une source (HasEnergySource) ─
+    // Multi-pass pour propager les chaînes
+    bool changed = true;
+    while (changed) {
+        changed = false;
+        for (int k = 0; k < MAX_CONVEYOR; k++) {
+            if (!ListeConveyor[k].placed) continue;
+            if (ListeConveyor[k].texture.id != piloneTexture.id) continue;
+            if (grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture.id != 0) continue;
+            if (HasEnergySource(ListeConveyor[k].i, ListeConveyor[k].j, 3)) {
+                grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture = piloneEffectTexture;
+                ListeConveyor[k].textureToMove = piloneEffectTexture;
+                changed = true;
+            }
+        }
+    }
+
+    // ── Étape 3 : convoyeurs normaux ──────────────────────────────────────
+    for (int k = 0; k < MAX_CONVEYOR; k++) {
+        if (ListeConveyor[k].placed && ListeConveyor[k].texture.id != piloneTexture.id)
+            Convey(&ListeConveyor[k]);
+    }
+}
+
+// ─── Debug réseau énergétique ─────────────────────────────────────────────────
+// Appeler depuis main.c avec la touche F1 pour afficher l'état du réseau.
+// Désactiver en production en retirant l'appel, pas le code.
+void DebugEnergy(void) {
+    printf("\n=== RÉSEAU ÉNERGÉTIQUE ===\n");
+    int snap_requests = dbg_requests;
+    int snap_success  = dbg_success;
+    dbg_requests = 0;
+    dbg_success  = 0;
+    printf("  RequestEnergy : %d appels, %d succès (depuis dernier F1)\n",
+           snap_requests, snap_success);
+
+    int totalSteam = 0;
+    for (int i = 0; i < numSteams; i++) {
+        printf("  Steam  (%3d,%3d) : %3d énergie stockée\n",
+               ListeSteam[i].i, ListeSteam[i].j, ListeSteam[i].final_q);
+        totalSteam += ListeSteam[i].final_q;
+    }
+
+    int piloneCount = 0;
+    for (int k = 0; k < MAX_CONVEYOR; k++) {
+        if (!ListeConveyor[k].placed) continue;
+        if (ListeConveyor[k].texture.id != piloneTexture.id) continue;
+        bool allume = grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture.id != 0;
+        printf("  Pylône (%3d,%3d) : now=%d/5A  peak=%d/5A  [%s]\n",
+               ListeConveyor[k].i, ListeConveyor[k].j,
+               ListeConveyor[k].load, ListeConveyor[k].peak_load,
+               allume ? "ALLUMÉ" : "éteint");
+        ListeConveyor[k].peak_load = 0;
+        piloneCount++;
+    }
+    if (piloneCount == 0) printf("  (aucun pylône posé)\n");
+
+    printf("  Foreuses  : %d (tick toutes les 5s)\n", numForeuses);
+    for (int i = 0; i < numFurnaces; i++)
+        printf("  Furnace   (%3d,%3d) : energy=%d mat=%d final=%d\n",
+               ListeFurnace[i].i, ListeFurnace[i].j,
+               ListeFurnace[i].energy_q, ListeFurnace[i].material_q, ListeFurnace[i].final_q);
+    for (int i = 0; i < numHydraulics; i++)
+        printf("  Hydraulic (%3d,%3d) : energy=%d mat=%d final=%d\n",
+               ListeHydraulic[i].i, ListeHydraulic[i].j,
+               ListeHydraulic[i].energy_q, ListeHydraulic[i].material_q, ListeHydraulic[i].final_q);
+    for (int i = 0; i < numEttireuses; i++)
+        printf("  Ettireuse (%3d,%3d) : energy=%d mat=%d final=%d\n",
+               ListeEttireuse[i].i, ListeEttireuse[i].j,
+               ListeEttireuse[i].energy_q, ListeEttireuse[i].material_q, ListeEttireuse[i].final_q);
+
+    if (piloneCount > 0 && totalSteam > 0 && snap_requests == 0)
+        printf("  [!] Steam + pylônes OK mais 0 appels RequestEnergy = machines sans timer actif\n");
+
+    printf("=========================\n");
 }
 
 void UpdateBattery(){
@@ -550,7 +755,8 @@ void Update_Foreuse() {
     float currentTime = GetTime();
     if (currentTime - lastForeuseTime >= 5.0f) {
         for (int i = 0; i < numForeuses; i++) {
-            if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j) && IsEnergieNear(ListeForeuse[i].i, ListeForeuse[i].j,1)) {
+            if (ListeForeuse[i].placed && IndexIsValid(ListeForeuse[i].i, ListeForeuse[i].j) &&
+                RequestEnergy(ListeForeuse[i].i, ListeForeuse[i].j, 1)) {
                 Texture2D texture = grid[ListeForeuse[i].i][ListeForeuse[i].j].texture;
                 if (texture.id == copperVeinTexture.id && ListeForeuse[i].q < 100) {
                     ListeForeuse[i].q += 1;
@@ -696,14 +902,14 @@ void Update_Furnace() {
 
 void Update_Hydraulic() {
     Update_Processor(ListeHydraulic, numHydraulics,
-                     &lastHydraulicTime, 0.0f, false,
+                     &lastHydraulicTime, 8.0f, true,
                      pressEffect,
                      HydraulicRecipes, HydraulicRecipeCount);
 }
 
 void Update_Ettireuse() {
     Update_Processor(ListeEttireuse, numEttireuses,
-                     &lastEttireuseTime, 0.0f, false,
+                     &lastEttireuseTime, 8.0f, true,
                      stretchEffect,
                      EttireuseRecipes, EttireuseRecipeCount);
 }
@@ -716,18 +922,17 @@ void Update_Steam() {
                 if (ListeSteam[i].energy_q > 0 && ListeSteam[i].material_q > 0) {
                     grid[ListeSteam[i].i][ListeSteam[i].j].move_texture=steamEffect;
                     if (ListeSteam[i].material_id == waterVeinTexture.id) {
-                        if (ListeSteam[i].final_q < 50) {
-                            if (ListeSteam[i].energy_id==oilVeinTexture.id){
-                                ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
-                                ListeSteam[i].material_q--;      // Consomme une unité d'eau
-                                ListeSteam[i].final_q += 6;
-                                } 
-                            else if (ListeSteam[i].energy_id==coalTexture.id){
-                                ListeSteam[i].energy_q--;         // Consomme une unité d'énergie
-                                ListeSteam[i].material_q--;      // Consomme une unité d'eau
-                                ListeSteam[i].final_q += 4;
-                                }    // Produit de l'énergie
-                        } else {
+                        if (ListeSteam[i].final_q < 100) {  // cap 100 (était 50)
+                            if (ListeSteam[i].energy_id == oilVeinTexture.id) {
+                                ListeSteam[i].energy_q--;
+                                ListeSteam[i].material_q--;
+                                ListeSteam[i].final_q += 12;  // était 6
+                            }
+                            else if (ListeSteam[i].energy_id == coalTexture.id) {
+                                ListeSteam[i].energy_q--;
+                                ListeSteam[i].material_q--;
+                                ListeSteam[i].final_q += 8;   // était 4
+                            }
                         }
                         if (ListeSteam[i].energy_q == 0) {
                             ListeSteam[i].energy_id = 0;
@@ -944,28 +1149,17 @@ void interraction(int posX, int posY) {
     }
 }
 
-int IsEnergieNear(int x, int y,int range) {
-    for (int i = -1*range; i <= 1*range; i++) {
-        for (int j = -1*range; j <= 1*range; j++) {
-            int nx = x + i;
-            int ny = y + j;          
-            if (IndexIsValid(nx, ny) ) {
-                if (grid[nx][ny].up_texture.id == solarpanelTexture.id ) return 1;// source elec                
-                
-                else if (grid[nx][ny].up_texture.id == piloneTexture.id && grid[nx][ny].move_texture.id == piloneEffectTexture.id) {
-                    if (grid[x][y].move_texture.id == piloneEffectTexture.id) {
-                        return 1; // Pas besoin de faire d'autres modifications
-                    }
-
-                    grid[nx][ny].move_texture = (Texture2D){0};
-                    return 1;
-                }
-
-                else if(FindNearestSteam(nx, ny)) return 1;
-                else if(FindNearestBattery(nx,ny)) return 1; //batterie chargée
-                
+int IsEnergieNear(int x, int y, int range) {
+    for (int i = -range; i <= range; i++) {
+        for (int j = -range; j <= range; j++) {
+            int nx = x + i, ny = y + j;
+            if (!IndexIsValid(nx, ny)) continue;
+            if (grid[nx][ny].up_texture.id == solarpanelTexture.id) return 1;
+            if (grid[nx][ny].up_texture.id == piloneTexture.id &&
+                grid[nx][ny].move_texture.id == piloneEffectTexture.id) return 1;
+            if (FindNearestSteam(nx, ny))   return 1;
+            if (FindNearestBattery(nx, ny)) return 1;
         }
-    }
     }
     return 0;
 }

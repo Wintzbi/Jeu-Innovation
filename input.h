@@ -89,6 +89,9 @@ typedef struct Conveyor {
     int dir[2];
     bool placed;
     bool power;
+    int  load;       // ampères transportés ce tick
+    int  peak_load;  // max vu depuis le dernier reset manuel (debug)
+    int  max_load;   // capacité max du pylône (0 pour convoyeurs/tuyaux)
     Texture2D texture;
     bool inMouvement;
     Texture2D textureToMove;
@@ -128,6 +131,9 @@ void ActionWithName(char ObjectName[20], int i, int j, int option);
 int AddInInvent(int q, Texture2D texture);
 const char* FindName(Texture2D textureRef);
 int IsEnergieNear(int x, int y, int range);
+int HasEnergySource(int x, int y, int range);
+int RequestEnergy(int x, int y, int amount);
+void DebugEnergy(void);
 
 // Détection de machine sur une case
 bool isForeuse(int posX, int posY);
