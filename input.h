@@ -12,9 +12,7 @@
 // Déclarations externes générales
 extern int MinPlaceableID;
 extern float rotation;  // Angle du conveyor sélectionné (mis à jour par UpdateDir)
-extern bool inMouvement;
-
-// Constantes
+extern int conveyor_dir;
 #define MAX_FOREUSE 100
 #define MAX_FURNACE 100
 #define MAX_HYDRAULIC 100
@@ -38,7 +36,6 @@ typedef struct Foreuse {
 } Foreuse;
 extern Foreuse ListeForeuse[MAX_FOREUSE];
 extern int numForeuses;
-extern Foreuse* NearForeuse;
 void Update_Foreuse();
 
 // ─── Machines processeurs (Furnace, Hydraulic, Ettireuse) ────────────────────
@@ -102,6 +99,12 @@ void UpdateDir();
 void Update_Conv();
 extern int conveyor_dir;
 void RemoveConveyor(int posX, int posY);
+void RemoveForeuse(int posX, int posY);
+void RemoveFurnace(int posX, int posY);
+void RemoveHydraulic(int posX, int posY);
+void RemoveEttireuse(int posX, int posY);
+void RemoveSteam(int posX, int posY);
+void RemoveOil(int posX, int posY);
 
 // Battery
 typedef struct Battery {
@@ -125,5 +128,13 @@ void ActionWithName(char ObjectName[20], int i, int j, int option);
 int AddInInvent(int q, Texture2D texture);
 const char* FindName(Texture2D textureRef);
 int IsEnergieNear(int x, int y, int range);
+
+// Détection de machine sur une case
+bool isForeuse(int posX, int posY);
+bool isFurnace(int posX, int posY);
+bool isHydraulic(int posX, int posY);
+bool isEttireuse(int posX, int posY);
+bool isSteam(int posX, int posY);
+bool isOil(int posX, int posY);
 
 #endif

@@ -53,10 +53,15 @@ void InitBaseCraft() {
 Rectangle dropdownMenu[MaxBaseCraft];
 
 void CraftButton() {
-    BaseCraftButton = (Rectangle) { GetScreenWidth()/2 - 350, 100, 100, 50 };
-    StructCraftButton= (Rectangle) { GetScreenWidth()/2 - 240, 100, 100, 50 };
-    MecaCraftButton= (Rectangle) { GetScreenWidth()/2 - 130, 100, 100, 50 };
-    ProdCraftButton= (Rectangle) { GetScreenWidth()/2 - 20, 100, 100, 50 };
+    // Recalcule seulement si la résolution a changé
+    static int lastW = 0;
+    int w = GetScreenWidth();
+    if (w == lastW) return;
+    lastW = w;
+    BaseCraftButton   = (Rectangle){ w/2 - 350, 100, 100, 50 };
+    StructCraftButton = (Rectangle){ w/2 - 240, 100, 100, 50 };
+    MecaCraftButton   = (Rectangle){ w/2 - 130, 100, 100, 50 };
+    ProdCraftButton   = (Rectangle){ w/2 -  20, 100, 100, 50 };
 }
 
 void DrawCraftPage() {

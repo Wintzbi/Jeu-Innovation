@@ -2,7 +2,6 @@
 #define MUSIQUE_H
 #include "raylib.h"
 #include "cell.h"
-#include <unistd.h>  // pour utiliser chdir()
 #include "stat.h"
 
 
