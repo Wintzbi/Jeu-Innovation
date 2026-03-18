@@ -268,108 +268,96 @@ int main(void) {
 
     SetTargetFPS(60);  // Définir la fréquence d'images cible
 
-    const double interval = 1; // Intervalle en secondes
+    const double convInterval = 1.0;
     struct timespec start, current;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (!shouldClose) {
         update_size();
-        clock_gettime(CLOCK_MONOTONIC, &current);
 
+        // ── UPDATE ──────────────────────────────────────────────────────────
+        UpdateMusic();
+        UpdateBattery();
+
+        clock_gettime(CLOCK_MONOTONIC, &current);
         double elapsed = (current.tv_sec - start.tv_sec) +
                          (current.tv_nsec - start.tv_nsec) / 1e9;
-
-        if (elapsed >= interval) {
-            Update_Conv(); // Mettre à jour les conveyors
+        if (elapsed >= convInterval) {
+            Update_Conv();
             clock_gettime(CLOCK_MONOTONIC, &start);
         }
 
-        if (IsKeyPressed(KEY_R)) UpdateDir();
-
-        UpdateMusic();
-
-        InitInventoryKeyBiding();
-        UpdateBattery();
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        // Afficher le menu principal
-        if (currentScreen == MENU) {
-            DrawMenu(&currentScreen);
-
-            // Initialiser le jeu si le bouton Play est pressé
-            if (currentScreen == GAME && !isGameInitialized) {
-                InitGame();
-            }
-        }
-
-        // Gestion des écrans secondaires
-        if (IsKeyPressed(KEY_E)) {
-            isInventoryScreenOpen = !isInventoryScreenOpen;
-            currentScreen = isInventoryScreenOpen ? INVENT : GAME;
-        }
-
-        if (IsKeyPressed(KEY_SEMICOLON)) {
-            isMapScreenOpen = !isMapScreenOpen;
-            currentScreen = isMapScreenOpen ? MAP : GAME;
-        }
-
-        if (IsKeyPressed(KEY_ESCAPE)) {
-            isOptionScreenOpen = !isOptionScreenOpen;
-            currentScreen = isOptionScreenOpen ? OPTION : GAME;
-        }
-
-        if (IsKeyPressed(KEY_C)) {
-            isCraftScreenOpen = !isCraftScreenOpen;
-            currentScreen = isCraftScreenOpen ? CRAFT : GAME;
-        }
-
-        if (IsKeyPressed(KEY_TAB)) {
-            selectedItem = (selectedItem + 1) % 10;
-        }
-
-        // Dessiner les différents écrans
-        if (currentScreen == INVENT) {
-            DrawInventoryPage();
-        } else if (currentScreen == OPTION) {
-            DrawEscapePage();
-        } else if (currentScreen == CRAFT) {
-            DrawCraftPage();
-        } else if (currentScreen == MAP) {
-            DrawMap();
-        }
-
-        // Mode 2D pour le jeu
-        BeginMode2D(camera);
-
         if (currentScreen == GAME) {
-            CurrentScreenFix();
-            GridDraw();  // Dessiner la grille de jeu
-            rightClic();
-            leftClic();
-            mouseDefault();
-            moveCamera();
             Update_Foreuse();
             Update_Furnace();
             Update_Steam();
             Update_Oil();
             Update_Hydraulic();
             Update_Ettireuse();
+        }
+
+        // ── INPUT ───────────────────────────────────────────────────────────
+        InitInventoryKeyBiding();
+
+        if (IsKeyPressed(KEY_R)) UpdateDir();
+        if (IsKeyPressed(KEY_TAB)) selectedItem = (selectedItem + 1) % 10;
+
+        if (currentScreen != MENU) {
+            if (IsKeyPressed(KEY_E)) {
+                isInventoryScreenOpen = !isInventoryScreenOpen;
+                currentScreen = isInventoryScreenOpen ? INVENT : GAME;
+            }
+            if (IsKeyPressed(KEY_SEMICOLON)) {
+                isMapScreenOpen = !isMapScreenOpen;
+                currentScreen = isMapScreenOpen ? MAP : GAME;
+            }
+            if (IsKeyPressed(KEY_ESCAPE)) {
+                isOptionScreenOpen = !isOptionScreenOpen;
+                currentScreen = isOptionScreenOpen ? OPTION : GAME;
+            }
+            if (IsKeyPressed(KEY_C)) {
+                isCraftScreenOpen = !isCraftScreenOpen;
+                currentScreen = isCraftScreenOpen ? CRAFT : GAME;
+            }
+        }
+
+        // ── DRAW ────────────────────────────────────────────────────────────
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        if (currentScreen == MENU) {
+            DrawMenu(&currentScreen);
+            if (currentScreen == GAME && !isGameInitialized)
+                InitGame();
+        } else if (currentScreen == INVENT) {
+            DrawInventoryPage();
+        } else if (currentScreen == OPTION) {
+            DrawEscapePage();
+        } else if (currentScreen == CRAFT) {
+            DrawCraftPage();
+        } else if (currentScreen == MAP) {
+            DrawMap(DayAndNight());
+        }
+
+        BeginMode2D(camera);
+        if (currentScreen == GAME) {
+            CurrentScreenFix();
+            GridDraw();
+            rightClic();
+            leftClic();
+            mouseDefault();
+            moveCamera();
             DrawMiniMap();
         }
-
         EndMode2D();
 
-        // Dessiner la barre d'inventaire
-        if (currentScreen == GAME) {
+        if (currentScreen == GAME)
             DrawInventoryBar();
-        }
 
         EndDrawing();
     }
 
-    // Libération des ressources
+    // ── CLEANUP ─────────────────────────────────────────────────────────────
     UnloadMusic();
     UnloadAllTexture();
     CloseWindow();

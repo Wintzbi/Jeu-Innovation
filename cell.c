@@ -71,18 +71,32 @@ bool IndexIsValid(int i, int j) {
 }
 
 int DayAndNight() {
+    // Cache le résultat pour la frame courante — plusieurs appels dans la même frame
+    // retournent la même valeur sans recalcul (ex: GridDraw + DrawMap).
+    static float lastTime   = -1.0f;
+    static int   cached     = 0;
     float currentTime = GetTime();
+    if (currentTime == lastTime) return cached;
+    lastTime = currentTime;
+
     int time       = (int)currentTime % 40;
     int maxOpacity = 64;
     int BrightValue;
 
-    if      (time < 10)              BrightValue = 0;
-    else if (time < 20)              BrightValue = (time - 10) * (maxOpacity / 10);
-    else if (time < 30)              BrightValue = maxOpacity;
-    else                             BrightValue = (40 - time) * (maxOpacity / 10);
+    if      (time < 10) BrightValue = 0;
+    else if (time < 20) BrightValue = (time - 10) * (maxOpacity / 10);
+    else if (time < 30) BrightValue = maxOpacity;
+    else                BrightValue = (40 - time) * (maxOpacity / 10);
 
-    if (time == 40) days++;
-    return BrightValue < 0 ? 0 : (BrightValue > maxOpacity ? maxOpacity : BrightValue);
+    static int lastCycle = 0;
+    int cycle = (int)currentTime / 40;
+    if (cycle > lastCycle) {
+        days += cycle - lastCycle;
+        lastCycle = cycle;
+    }
+
+    cached = BrightValue < 0 ? 0 : (BrightValue > maxOpacity ? maxOpacity : BrightValue);
+    return cached;
 }
 
 void InitGrid() {

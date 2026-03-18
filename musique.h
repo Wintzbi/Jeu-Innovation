@@ -30,7 +30,6 @@ void DrawMusicMenu();
 void DrawMusic();
 void MusicButton();
 void RandomInt() ;
-void DrawStat();
 
 extern bool shouldClose;
 

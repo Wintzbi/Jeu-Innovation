@@ -2,6 +2,7 @@
 #include "cell.h"
 #include "camera.h"
 #include "texture.h"
+#include "stat.h"
 #include "raylib.h"
 
 // ─── Minimap ─────────────────────────────────────────────────────────────────
@@ -28,7 +29,7 @@ static Rectangle GetViewportRect(void) {
     return (Rectangle){ cx - rw / 2.0f, cy - rh / 2.0f, rw, rh };
 }
 
-void DrawMap(void) {
+void DrawMap(int brightValue) {
     float scale  = 0.50f;
     float tileW  = cellSize * scale;
     float tileH  = cellSize * scale;
@@ -72,10 +73,9 @@ void DrawMap(void) {
     DrawRectangleLines((int)vp.x, (int)vp.y, (int)vp.width, (int)vp.height, RED);
 
     // Filtre nuit
-    int bright = DayAndNight();
-    if (bright > 0) {
+    if (brightValue > 0) {
         Rectangle screenRec = { mapX, mapY, tileW * COL, tileH * ROW };
-        DrawRectangleRec(screenRec, (Color){ 0, 0, 0, (unsigned char)bright });
+        DrawRectangleRec(screenRec, (Color){ 0, 0, 0, (unsigned char)brightValue });
     }
 
     // ─── Crédits (gauche) ────────────────────────────────────────────────────
@@ -100,4 +100,13 @@ void DrawMap(void) {
 
 void DrawHUD(void) {
     // Réservé — future barre de statut en jeu
+}
+
+void DrawStat(void) {
+    int cx = GetScreenWidth() / 2;
+    DrawRectangle(cx - 400, 250, 800, 60, DARKGRAY);
+    DrawText("Statistiques",     cx - 390, 250, 60, WHITE);
+    DrawText(TextFormat("Craft : %d",          craftedObjects), cx - 390, 350, 50, LIGHTGRAY);
+    DrawText(TextFormat("Objets ramassé : %d", pickedObject),  cx - 390, 420, 50, LIGHTGRAY);
+    DrawText(TextFormat("Temps écoulé : %d",   days),          cx - 390, 490, 50, LIGHTGRAY);
 }

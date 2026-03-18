@@ -9,7 +9,6 @@
 int MinPlaceableID = 23;
 float rotation = 0.0f;  // Angle du conveyor sélectionné
 Conveyor ListeConveyor[MAX_CONVEYOR];
-bool inMouvement = false;
 Foreuse ListeForeuse[MAX_FOREUSE];
 int conveyor_dir=0;
 int option =0;
@@ -217,69 +216,65 @@ void UpdateDir(){
 }
 
 void ActionWithName(char ObjectName[20], int i, int j, int option) {
-    if (strcmp(ObjectName, "Tapis") == 0) {
+    (void)ObjectName; // conservé pour compatibilité save/load nom-based
+    unsigned int id = inventory[selectedItem].texture.id;
+
+    // Convoyeurs — détectés par texture
+    if (id == conveyorTexture.id || id == pipeTexture.id || id == piloneTexture.id) {
         for (int k = 0; k < MAX_CONVEYOR; k++) {
             if (!ListeConveyor[k].placed) {
                 grid[i][j].dir[0] = directions[conveyor_dir][0];
                 grid[i][j].dir[1] = directions[conveyor_dir][1];
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .texture = conveyorTexture, .dir = {directions[conveyor_dir][0], directions[conveyor_dir][1]}, .placed = true, .inMouvement = false, .textureToMove = (Texture2D){0}};
+                Texture2D tex = (id == conveyorTexture.id) ? conveyorTexture
+                              : (id == pipeTexture.id)     ? pipeTexture
+                                                           : piloneTexture;
+                ListeConveyor[k] = (Conveyor){
+                    .i = i, .j = j, .texture = tex,
+                    .dir = {directions[conveyor_dir][0], directions[conveyor_dir][1]},
+                    .placed = true, .inMouvement = false, .textureToMove = (Texture2D){0}
+                };
+                if (id == pipeTexture.id) grid[i][j].moveable = false;
                 break;
             }
         }
-    } else if (strcmp(ObjectName, "Tuyau") == 0) {
-        for (int k = 0; k < MAX_CONVEYOR; k++) {
-            if (!ListeConveyor[k].placed) {
-                grid[i][j].dir[0] = directions[conveyor_dir][0];
-                grid[i][j].dir[1] = directions[conveyor_dir][1];
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .texture = pipeTexture, .dir = {directions[conveyor_dir][0], directions[conveyor_dir][1]}, .placed = true, .inMouvement = false, .textureToMove = (Texture2D){0}};
-                grid[i][j].moveable = false;
-                break;
-            }
-        }
-    } else if (strcmp(ObjectName, "Pilone") == 0) {
-        for (int k = 0; k < MAX_CONVEYOR; k++) {
-            if (!ListeConveyor[k].placed) {
-                grid[i][j].dir[0] = directions[conveyor_dir][0];
-                grid[i][j].dir[1] = directions[conveyor_dir][1];
-                ListeConveyor[k] = (Conveyor){.i = i, .j = j, .texture = piloneTexture, .dir = {directions[conveyor_dir][0], directions[conveyor_dir][1]}, .placed = true, .inMouvement = false, .textureToMove = (Texture2D){0}};
-                break;
-            }
-        }
-    } else if (strcmp(ObjectName, "Batterie") == 0) {
+    } else if (id == batteryTexture.id) {
         for (int k = 0; k < MAX_BATTERY; k++) {
             if (!ListeBattery[k].placed) {
                 ListeBattery[k] = (Battery){.i = i, .j = j, .texture = batteryTexture, .q = 0, .placed = true};
                 break;
             }
         }
-    } else if (strcmp(ObjectName, "Foreuse") == 0) {
+    } else if (id == drillTexture.id) {
         if (numForeuses < MAX_FOREUSE) {
             ListeForeuse[numForeuses++] = (Foreuse){.i = i, .j = j, .q = 0, .placed = true};
             grid[i][j].moveable = false;
         }
-    } else if (strcmp(ObjectName, "Furnace") == 0) {
+    } else if (id == furnaceTexture.id) {
         if (numFurnaces < MAX_FURNACE) {
             ListeFurnace[numFurnaces++] = (Machine){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
-    } else if (strcmp(ObjectName, "Hydraulic") == 0) {
+    } else if (id == pressTexture.id) {
         if (numHydraulics < MAX_HYDRAULIC) {
             ListeHydraulic[numHydraulics++] = (Machine){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
-    } else if (strcmp(ObjectName, "Ettireuse") == 0) {
+    } else if (id == stretchTexture.id) {
         if (numEttireuses < MAX_ETTIREUSE) {
             ListeEttireuse[numEttireuses++] = (Machine){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
-    } else if (strcmp(ObjectName, "Centrale Vapeur") == 0) {
+    } else if (id == steamcentralTexture.id) {
         if (numSteams < MAX_STEAM) {
-            ListeSteam[numSteams++] = (Steam){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_q = 0, .placed = true};
+            ListeSteam[numSteams++] = (Steam){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
-    } else if (strcmp(ObjectName, "Centrale Pétrole") == 0) {
+    }
+    // Centrale Pétrole : pas de texture dédiée dans texture.h pour l'instant
+    // (strcmp conservé comme fallback)
+    else if (strcmp(ObjectName, "Centrale Pétrole") == 0) {
         if (numOils < MAX_OIL) {
-            ListeOil[numOils++] = (Oil){.i = i, .j = j, .energy_q = 0, .energy_id = 0, .material_id = 0, .material_q = 0, .final_q = 0, .placed = true};
+            ListeOil[numOils++] = (Oil){.i = i, .j = j, .placed = true};
             grid[i][j].moveable = false;
         }
     }

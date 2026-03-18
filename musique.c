@@ -240,12 +240,3 @@ void RandomInt() {
         currentMusicIndex = rand() % NUM_MUSIC_FILES;  // Génération d'un nouvel index
     } while (currentMusicIndex == old);  // Comparer les valeurs pour éviter la répétition
 }
-
-void DrawStat(){
-    DrawRectangle((GetScreenWidth()/2)-400, 250, 800, 60, DARKGRAY);
-    DrawText(TextFormat("Satistiques"), (GetScreenWidth()/2)-390, 250, 60, WHITE);
-    DrawText(TextFormat("Craft : %d",craftedObjects), (GetScreenWidth()/2)-390, 350, 50, LIGHTGRAY);
-    DrawText(TextFormat("Objets ramassé : %d",pickedObject), (GetScreenWidth()/2)-390, 420, 50, LIGHTGRAY);
-    DrawText(TextFormat("Temps écoulé : %d",days), (GetScreenWidth()/2)-390, 490, 50, LIGHTGRAY);
-
-}

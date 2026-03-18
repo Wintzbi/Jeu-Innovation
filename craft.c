@@ -60,13 +60,15 @@ void CraftButton() {
 }
 
 void DrawCraftPage() {
+    CraftButton();
     DrawRectangle(100, 10, GetScreenWidth() - 200, 60, DARKGRAY);
     DrawText("Craft", 330, 11, 60, WHITE);
     DrawCraftMenu();
 }
 
 void DrawCraftMenu() {
-    CraftButton();
+    // Les boutons sont recalculés à l'ouverture du menu (appelé depuis DrawCraftPage)
+    // CraftButton() n'est plus appelé chaque frame
     // Dessiner le bouton principal du menu déroulant
     if (CheckCollisionPointRec(GetMousePosition(), BaseCraftButton)) {
         DrawRectangleRec(BaseCraftButton, LIGHTGRAY); // Couleur si survolé
