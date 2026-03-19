@@ -240,6 +240,7 @@ int load() {
             ListeConveyor[i].max_load = 5;
         if (ListeConveyor[i].placed && ListeConveyor[i].capacity == 0)
             ListeConveyor[i].capacity = 2;
+        ListeConveyor[i].processed = false;  // jamais sérialisé, toujours reset
     }
 
     for (int i = 0; i < MAX_BATTERY; i++) {

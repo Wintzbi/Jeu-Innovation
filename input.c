@@ -872,14 +872,14 @@ void RemoveBattery(int posX, int posY){
 
 void Update_Furnace() {
     Update_Processor(ListeFurnace, numFurnaces,
-                     &lastFurnaceTime, 10.0f, true,
+                     &lastFurnaceTime, 4.0f, true,
                      furnaceEffect,
                      FurnaceRecipes, FurnaceRecipeCount);
 }
 
 void Update_Hydraulic() {
     Update_Processor(ListeHydraulic, numHydraulics,
-                     &lastHydraulicTime, 8.0f, true,
+                     &lastHydraulicTime, 7.0f, true,
                      pressEffect,
                      HydraulicRecipes, HydraulicRecipeCount);
 }
