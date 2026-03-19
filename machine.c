@@ -122,8 +122,10 @@ void Update_Processor(Machine *list, int count,
 
             m->energy_q   -= rec->energy_cost;
             m->material_q -= 1;
-            m->final_q    += rec->output_qty;
-            m->final_id    = rec->output_id;
+            if (m->final_q < 20) {  // cap : évite l'accumulation infinie
+                m->final_q += rec->output_qty;
+                m->final_id = rec->output_id;
+            }
 
             if (m->energy_q   == 0) m->energy_id   = 0;
             if (m->material_q == 0) m->material_id  = 0;

@@ -36,7 +36,7 @@ int save() {
     if (!file) { perror("save"); return 1; }
 
     // Version du format — permet de détecter les saves incompatibles
-    int version = 4;
+    int version = 5;
     WINT(version);
 
     // Grille : chaque cellule sérialise ses 3 textures en indices logiques
@@ -112,8 +112,9 @@ int save() {
         WINT((int)ListeConveyor[i].placed);
         WINT((int)ListeConveyor[i].power);
         WINT(ListeConveyor[i].max_load);
+        WINT(ListeConveyor[i].amount);
+        WINT(ListeConveyor[i].capacity);
         WINT(TexToIdx(ListeConveyor[i].texture));
-        WINT((int)ListeConveyor[i].inMouvement);
         WINT(TexToIdx(ListeConveyor[i].textureToMove));
     }
 
@@ -138,12 +139,13 @@ int load() {
 
     int version;
     RINT(version);
-    if (version != 3 && version != 4) {
+    if (version != 4 && version != 5) {
         printf("Save incompatible (version %d), ignoré\n", version);
         fclose(file);
         return 1;
     }
     bool has_max_load = (version >= 4);
+    bool has_amount   = (version >= 5);
 
     int gridSize;
     RINT(gridSize);
@@ -221,13 +223,23 @@ int load() {
         if (has_max_load) {
             RINT(ListeConveyor[i].max_load);
         }
+        if (has_amount) {
+            RINT(ListeConveyor[i].amount);
+            RINT(ListeConveyor[i].capacity);
+        } else {
+            ListeConveyor[i].amount   = 0;
+            ListeConveyor[i].capacity = 2;
+        }
         RINT(ttex);    ListeConveyor[i].texture       = IdxToTex(ttex);
-        int cm; RINT(cm); ListeConveyor[i].inMouvement = (bool)cm;
+        if (!has_amount) {
+            int cm; RINT(cm);  // inMouvement — champ supprimé, on lit pour avancer
+        }
         RINT(ttomove); ListeConveyor[i].textureToMove = IdxToTex(ttomove);
-        // Toujours recalculer max_load pour les pylônes si absent ou nul
         if (ListeConveyor[i].placed && ListeConveyor[i].max_load == 0 &&
             ListeConveyor[i].texture.id == piloneTexture.id)
             ListeConveyor[i].max_load = 5;
+        if (ListeConveyor[i].placed && ListeConveyor[i].capacity == 0)
+            ListeConveyor[i].capacity = 2;
     }
 
     for (int i = 0; i < MAX_BATTERY; i++) {
@@ -277,7 +289,7 @@ int main(void) {
 
     SetTargetFPS(60);  // Définir la fréquence d'images cible
 
-    const double convInterval = 1.0;
+    const double convInterval = 0.25;
     struct timespec start, current;
     clock_gettime(CLOCK_MONOTONIC, &start);
 

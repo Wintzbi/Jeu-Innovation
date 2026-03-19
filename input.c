@@ -231,8 +231,9 @@ void ActionWithName(char ObjectName[20], int i, int j, int option) {
                 int mload = (id == piloneTexture.id) ? 5 : 0;
                 ListeConveyor[k] = (Conveyor){
                     .i = i, .j = j, .texture = tex, .max_load = mload,
+                    .capacity = 2,
                     .dir = {directions[conveyor_dir][0], directions[conveyor_dir][1]},
-                    .placed = true, .inMouvement = false, .textureToMove = (Texture2D){0}
+                    .placed = true, .textureToMove = (Texture2D){0}
                 };
                 if (id == pipeTexture.id) grid[i][j].moveable = false;
                 break;
@@ -455,11 +456,14 @@ void Update_Conv() {
         }
     }
 
-    // ── Étape 3 : convoyeurs normaux ──────────────────────────────────────
+    // ── Étape 3 : reset processed + convoyeurs normaux ────────────────────
+    for (int k = 0; k < MAX_CONVEYOR; k++)
+        ListeConveyor[k].processed = false;
+
     for (int k = 0; k < MAX_CONVEYOR; k++) {
-        if (ListeConveyor[k].placed && ListeConveyor[k].texture.id != piloneTexture.id)
-            Convey(&ListeConveyor[k]);
-    }
+            if (ListeConveyor[k].placed && ListeConveyor[k].texture.id != piloneTexture.id)
+                Convey(&ListeConveyor[k]);
+        }
 }
 
 // ─── Debug réseau énergétique ─────────────────────────────────────────────────
@@ -526,243 +530,177 @@ void UpdateBattery() {
     }
 }
 void Convey(Conveyor *conv) {
-    
-    int srcI = conv->i - conv->dir[0];  // Calcul de la case source
-    int srcJ = conv->j - conv->dir[1];  // Calcul de la case source
-    int destI = conv->i + conv->dir[0]; // Calcul de la case destination
-    int destJ = conv->j + conv->dir[1]; // Calcul de la case destination
+    if (conv->texture.id == piloneTexture.id) return;
+    if (conv->processed) return;  // déjà traité ce tick
+    conv->processed = true;
 
-    if (!IndexIsValid(srcI, srcJ) || !IndexIsValid(destI, destJ)) {
-        return; // Eviter l'accès aux indices invalides
-    }
+    int srcI  = conv->i - conv->dir[0];
+    int srcJ  = conv->j - conv->dir[1];
+    int destI = conv->i + conv->dir[0];
+    int destJ = conv->j + conv->dir[1];
 
-    if (grid[srcI][srcJ].moveable &&
-        grid[srcI][srcJ].up_texture.id != 0 && 
-        grid[srcI][srcJ].up_texture.id != conv->texture.id) {
-        if((grid[srcI][srcJ].isSolid && conv->texture.id==conveyorTexture.id) || (!grid[srcI][srcJ].isSolid && conv->texture.id==pipeTexture.id)){
-            conv->textureToMove = grid[srcI][srcJ].up_texture;
-            grid[srcI][srcJ].placed = false;
-            grid[srcI][srcJ].up_texture = (Texture2D){ 0 }; // Effacer la case source
-            grid[conv->i][conv->j].move_texture=conv->textureToMove;
+    if (!IndexIsValid(srcI, srcJ) || !IndexIsValid(destI, destJ)) return;
+
+    // ── Propager depuis le convoyeur précédent (anti-téléportation) ──────
+    // Un item ne peut avancer que d'une case par tick :
+    // on ne prend que si ce convoyeur est vide.
+    if (conv->amount == 0) {
+        bool srcIsConv = (grid[srcI][srcJ].up_texture.id == conveyorTexture.id ||
+                          grid[srcI][srcJ].up_texture.id == pipeTexture.id);
+
+        // Propager depuis convoyeur précédent
+        if (srcIsConv && grid[srcI][srcJ].move_texture.id != 0) {
+            // Chercher le convoyeur source dans la liste
+            for (int k = 0; k < MAX_CONVEYOR; k++) {
+                if (!ListeConveyor[k].placed) continue;
+                if (ListeConveyor[k].i != srcI || ListeConveyor[k].j != srcJ) continue;
+                if (ListeConveyor[k].amount == 0) continue;
+                int take = ListeConveyor[k].amount < conv->capacity
+                         ? ListeConveyor[k].amount : conv->capacity;
+                conv->textureToMove        = ListeConveyor[k].textureToMove;
+                conv->amount               = take;
+                ListeConveyor[k].amount   -= take;
+                ListeConveyor[k].processed = true;  // la source ne peut plus donner ce tick
+                if (ListeConveyor[k].amount == 0)
+                    ListeConveyor[k].textureToMove = (Texture2D){0};
+                // Mise à jour visuelle source
+                grid[srcI][srcJ].move_texture = ListeConveyor[k].amount > 0
+                    ? ListeConveyor[k].textureToMove : (Texture2D){0};
+                break;
+            }
         }
-    }
-    else if(grid[srcI][srcJ].up_texture.id == drillTexture.id) {
+        // Prendre depuis foreuse
+        else if (grid[srcI][srcJ].up_texture.id == drillTexture.id) {
             for (int k = 0; k < numForeuses; k++) {
-                if (ListeForeuse[k].i == srcI && ListeForeuse[k].j == srcJ) {
-                    if (ListeForeuse[k].q>0){
-                        Texture2D under_texture = grid[ListeForeuse[k].i][ListeForeuse[k].j].texture;
-                        Texture2D mined_texture =(Texture2D){0};
-                        if(conv->texture.id == conveyorTexture.id && grid[srcI][srcJ].isSolid){ //solid
-                            if (under_texture.id == copperVeinTexture.id) {
-                                mined_texture = copperTexture;
-                            }
-                            else if (under_texture.id == ironVeinTexture.id) {
-                                mined_texture = ironTexture;
-                            }
-                            else if (under_texture.id == coalVeinTexture.id) {
-                                mined_texture = coalTexture;
-                            } 
-                        }
-                        else if(conv->texture.id == pipeTexture.id ){ //liquide
-                            if (under_texture.id == waterVeinTexture.id) {
-                                mined_texture = waterVeinTexture;
-                            }
-                            if (under_texture.id == oilVeinTexture.id) {
-                                mined_texture = oilVeinTexture;
-                            }
-                            }
-                        conv->textureToMove = mined_texture;
-                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
-                        ListeForeuse[k].q--;
-                    }
-                    
+                if (ListeForeuse[k].i != srcI || ListeForeuse[k].j != srcJ) continue;
+                if (ListeForeuse[k].q <= 0) continue;
+                Texture2D under = grid[srcI][srcJ].texture;
+                Texture2D mined = (Texture2D){0};
+                if (conv->texture.id == conveyorTexture.id) {
+                    if      (under.id == copperVeinTexture.id) mined = copperTexture;
+                    else if (under.id == ironVeinTexture.id)   mined = ironTexture;
+                    else if (under.id == coalVeinTexture.id)   mined = coalTexture;
+                    else if (under.id == rockVeinTexture.id)   mined = rockTexture;
+                    else if (under.id == sandVeinTexture.id)   mined = sandDust;
+                } else if (conv->texture.id == pipeTexture.id) {
+                    if      (under.id == waterVeinTexture.id)  mined = waterVeinTexture;
+                    else if (under.id == oilVeinTexture.id)    mined = oilVeinTexture;
                 }
-            }
-    }
-    else if(grid[srcI][srcJ].up_texture.id == furnaceTexture.id ) {
-            for (int k = 0; k < numForeuses; k++) {
-                if (ListeFurnace[k].i == srcI && ListeFurnace[k].j == srcJ) {
-                    if (ListeFurnace[k].final_q>0){
-                        int crafted_textureId = ListeFurnace[k].final_id;
-                        Texture2D crafted_texture =(Texture2D){0};
-                        if (crafted_textureId == copperLingotTexture.id) {
-                            crafted_texture = copperLingotTexture;
-                        }
-                        else if (crafted_textureId == ironLingotTexture.id) {
-                            crafted_texture = ironLingotTexture;
-                        }
-                       
-                        conv->textureToMove = crafted_texture;
-                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
-                        ListeFurnace[k].final_q--;
-                    }
-                    
+                if (mined.id != 0) {
+                    int take = ListeForeuse[k].q < conv->capacity
+                             ? ListeForeuse[k].q : conv->capacity;
+                    conv->textureToMove   = mined;
+                    conv->amount          = take;
+                    ListeForeuse[k].q    -= take;
                 }
+                break;
             }
-    }
-
-else if(grid[srcI][srcJ].up_texture.id == pressTexture.id ) {
-            for (int k = 0; k < numHydraulics; k++) {
-                if (ListeHydraulic[k].i == srcI && ListeHydraulic[k].j == srcJ) {
-                    if (ListeHydraulic[k].final_q>0){
-                        int crafted_textureId = ListeHydraulic[k].final_id;
-                        Texture2D crafted_texture =(Texture2D){0};
-
-                        if (crafted_textureId == ironPlateTexture.id) {
-                            crafted_texture = ironPlateTexture;
-                        }
-                        
-                        else if (crafted_textureId == copperPlateTexture.id) {
-                            crafted_texture = copperPlateTexture;
-                        }
-                        else if (crafted_textureId == gearTexture.id) {
-                            crafted_texture = gearTexture;
-                        }
-                       
-                        conv->textureToMove = crafted_texture;
-                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
-                        ListeHydraulic[k].final_q--;
-                    }
-                    
-                }
-            }
-    }
-    
-    else if(grid[srcI][srcJ].up_texture.id == stretchTexture.id ) {
-            for (int k = 0; k < numEttireuses; k++) {
-                if (ListeEttireuse[k].i == srcI && ListeEttireuse[k].j == srcJ) {
-                    if (ListeEttireuse[k].final_q>0){
-                        int crafted_textureId = ListeEttireuse[k].final_id;
-                        Texture2D crafted_texture =(Texture2D){0};
-
-                        if (crafted_textureId == copperRodTexture.id) {
-                            crafted_texture = copperRodTexture;
-                        }
-                        else if (crafted_textureId == ironRodTexture.id) {
-                            crafted_texture = ironRodTexture;
-                        }
-                        else if (crafted_textureId == copperCableTexture.id) {
-                            crafted_texture = copperCableTexture;
-                        }
-                       
-                        conv->textureToMove = crafted_texture;
-                        grid[conv->i][conv->j].move_texture=conv->textureToMove;
-                        ListeEttireuse[k].final_q--;
-                    }
-                    
-                }
-            }
-    }
-
-    if (grid[srcI][srcJ].move_texture.id != 0 && grid[conv->i][conv->j].move_texture.id==0 && (grid[srcI][srcJ].up_texture.id ==conveyorTexture.id || grid[srcI][srcJ].up_texture.id ==pipeTexture.id || grid[srcI][srcJ].up_texture.id ==piloneTexture.id) ) {
-        conv->textureToMove=grid[srcI][srcJ].move_texture;
-        grid[srcI][srcJ].move_texture = (Texture2D){ 0 }; // Réinitialiser move_texture
-        grid[conv->i][conv->j].move_texture=conv->textureToMove;
         }
-    if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[conv->i][conv->j].move_texture.id!=0) {
+        // Prendre depuis machine processeur (Furnace, Hydraulic, Ettireuse)
+        else {
+            Machine *src_machine = NULL;
+            int src_count = 0;
+            if (grid[srcI][srcJ].up_texture.id == furnaceTexture.id) {
+                src_machine = ListeFurnace; src_count = numFurnaces;
+            } else if (grid[srcI][srcJ].up_texture.id == pressTexture.id) {
+                src_machine = ListeHydraulic; src_count = numHydraulics;
+            } else if (grid[srcI][srcJ].up_texture.id == stretchTexture.id) {
+                src_machine = ListeEttireuse; src_count = numEttireuses;
+            }
+            if (src_machine) {
+                for (int k = 0; k < src_count; k++) {
+                    if (src_machine[k].i != srcI || src_machine[k].j != srcJ) continue;
+                    if (src_machine[k].final_q <= 0) continue;
+                    Texture2D out = IdxToTex(TexToIdx((Texture2D){.id = src_machine[k].final_id}));
+                    if (out.id == 0) out.id = src_machine[k].final_id;
+                    int take = src_machine[k].final_q < conv->capacity
+                             ? src_machine[k].final_q : conv->capacity;
+                    conv->textureToMove    = out;
+                    conv->amount           = take;
+                    src_machine[k].final_q -= take;
+                    break;
+                }
+            }
+        }
+        // Mise à jour visuelle du convoyeur courant
+        grid[conv->i][conv->j].move_texture = conv->amount > 0
+            ? conv->textureToMove : (Texture2D){0};
 
+        return;  // On a chargé ce tick → on livre au tick suivant
     }
-    else if (grid[destI][destJ].up_texture.id !=conv->texture.id && !grid[destI][destJ].placed && grid[srcI][srcJ].moveable){
-         conv->textureToMove=grid[srcI][srcJ].move_texture;
-         grid[conv->i][conv->j].move_texture=conv->textureToMove;
+
+    // ── Livrer à la destination ──────────────────────────────────────────
+    if (conv->amount <= 0) return;
+
+    unsigned int dtex = grid[destI][destJ].up_texture.id;
+
+    if (dtex == chestTexture.id) {
+        AddInInvent(conv->amount, conv->textureToMove);
+        conv->amount = 0;
+        conv->textureToMove = (Texture2D){0};
+        grid[conv->i][conv->j].move_texture = (Texture2D){0};
+        return;
     }
-    else if (grid[destI][destJ].up_texture.id == chestTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
-        AddInInvent(1, conv->textureToMove);
-        grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-        conv->textureToMove = (Texture2D){ 0 };
-    }
-    else if (grid[destI][destJ].up_texture.id == furnaceTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
-        for (int k = 0; k < numFurnaces; k++) {
-                if (ListeFurnace[k].i == destI && ListeFurnace[k].j == destJ) {
-                        if (ListeFurnace[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
-                            ListeFurnace[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }
-                        else if (ListeFurnace[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
-                            ListeFurnace[k].material_id = conv->textureToMove.id;
-                            ListeFurnace[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }
-                        else if (ListeFurnace[k].energy_id == conv->textureToMove.id && conv->textureToMove.id == coalTexture.id ) {
-                            ListeFurnace[k].energy_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        } 
-                        else if (ListeFurnace[k].energy_q == 0 && conv->textureToMove.id == coalTexture.id ) {
-                            ListeFurnace[k].energy_id= conv->textureToMove.id;
-                            ListeFurnace[k].energy_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        } 
+
+    // Livraison à une machine processeur
+    Machine *dst_machine = NULL; int dst_count = 0;
+    if      (dtex == furnaceTexture.id)     { dst_machine = ListeFurnace;   dst_count = numFurnaces;   }
+    else if (dtex == pressTexture.id)       { dst_machine = ListeHydraulic; dst_count = numHydraulics; }
+    else if (dtex == stretchTexture.id)     { dst_machine = ListeEttireuse; dst_count = numEttireuses; }
+
+    if (dst_machine) {
+        for (int k = 0; k < dst_count; k++) {
+            if (dst_machine[k].i != destI || dst_machine[k].j != destJ) continue;
+            unsigned int tid = conv->textureToMove.id;
+            bool is_energy   = (tid == coalTexture.id);
+            if (is_energy) {
+                if (dst_machine[k].energy_id == tid || dst_machine[k].energy_q == 0) {
+                    dst_machine[k].energy_id  = tid;
+                    dst_machine[k].energy_q  += conv->amount;
+                    conv->amount = 0;
+                    conv->textureToMove = (Texture2D){0};
+                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                }
+            } else {
+                if (dst_machine[k].material_id == tid || dst_machine[k].material_q == 0) {
+                    dst_machine[k].material_id  = tid;
+                    dst_machine[k].material_q  += conv->amount;
+                    conv->amount = 0;
+                    conv->textureToMove = (Texture2D){0};
+                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
                 }
             }
+            break;
+        }
+        return;
     }
-    else if (grid[destI][destJ].up_texture.id == pressTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
-        for (int k = 0; k < numHydraulics; k++) {
-                if (ListeHydraulic[k].i == destI && ListeHydraulic[k].j == destJ) {
-                        if (ListeHydraulic[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
-                            ListeHydraulic[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }
-                        else if (ListeHydraulic[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
-                            ListeHydraulic[k].material_id = conv->textureToMove.id;
-                            ListeHydraulic[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }      
-                }
-            }
-    }
-    else if (grid[destI][destJ].up_texture.id == stretchTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
-        for (int k = 0; k < numEttireuses; k++) {
-                if (ListeEttireuse[k].i == destI && ListeEttireuse[k].j == destJ) {
-                    
-                        if (ListeEttireuse[k].material_id == conv->textureToMove.id && conv->textureToMove.id != 0 ) {
-                            ListeEttireuse[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }
-                        else if (ListeEttireuse[k].material_q ==0 && conv->textureToMove.id != 0 ) {
-                            ListeEttireuse[k].material_id = conv->textureToMove.id;
-                            ListeEttireuse[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }      
-                }
-            }
-    }
-    else if (grid[destI][destJ].up_texture.id == steamcentralTexture.id && grid[conv->i][conv->j].move_texture.id!=0){
+
+    // Livraison à centrale vapeur
+    if (dtex == steamcentralTexture.id) {
         for (int k = 0; k < numSteams; k++) {
-                if (ListeSteam[k].i == destI && ListeSteam[k].j == destJ) {
-                        if (ListeSteam[k].material_id == conv->textureToMove.id && conv->textureToMove.id != coalTexture.id ) {
-                            ListeSteam[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }
-                        else if (ListeSteam[k].material_q ==0 && conv->textureToMove.id != coalTexture.id ) {
-                            ListeSteam[k].material_id = conv->textureToMove.id;
-                            ListeSteam[k].material_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        }
-                        else if (ListeSteam[k].energy_id == conv->textureToMove.id && (conv->textureToMove.id == coalTexture.id  || conv->textureToMove.id == oilVeinTexture.id)) {
-                            ListeSteam[k].energy_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        } 
-                        else if (ListeSteam[k].energy_q == 0 && (conv->textureToMove.id == coalTexture.id  || conv->textureToMove.id == oilVeinTexture.id)) {
-                            ListeSteam[k].energy_id= conv->textureToMove.id;
-                            ListeSteam[k].energy_q++;
-                            grid[conv->i][conv->j].move_texture = (Texture2D){ 0 }; 
-                            conv->textureToMove = (Texture2D){ 0 };
-                        } 
+            if (ListeSteam[k].i != destI || ListeSteam[k].j != destJ) continue;
+            unsigned int tid = conv->textureToMove.id;
+            bool is_fuel = (tid == coalTexture.id || tid == oilVeinTexture.id);
+            if (is_fuel) {
+                if (ListeSteam[k].energy_id == tid || ListeSteam[k].energy_q == 0) {
+                    ListeSteam[k].energy_id  = tid;
+                    ListeSteam[k].energy_q  += conv->amount;
+                    conv->amount = 0; conv->textureToMove = (Texture2D){0};
+                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                }
+            } else {
+                if (ListeSteam[k].material_id == tid || ListeSteam[k].material_q == 0) {
+                    ListeSteam[k].material_id  = tid;
+                    ListeSteam[k].material_q  += conv->amount;
+                    conv->amount = 0; conv->textureToMove = (Texture2D){0};
+                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
                 }
             }
+            break;
+        }
     }
 }
+
 
 void Update_Foreuse() {
     float currentTime = GetTime();

@@ -92,8 +92,10 @@ typedef struct Conveyor {
     int  load;       // ampères transportés ce tick
     int  peak_load;  // max vu depuis le dernier reset manuel (debug)
     int  max_load;   // capacité max du pylône (0 pour convoyeurs/tuyaux)
+    int  amount;     // quantité d'items sur ce convoyeur
+    int  capacity;   // quantité max transportable par tick (upgradable, défaut 2)
+    bool processed;  // déjà traité ce tick — empêche le multi-hop
     Texture2D texture;
-    bool inMouvement;
     Texture2D textureToMove;
 } Conveyor;
 extern Conveyor ListeConveyor[MAX_CONVEYOR];
