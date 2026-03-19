@@ -451,8 +451,11 @@ void Update_Conv() {
             grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture = (Texture2D){0};
         }
     }
-    // Recharge solaire depuis la liste des panneaux — O(n panneaux) pas O(grille)
-    solarPool = solarPanelCount * SOLAR_PER_PANEL;
+    // Solaire : production proportionnelle à la luminosité
+    // DayAndNight() retourne 0 (plein jour) → 64 (nuit noire)
+    int darkness = DayAndNight();  // 0=jour, 64=nuit
+    int daylight  = 64 - darkness; // 64=jour, 0=nuit
+    solarPool = (solarPanelCount * SOLAR_PER_PANEL * daylight) / 64;
 
     // ── Étape 2 : allumer les pylônes qui ont une source (HasEnergySource) ─
     // Multi-pass pour propager les chaînes
