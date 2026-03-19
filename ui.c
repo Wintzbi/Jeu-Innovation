@@ -117,10 +117,10 @@ void DrawStat(void) {
 // À appeler dans le bloc BeginMode2D / EndMode2D.
 
 static void DrawTooltip(int worldX, int worldY, const char **lines, int count) {
-    int   fontSize = 6;          
+    int   fontSize = 6;
     float spacing  = 0.5f;
     Font  font     = GetFontDefault();
-    int   padding  = fontSize / 4; // marge proportionnelle
+    int   padding  = fontSize / 4;
     int   lineH    = (int)(fontSize * 1.25f);
 
     int w = 0;
@@ -155,6 +155,18 @@ void DrawInfoTooltip(void) {
     const char *lines[12];
     char buf[12][48];
     int n = 0;
+
+    // ── Panneau solaire ───────────────────────────────────────────────────
+    if (grid[posX][posY].up_texture.id == solarpanelTexture.id) {
+        int darkness = DayAndNight();
+        int pct      = ((64 - darkness) * 100) / 64;
+        snprintf(buf[n], 48, "Panneau Solaire");           lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Production : %dA", (SOLAR_PER_PANEL * (64 - darkness)) / 64);
+                                                           lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Luminosite : %d%%", pct);   lines[n] = buf[n]; n++;
+        DrawTooltip(posX, posY, lines, n);
+        return;
+    }
 
     // ── Foreuse ───────────────────────────────────────────────────────────
     for (int i = 0; i < numForeuses; i++) {

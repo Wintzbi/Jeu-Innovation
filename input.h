@@ -135,6 +135,7 @@ const char* FindName(Texture2D textureRef);
 int IsEnergieNear(int x, int y, int range);
 int HasEnergySource(int x, int y, int range);
 int RequestEnergy(int x, int y, int amount);
+#define SOLAR_PER_PANEL 3  // production par panneau par tick (plein jour)
 void DebugEnergy(void);
 void RebuildSolarPanels(void);
 extern bool infoMode;   // toggle F2 — affiche les infos des machines au survol

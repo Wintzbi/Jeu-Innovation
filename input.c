@@ -12,7 +12,6 @@ bool infoMode  = false;
 
 // ─── Panneaux solaires — liste pour éviter la boucle grille ──────────────────
 #define MAX_SOLAR_PANELS 200
-#define SOLAR_PER_PANEL  3
 typedef struct { int i; int j; } SolarPanel;
 static SolarPanel solarPanels[MAX_SOLAR_PANELS];
 static int solarPanelCount = 0;
@@ -563,7 +562,7 @@ void UpdateBattery() {
 }
 void Convey(Conveyor *conv) {
     if (conv->texture.id == piloneTexture.id) return;
-    if (conv->processed) return;  // déjà traité ce tick
+    if (conv->processed) return;
     conv->processed = true;
 
     int srcI  = conv->i - conv->dir[0];
@@ -573,9 +572,25 @@ void Convey(Conveyor *conv) {
 
     if (!IndexIsValid(srcI, srcJ) || !IndexIsValid(destI, destJ)) return;
 
-    // ── Propager depuis le convoyeur précédent (anti-téléportation) ──────
-    // Un item ne peut avancer que d'une case par tick :
-    // on ne prend que si ce convoyeur est vide.
+    // ── Déterminer le mode : push ou pull ────────────────────────────────
+    // Si le convoyeur devant a une direction différente → mode PUSH
+    // (ce tapis est un tapis de merge, il pousse ses items sur le tapis principal)
+    // Sinon → mode PULL normal (tire depuis derrière)
+    bool pushMode = false;
+    for (int k = 0; k < MAX_CONVEYOR; k++) {
+        if (!ListeConveyor[k].placed) continue;
+        if (ListeConveyor[k].i != destI || ListeConveyor[k].j != destJ) continue;
+        if (ListeConveyor[k].texture.id != conveyorTexture.id &&
+            ListeConveyor[k].texture.id != pipeTexture.id) break;
+        // Direction différente = convoyeur devant n'est pas aligné → push
+        if (ListeConveyor[k].dir[0] != conv->dir[0] ||
+            ListeConveyor[k].dir[1] != conv->dir[1]) {
+            pushMode = true;
+        }
+        break;
+    }
+
+    // ── Mode PULL : prendre depuis la source ─────────────────────────────
     if (conv->amount == 0) {
         bool srcIsConv = (grid[srcI][srcJ].up_texture.id == conveyorTexture.id ||
                           grid[srcI][srcJ].up_texture.id == pipeTexture.id);
@@ -658,7 +673,32 @@ void Convey(Conveyor *conv) {
         grid[conv->i][conv->j].move_texture = conv->amount > 0
             ? conv->textureToMove : (Texture2D){0};
 
-        return;  // On a chargé ce tick → on livre au tick suivant
+        if (!pushMode) return;  // pull normal → livrer au tick suivant
+        // push mode → on continue directement vers le bloc push
+    }
+
+    // ── Mode PUSH : injecter sur le tapis devant (merge) ─────────────────
+    // Le tapis devant a une direction différente — on pousse nos items dessus
+    // si ce tapis est vide et non traité ce tick.
+    if (pushMode && conv->amount > 0) {
+        for (int k = 0; k < MAX_CONVEYOR; k++) {
+            if (!ListeConveyor[k].placed) continue;
+            if (ListeConveyor[k].i != destI || ListeConveyor[k].j != destJ) continue;
+            if (ListeConveyor[k].processed) break;  // déjà utilisé ce tick
+            if (ListeConveyor[k].amount > 0) break;  // tapis devant plein → back-pressure
+            // Injecter
+            int take = conv->amount < ListeConveyor[k].capacity
+                     ? conv->amount : ListeConveyor[k].capacity;
+            ListeConveyor[k].textureToMove = conv->textureToMove;
+            ListeConveyor[k].amount        = take;
+            conv->amount                  -= take;
+            if (conv->amount == 0) conv->textureToMove = (Texture2D){0};
+            grid[conv->i][conv->j].move_texture  = conv->amount > 0
+                ? conv->textureToMove : (Texture2D){0};
+            grid[destI][destJ].move_texture = ListeConveyor[k].textureToMove;
+            break;
+        }
+        return;
     }
 
     // ── Livrer à la destination ──────────────────────────────────────────
