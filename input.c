@@ -7,7 +7,16 @@
 #include <string.h> // Pour strcmp
 
 int MinPlaceableID = 23;
-float rotation = 0.0f;  // Angle du conveyor sélectionné
+float rotation = 0.0f;
+bool infoMode  = false;
+
+// ─── Panneaux solaires — liste pour éviter la boucle grille ──────────────────
+#define MAX_SOLAR_PANELS 200
+#define SOLAR_PER_PANEL  3
+typedef struct { int i; int j; } SolarPanel;
+static SolarPanel solarPanels[MAX_SOLAR_PANELS];
+static int solarPanelCount = 0;
+static int solarPool       = 0;
 Conveyor ListeConveyor[MAX_CONVEYOR];
 Foreuse ListeForeuse[MAX_FOREUSE];
 int conveyor_dir=0;
@@ -100,6 +109,11 @@ void rightClic() {
                 grid[posX][posY].up_texture = inventory[selectedItem].texture;
                 ActionWithName(inventory[selectedItem].name, posX, posY,option);
                 inventory[selectedItem].quantity--;
+                // Tracker les panneaux solaires pour éviter la boucle grille
+                if (inventory[selectedItem].texture.id == solarpanelTexture.id &&
+                    solarPanelCount < MAX_SOLAR_PANELS) {
+                    solarPanels[solarPanelCount++] = (SolarPanel){posX, posY};
+                }
 
                 if (inventory[selectedItem].quantity == 0) {
                     inventory[selectedItem].texture = (Texture2D){0};
@@ -152,6 +166,15 @@ void leftClic() {
             grid[posX][posY].dir[0] = 0;
             grid[posX][posY].dir[1] = 0;
             pickedObject++;
+            // Retirer de la liste des panneaux solaires si applicable
+            if (brokenTexture.id == solarpanelTexture.id) {
+                for (int s = 0; s < solarPanelCount; s++) {
+                    if (solarPanels[s].i == posX && solarPanels[s].j == posY) {
+                        solarPanels[s] = solarPanels[--solarPanelCount];
+                        break;
+                    }
+                }
+            }
 
             for (int f = 0; f < numForeuses; f++) {
                 if (ListeForeuse[f].i == posX && ListeForeuse[f].j == posY && ListeForeuse[f].placed) {
@@ -295,11 +318,6 @@ void ActionWithName(char ObjectName[20], int i, int j, int option) {
 static int dbg_requests = 0;
 static int dbg_success  = 0;
 
-// Pool d'énergie solaire — rechargé chaque tick dans Update_Conv
-// Chaque panneau solaire contribue SOLAR_PER_PANEL unités/tick
-#define SOLAR_PER_PANEL 3
-static int solarPool = 0;
-
 int HasEnergySource(int x, int y, int range) {
     for (int i = -range; i <= range; i++) {
         for (int j = -range; j <= range; j++) {
@@ -433,11 +451,8 @@ void Update_Conv() {
             grid[ListeConveyor[k].i][ListeConveyor[k].j].move_texture = (Texture2D){0};
         }
     }
-    // Compter les panneaux solaires posés
-    for (int i = 0; i < COL; i++)
-        for (int j = 0; j < ROW; j++)
-            if (grid[i][j].up_texture.id == solarpanelTexture.id)
-                solarPool += SOLAR_PER_PANEL;
+    // Recharge solaire depuis la liste des panneaux — O(n panneaux) pas O(grille)
+    solarPool = solarPanelCount * SOLAR_PER_PANEL;
 
     // ── Étape 2 : allumer les pylônes qui ont une source (HasEnergySource) ─
     // Multi-pass pour propager les chaînes
@@ -469,6 +484,14 @@ void Update_Conv() {
 // ─── Debug réseau énergétique ─────────────────────────────────────────────────
 // Appeler depuis main.c avec la touche F1 pour afficher l'état du réseau.
 // Désactiver en production en retirant l'appel, pas le code.
+void RebuildSolarPanels(void) {
+    solarPanelCount = 0;
+    for (int i = 0; i < COL && solarPanelCount < MAX_SOLAR_PANELS; i++)
+        for (int j = 0; j < ROW && solarPanelCount < MAX_SOLAR_PANELS; j++)
+            if (grid[i][j].up_texture.id == solarpanelTexture.id)
+                solarPanels[solarPanelCount++] = (SolarPanel){i, j};
+}
+
 void DebugEnergy(void) {
     printf("\n=== RÉSEAU ÉNERGÉTIQUE ===\n");
     int snap_requests = dbg_requests;
@@ -501,7 +524,13 @@ void DebugEnergy(void) {
     }
     if (piloneCount == 0) printf("  (aucun pylône posé)\n");
 
-    printf("  Foreuses  : %d (tick toutes les 5s)\n", numForeuses);
+    printf("  Foreuses  : %d (tick toutes les 3s)\n", numForeuses);
+    // Batteries
+    for (int k = 0; k < MAX_BATTERY; k++) {
+        if (!ListeBattery[k].placed) continue;
+        printf("  Batterie  (%3d,%3d) : %d/100\n",
+               ListeBattery[k].i, ListeBattery[k].j, ListeBattery[k].q);
+    }
     for (int i = 0; i < numFurnaces; i++)
         printf("  Furnace   (%3d,%3d) : energy=%d mat=%d final=%d\n",
                ListeFurnace[i].i, ListeFurnace[i].j,

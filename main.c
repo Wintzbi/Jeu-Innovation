@@ -252,6 +252,9 @@ int load() {
 
     RINT(days);
 
+    // Reconstruire la liste des panneaux solaires depuis la grille chargée
+    RebuildSolarPanels();
+
     fclose(file);
     return 0;
 }
@@ -324,6 +327,7 @@ int main(void) {
         if (IsKeyPressed(KEY_R)) UpdateDir();
         if (IsKeyPressed(KEY_TAB)) selectedItem = (selectedItem + 1) % 10;
         if (IsKeyPressed(KEY_F1)) DebugEnergy();
+        if (IsKeyPressed(KEY_F2)) infoMode = !infoMode;
 
         if (currentScreen != MENU) {
             if (IsKeyPressed(KEY_E)) {
@@ -371,6 +375,7 @@ int main(void) {
             mouseDefault();
             moveCamera();
             DrawMiniMap();
+            DrawInfoTooltip();
         }
         EndMode2D();
 

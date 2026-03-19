@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "texture.h"
 #include "stat.h"
+#include "input.h"
 #include "raylib.h"
 
 // ─── Minimap ─────────────────────────────────────────────────────────────────
@@ -109,4 +110,113 @@ void DrawStat(void) {
     DrawText(TextFormat("Craft : %d",          craftedObjects), cx - 390, 350, 50, LIGHTGRAY);
     DrawText(TextFormat("Objets ramassé : %d", pickedObject),  cx - 390, 420, 50, LIGHTGRAY);
     DrawText(TextFormat("Temps écoulé : %d",   days),          cx - 390, 490, 50, LIGHTGRAY);
+}
+
+// ─── Mode info (F2) ──────────────────────────────────────────────────────────
+// Dessine un tooltip au survol d'une machine ou d'un convoyeur.
+// À appeler dans le bloc BeginMode2D / EndMode2D.
+
+static void DrawTooltip(int worldX, int worldY, const char **lines, int count) {
+    int   fontSize = 6;          
+    float spacing  = 0.5f;
+    Font  font     = GetFontDefault();
+    int   padding  = fontSize / 4; // marge proportionnelle
+    int   lineH    = (int)(fontSize * 1.25f);
+
+    int w = 0;
+    for (int i = 0; i < count; i++) {
+        Vector2 sz = MeasureTextEx(font, lines[i], fontSize, spacing);
+        if ((int)sz.x > w) w = (int)sz.x;
+    }
+    w += padding * 2;
+    int h = count * lineH + padding * 2;
+
+    int tx = worldX * cellSize + cellSize + 2;
+    int ty = worldY * cellSize - h / 2;
+
+    DrawRectangle(tx, ty, w, h, Fade(BLACK, 0.75f));
+    DrawRectangleLines(tx, ty, w, h, Fade(WHITE, 0.4f));
+    for (int i = 0; i < count; i++)
+        DrawTextEx(font, lines[i],
+                   (Vector2){tx + padding, ty + padding + i * lineH},
+                   fontSize, spacing, WHITE);
+}
+
+void DrawInfoTooltip(void) {
+    if (!infoMode) return;
+
+    Vector2 mousePos  = GetMousePosition();
+    Vector2 worldPos  = GetScreenToWorld2D(mousePos, camera);
+    int posX = (int)(worldPos.x / cellSize);
+    int posY = (int)(worldPos.y / cellSize);
+
+    if (!IndexIsValid(posX, posY)) return;
+
+    const char *lines[12];
+    char buf[12][48];
+    int n = 0;
+
+    // ── Foreuse ───────────────────────────────────────────────────────────
+    for (int i = 0; i < numForeuses; i++) {
+        if (ListeForeuse[i].i != posX || ListeForeuse[i].j != posY) continue;
+        snprintf(buf[n], 48, "Foreuse"); lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Stock : %d", ListeForeuse[i].q); lines[n] = buf[n]; n++;
+        DrawTooltip(posX, posY, lines, n);
+        return;
+    }
+
+    // ── Machines processeurs ──────────────────────────────────────────────
+    Machine *lists[]   = { ListeFurnace, ListeHydraulic, ListeEttireuse };
+    int      counts[]  = { numFurnaces,  numHydraulics,  numEttireuses  };
+    const char *names[]= { "Four",       "Presse",       "Etireuse"     };
+    for (int t = 0; t < 3; t++) {
+        for (int i = 0; i < counts[t]; i++) {
+            if (lists[t][i].i != posX || lists[t][i].j != posY) continue;
+            Machine *m = &lists[t][i];
+            snprintf(buf[n], 48, "%s", names[t]);           lines[n] = buf[n]; n++;
+            snprintf(buf[n], 48, "Energie : %d",  m->energy_q);   lines[n] = buf[n]; n++;
+            snprintf(buf[n], 48, "Materiau: %d",  m->material_q); lines[n] = buf[n]; n++;
+            snprintf(buf[n], 48, "Produit : %d",  m->final_q);    lines[n] = buf[n]; n++;
+            DrawTooltip(posX, posY, lines, n);
+            return;
+        }
+    }
+
+    // ── Centrale vapeur ───────────────────────────────────────────────────
+    for (int i = 0; i < numSteams; i++) {
+        if (ListeSteam[i].i != posX || ListeSteam[i].j != posY) continue;
+        snprintf(buf[n], 48, "Centrale Vapeur");          lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Combustible : %d", ListeSteam[i].energy_q);  lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Eau         : %d", ListeSteam[i].material_q);lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Energie out : %d", ListeSteam[i].final_q);   lines[n] = buf[n]; n++;
+        DrawTooltip(posX, posY, lines, n);
+        return;
+    }
+
+    // ── Batterie ──────────────────────────────────────────────────────────
+    for (int k = 0; k < MAX_BATTERY; k++) {
+        if (!ListeBattery[k].placed) continue;
+        if (ListeBattery[k].i != posX || ListeBattery[k].j != posY) continue;
+        snprintf(buf[n], 48, "Batterie");                              lines[n] = buf[n]; n++;
+        snprintf(buf[n], 48, "Charge : %d/100", ListeBattery[k].q);  lines[n] = buf[n]; n++;
+        DrawTooltip(posX, posY, lines, n);
+        return;
+    }
+
+    // ── Convoyeur ─────────────────────────────────────────────────────────
+    for (int k = 0; k < MAX_CONVEYOR; k++) {
+        if (!ListeConveyor[k].placed) continue;
+        if (ListeConveyor[k].i != posX || ListeConveyor[k].j != posY) continue;
+        if (ListeConveyor[k].texture.id == piloneTexture.id) {
+            snprintf(buf[n], 48, "Pylone");                              lines[n] = buf[n]; n++;
+            snprintf(buf[n], 48, "Charge : %d/%d A",
+                ListeConveyor[k].load, ListeConveyor[k].max_load);      lines[n] = buf[n]; n++;
+        } else {
+            snprintf(buf[n], 48, "Convoyeur");                          lines[n] = buf[n]; n++;
+            snprintf(buf[n], 48, "Items   : %d/%d",
+                ListeConveyor[k].amount, ListeConveyor[k].capacity);    lines[n] = buf[n]; n++;
+        }
+        DrawTooltip(posX, posY, lines, n);
+        return;
+    }
 }

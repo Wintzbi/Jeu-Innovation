@@ -136,6 +136,8 @@ int IsEnergieNear(int x, int y, int range);
 int HasEnergySource(int x, int y, int range);
 int RequestEnergy(int x, int y, int amount);
 void DebugEnergy(void);
+void RebuildSolarPanels(void);
+extern bool infoMode;   // toggle F2 — affiche les infos des machines au survol
 
 // Détection de machine sur une case
 bool isForeuse(int posX, int posY);
