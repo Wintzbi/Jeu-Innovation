@@ -642,6 +642,10 @@ void Convey(Conveyor *conv) {
         return;
     }
 
+    // Caps de stockage par machine
+    #define CAP_ENERGY   20   // charbon max (se stack sur le tapis si plein)
+    #define CAP_MATERIAL 10   // minerai max
+
     // Livraison à une machine processeur
     Machine *dst_machine = NULL; int dst_count = 0;
     if      (dtex == furnaceTexture.id)     { dst_machine = ListeFurnace;   dst_count = numFurnaces;   }
@@ -654,20 +658,31 @@ void Convey(Conveyor *conv) {
             unsigned int tid = conv->textureToMove.id;
             bool is_energy   = (tid == coalTexture.id);
             if (is_energy) {
-                if (dst_machine[k].energy_id == tid || dst_machine[k].energy_q == 0) {
+                if ((dst_machine[k].energy_id == tid || dst_machine[k].energy_q == 0)
+                    && dst_machine[k].energy_q < CAP_ENERGY) {
+                    int space = CAP_ENERGY - dst_machine[k].energy_q;
+                    int take  = conv->amount < space ? conv->amount : space;
                     dst_machine[k].energy_id  = tid;
-                    dst_machine[k].energy_q  += conv->amount;
-                    conv->amount = 0;
-                    conv->textureToMove = (Texture2D){0};
-                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    dst_machine[k].energy_q  += take;
+                    conv->amount -= take;
+                    if (conv->amount == 0) {
+                        conv->textureToMove = (Texture2D){0};
+                        grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    }
                 }
+                // sinon : plein → l'item reste sur le tapis et fait back-up
             } else {
-                if (dst_machine[k].material_id == tid || dst_machine[k].material_q == 0) {
+                if ((dst_machine[k].material_id == tid || dst_machine[k].material_q == 0)
+                    && dst_machine[k].material_q < CAP_MATERIAL) {
+                    int space = CAP_MATERIAL - dst_machine[k].material_q;
+                    int take  = conv->amount < space ? conv->amount : space;
                     dst_machine[k].material_id  = tid;
-                    dst_machine[k].material_q  += conv->amount;
-                    conv->amount = 0;
-                    conv->textureToMove = (Texture2D){0};
-                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    dst_machine[k].material_q  += take;
+                    conv->amount -= take;
+                    if (conv->amount == 0) {
+                        conv->textureToMove = (Texture2D){0};
+                        grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    }
                 }
             }
             break;
@@ -675,30 +690,48 @@ void Convey(Conveyor *conv) {
         return;
     }
 
-    // Livraison à centrale vapeur
+    // Livraison à centrale vapeur (cap energy=30, material=20)
+    #define CAP_STEAM_ENERGY   30
+    #define CAP_STEAM_MATERIAL 20
     if (dtex == steamcentralTexture.id) {
         for (int k = 0; k < numSteams; k++) {
             if (ListeSteam[k].i != destI || ListeSteam[k].j != destJ) continue;
             unsigned int tid = conv->textureToMove.id;
             bool is_fuel = (tid == coalTexture.id || tid == oilVeinTexture.id);
             if (is_fuel) {
-                if (ListeSteam[k].energy_id == tid || ListeSteam[k].energy_q == 0) {
+                if ((ListeSteam[k].energy_id == tid || ListeSteam[k].energy_q == 0)
+                    && ListeSteam[k].energy_q < CAP_STEAM_ENERGY) {
+                    int space = CAP_STEAM_ENERGY - ListeSteam[k].energy_q;
+                    int take  = conv->amount < space ? conv->amount : space;
                     ListeSteam[k].energy_id  = tid;
-                    ListeSteam[k].energy_q  += conv->amount;
-                    conv->amount = 0; conv->textureToMove = (Texture2D){0};
-                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    ListeSteam[k].energy_q  += take;
+                    conv->amount -= take;
+                    if (conv->amount == 0) {
+                        conv->textureToMove = (Texture2D){0};
+                        grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    }
                 }
             } else {
-                if (ListeSteam[k].material_id == tid || ListeSteam[k].material_q == 0) {
+                if ((ListeSteam[k].material_id == tid || ListeSteam[k].material_q == 0)
+                    && ListeSteam[k].material_q < CAP_STEAM_MATERIAL) {
+                    int space = CAP_STEAM_MATERIAL - ListeSteam[k].material_q;
+                    int take  = conv->amount < space ? conv->amount : space;
                     ListeSteam[k].material_id  = tid;
-                    ListeSteam[k].material_q  += conv->amount;
-                    conv->amount = 0; conv->textureToMove = (Texture2D){0};
-                    grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    ListeSteam[k].material_q  += take;
+                    conv->amount -= take;
+                    if (conv->amount == 0) {
+                        conv->textureToMove = (Texture2D){0};
+                        grid[conv->i][conv->j].move_texture = (Texture2D){0};
+                    }
                 }
             }
             break;
         }
     }
+    #undef CAP_ENERGY
+    #undef CAP_MATERIAL
+    #undef CAP_STEAM_ENERGY
+    #undef CAP_STEAM_MATERIAL
 }
 
 
