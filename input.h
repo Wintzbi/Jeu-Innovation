@@ -1,33 +1,32 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-// Inclusions
 #include "raylib.h"
 #include "stat.h"
 #include "craft.h"
-#include <string.h>
 #include "texture.h"
+#include "machine.h"
+#include <string.h>
 #include <stdio.h>
 
-// Déclarations externes générales
+// ─── Constantes ──────────────────────────────────────────────────────────────
 extern int MinPlaceableID;
-extern float rotation;  // Angle du conveyor sélectionné (mis à jour par UpdateDir)
+extern float rotation;
 extern int conveyor_dir;
-#define MAX_FOREUSE 100
-#define MAX_FURNACE 100
+
+#define MAX_FOREUSE   100
+#define MAX_FURNACE   100
 #define MAX_HYDRAULIC 100
 #define MAX_ETTIREUSE 100
-#define MAX_STEAM 100
-#define MAX_OIL 100
-#define MAX_CONVEYOR 400
-#define MAX_BATTERY 100
+#define MAX_STEAM     100
+#define MAX_OIL       100
+#define MAX_CONVEYOR  400
+#define MAX_BATTERY   100
 
-// Directions pour les mouvements
 extern int directions[4][2];
+extern bool infoMode;
 
-// Structures
-
-// ─── Foreuse (cas particulier : pas de transformation) ───────────────────────
+// ─── Foreuse ──────────────────────────────────────────────────────────────────
 typedef struct Foreuse {
     int i, j;
     bool placed;
@@ -36,27 +35,22 @@ typedef struct Foreuse {
 } Foreuse;
 extern Foreuse ListeForeuse[MAX_FOREUSE];
 extern int numForeuses;
-void Update_Foreuse();
+extern float lastForeuseTime;
 
-// ─── Machines processeurs (Furnace, Hydraulic, Ettireuse) ────────────────────
-// Struct unifiée — voir machine.h pour les détails
-#include "machine.h"
-
+// ─── Machines processeurs ─────────────────────────────────────────────────────
 extern Machine ListeFurnace[MAX_FURNACE];
 extern int numFurnaces;
-void Update_Furnace();
+extern float lastFurnaceTime;
 
 extern Machine ListeHydraulic[MAX_HYDRAULIC];
 extern int numHydraulics;
-void Update_Hydraulic();
+extern float lastHydraulicTime;
 
 extern Machine ListeEttireuse[MAX_ETTIREUSE];
 extern int numEttireuses;
-void Update_Ettireuse();
+extern float lastEttireuseTime;
 
-// ─── Générateurs d'énergie (Steam, Oil) ──────────────────────────────────────
-// Logique différente des processeurs : produisent de l'énergie (final_q),
-// pas de matériau de sortie → struct séparée (sans final_id)
+// ─── Générateurs ─────────────────────────────────────────────────────────────
 typedef struct Steam {
     int i, j;
     bool placed;
@@ -67,8 +61,7 @@ typedef struct Steam {
 } Steam;
 extern Steam ListeSteam[MAX_STEAM];
 extern int numSteams;
-void Update_Steam();
-int FindNearestSteam(int x, int y);
+extern float lastSteamTime;
 
 typedef struct Oil {
     int i, j;
@@ -80,72 +73,42 @@ typedef struct Oil {
 } Oil;
 extern Oil ListeOil[MAX_OIL];
 extern int numOils;
-void Update_Oil();
+extern float lastOilTime;
 
-// Conveyor
+// ─── Convoyeur ────────────────────────────────────────────────────────────────
 typedef struct Conveyor {
-    int i;
-    int j;
+    int i, j;
     int dir[2];
     bool placed;
     bool power;
-    int  load;       // ampères transportés ce tick
-    int  peak_load;  // max vu depuis le dernier reset manuel (debug)
-    int  max_load;   // capacité max du pylône (0 pour convoyeurs/tuyaux)
-    int  amount;     // quantité d'items sur ce convoyeur
-    int  capacity;   // quantité max transportable par tick (upgradable, défaut 2)
-    bool processed;  // déjà traité ce tick — empêche le multi-hop
+    int  load;
+    int  peak_load;
+    int  max_load;
+    int  amount;
+    int  capacity;
+    bool processed;
     Texture2D texture;
     Texture2D textureToMove;
 } Conveyor;
 extern Conveyor ListeConveyor[MAX_CONVEYOR];
-void Convey(Conveyor* conv);
-void UpdateDir();
-void Update_Conv();
-extern int conveyor_dir;
-void RemoveConveyor(int posX, int posY);
-void RemoveForeuse(int posX, int posY);
-void RemoveFurnace(int posX, int posY);
-void RemoveHydraulic(int posX, int posY);
-void RemoveEttireuse(int posX, int posY);
-void RemoveSteam(int posX, int posY);
-void RemoveOil(int posX, int posY);
 
-// Battery
+// ─── Batterie ─────────────────────────────────────────────────────────────────
 typedef struct Battery {
-    int i;
-    int j;
+    int i, j;
     int q;
     bool placed;
     Texture2D texture;
 } Battery;
 extern Battery ListeBattery[MAX_BATTERY];
-void UpdateBattery();
-int FindNearestBattery(int x, int y);
-void RemoveBattery(int posX, int posY);
 
-// Fonctions utilitaires
-void InitInventoryKeyBiding();
-void mouseDefault();
-void leftClic();
-void rightClic();
+// ─── Fonctions ───────────────────────────────────────────────────────────────
+void InitInventoryKeyBiding(void);
+void mouseDefault(void);
+void leftClic(void);
+void rightClic(void);
+void UpdateDir(void);
 void ActionWithName(char ObjectName[20], int i, int j, int option);
-int AddInInvent(int q, Texture2D texture);
+int  AddInInvent(int q, Texture2D texture);
 const char* FindName(Texture2D textureRef);
-int IsEnergieNear(int x, int y, int range);
-int HasEnergySource(int x, int y, int range);
-int RequestEnergy(int x, int y, int amount);
-#define SOLAR_PER_PANEL 3  // production par panneau par tick (plein jour)
-void DebugEnergy(void);
-void RebuildSolarPanels(void);
-extern bool infoMode;   // toggle F2 — affiche les infos des machines au survol
-
-// Détection de machine sur une case
-bool isForeuse(int posX, int posY);
-bool isFurnace(int posX, int posY);
-bool isHydraulic(int posX, int posY);
-bool isEttireuse(int posX, int posY);
-bool isSteam(int posX, int posY);
-bool isOil(int posX, int posY);
 
 #endif
